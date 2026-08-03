@@ -1,0 +1,10 @@
+{
+    "name": "Youssefoueslati1510.Mycommontoolkit.Editor",
+    "references": [
+      "Youssefoueslati1510.Mycommontoolkit"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": []
+}

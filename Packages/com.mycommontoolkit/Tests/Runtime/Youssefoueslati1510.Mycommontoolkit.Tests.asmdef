@@ -1,0 +1,11 @@
+{
+    "name": "Youssefoueslati1510.Mycommontoolkit.Tests",
+    "references": [
+        "Youssefoueslati1510.Mycommontoolkit"
+    ],
+    "optionalUnityReferences": [
+        "TestAssemblies"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": []
+}

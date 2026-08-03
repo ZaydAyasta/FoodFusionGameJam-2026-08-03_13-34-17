@@ -1,0 +1,14 @@
+{
+    "name": "Youssefoueslati1510.Mycommontoolkit.Editor.Tests",
+    "references": [
+        "Youssefoueslati1510.Mycommontoolkit.Editor",
+        "Youssefoueslati1510.Mycommontoolkit"
+    ],
+    "optionalUnityReferences": [
+        "TestAssemblies"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": []
+}
