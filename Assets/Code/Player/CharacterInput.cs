@@ -13,16 +13,19 @@ public class CharacterInput : MonoBehaviour
 
     private void Awake()
     {
-        input = new();
+        EnsureInput();
     }
 
     private void OnEnable()
     {
+        EnsureInput();
         input.Enable();
     }
 
     private void Update()
     {
+        EnsureInput();
+
         MoveInput = input.Player.Move.ReadValue<Vector2>();
         LookInput = input.Player.Look.ReadValue<Vector2>();
         if (Mouse.current != null)
@@ -33,6 +36,17 @@ public class CharacterInput : MonoBehaviour
 
     private void OnDisable()
     {
-        input.Disable();
+        input?.Disable();
+    }
+
+    private void OnDestroy()
+    {
+        input?.Dispose();
+        input = null;
+    }
+
+    private void EnsureInput()
+    {
+        input ??= new InputSystem_Actions();
     }
 }

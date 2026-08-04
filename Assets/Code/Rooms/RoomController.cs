@@ -7,9 +7,16 @@ public class RoomController : MonoBehaviour
     [SerializeField] private DoorController[] doors;
     [SerializeField] private EnemyDeathNotifier[] enemies;
     [SerializeField] private bool activateEnemiesOnEntry = true;
+    [Header("Rewards")]
+    [SerializeField] private Transform rewardSpawnPoint;
+    [SerializeField] private RewardChoiceController rewardChoicePrefab;
+    [SerializeField] private IngredientData[] possibleRewards;
 
     private readonly HashSet<EnemyDeathNotifier> aliveEnemies = new();
     private bool entered;
+    private bool rewardSpawned;
+    private bool rewardClaimed;
+    private RewardChoiceController activeRewardChoice;
 
     public RoomState State { get; private set; } = RoomState.Inactive;
 
@@ -51,11 +58,15 @@ public class RoomController : MonoBehaviour
         if (entered || State != RoomState.Inactive)
             return;
 
-        FactionMember faction = other.GetComponentInParent<FactionMember>();
+        CharacterInput playerInput = other.GetComponentInParent<CharacterInput>();
+        if (playerInput == null)
+            return;
+
+        FactionMember faction = playerInput.GetComponent<FactionMember>();
         if (faction == null || faction.Faction != CombatFaction.Player)
             return;
 
-        BeginCombat(other.transform.root);
+        BeginCombat(playerInput.transform);
     }
 
     private void BeginCombat(Transform player)
@@ -94,8 +105,26 @@ public class RoomController : MonoBehaviour
 
     private void CompleteCombat()
     {
-        State = RoomState.Completed;
         SetDoorsClosed(false);
+
+        if (ShouldSpawnReward())
+        {
+            State = RoomState.RewardAvailable;
+            SpawnRewardChoice();
+            return;
+        }
+
+        State = RoomState.Completed;
+    }
+
+    public void NotifyRewardClaimed()
+    {
+        if (rewardClaimed)
+            return;
+
+        rewardClaimed = true;
+        activeRewardChoice = null;
+        State = RoomState.RewardClaimed;
     }
 
     private void SetDoorsClosed(bool closed)
@@ -105,5 +134,49 @@ public class RoomController : MonoBehaviour
             if (door != null)
                 door.SetClosed(closed);
         }
+    }
+
+    private bool ShouldSpawnReward()
+    {
+        return !rewardSpawned && !rewardClaimed && possibleRewards != null && possibleRewards.Length >= 2;
+    }
+
+    private void SpawnRewardChoice()
+    {
+        if (rewardSpawned)
+            return;
+
+        rewardSpawned = true;
+        Transform spawnPoint = rewardSpawnPoint != null ? rewardSpawnPoint : transform;
+        IngredientData first = possibleRewards[0];
+        IngredientData second = possibleRewards[1];
+
+        if (possibleRewards.Length > 2)
+            PickTwoRewards(out first, out second);
+
+        activeRewardChoice = rewardChoicePrefab != null
+            ? Instantiate(rewardChoicePrefab, spawnPoint.position, Quaternion.identity, transform)
+            : CreateFallbackRewardChoice(spawnPoint.position);
+
+        activeRewardChoice.Initialize(this, first, second);
+    }
+
+    private void PickTwoRewards(out IngredientData first, out IngredientData second)
+    {
+        int firstIndex = Random.Range(0, possibleRewards.Length);
+        int secondIndex = Random.Range(0, possibleRewards.Length - 1);
+        if (secondIndex >= firstIndex)
+            secondIndex++;
+
+        first = possibleRewards[firstIndex];
+        second = possibleRewards[secondIndex];
+    }
+
+    private RewardChoiceController CreateFallbackRewardChoice(Vector3 position)
+    {
+        GameObject choiceObject = new("RewardChoice");
+        choiceObject.transform.SetParent(transform, false);
+        choiceObject.transform.position = position;
+        return choiceObject.AddComponent<RewardChoiceController>();
     }
 }
