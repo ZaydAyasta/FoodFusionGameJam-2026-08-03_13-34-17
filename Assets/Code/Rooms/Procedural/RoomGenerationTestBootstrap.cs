@@ -23,6 +23,9 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
     [Header("Generation")]
     [SerializeField] private int minCandidateCount = 1;
     [SerializeField] private int maxCandidateCount = 3;
+    [SerializeField] private int oneDoorWeight = 1;
+    [SerializeField] private int twoDoorWeight = 6;
+    [SerializeField] private int threeDoorWeight = 3;
     [SerializeField] private float connectionGap;
     [SerializeField] private float commitOffsetFromDoor = 0.75f;
     [SerializeField] private Vector2 commitTriggerSize = new(1.25f, 1.25f);
@@ -53,6 +56,7 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
     private float nextBatchAt = -1f;
     private bool waitingForRoomCompletion;
     private int currentRoomNumber = 1;
+    private int lastGeneratedExitCount;
 
     private void Start()
     {
@@ -158,7 +162,7 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
         List<RoomDirection> directions = GetAllowedExitDirections();
         Shuffle(directions);
 
-        int count = Mathf.Clamp(Random.Range(minCandidateCount, maxCandidateCount + 1), 1, directions.Count);
+        int count = SelectCandidateCount(directions.Count);
         List<RoomDirection> activeExitDirections = new();
         for (int i = 0; i < count; i++)
         {
@@ -170,6 +174,41 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
 
         currentRoom.ShowOnlyDoors(activeExitDirections);
         currentRoom.SetKitchenVisible(IsKitchenRoom(currentRoomNumber));
+        lastGeneratedExitCount = activeExitDirections.Count;
+    }
+
+    private int SelectCandidateCount(int availableDirectionCount)
+    {
+        int minCount = Mathf.Clamp(minCandidateCount, 1, availableDirectionCount);
+        int maxCount = Mathf.Clamp(maxCandidateCount, minCount, availableDirectionCount);
+        int totalWeight = 0;
+
+        for (int count = minCount; count <= maxCount; count++)
+            totalWeight += GetCandidateCountWeight(count);
+
+        if (totalWeight <= 0)
+            return Mathf.Clamp(2, minCount, maxCount);
+
+        int roll = Random.Range(0, totalWeight);
+        for (int count = minCount; count <= maxCount; count++)
+        {
+            roll -= GetCandidateCountWeight(count);
+            if (roll < 0)
+                return count;
+        }
+
+        return maxCount;
+    }
+
+    private int GetCandidateCountWeight(int count)
+    {
+        return count switch
+        {
+            1 => lastGeneratedExitCount == 1 ? 0 : Mathf.Max(0, oneDoorWeight),
+            2 => Mathf.Max(0, twoDoorWeight),
+            3 => Mathf.Max(0, threeDoorWeight),
+            _ => 0
+        };
     }
 
     private ProceduralRoomLayout CreateCandidate(
