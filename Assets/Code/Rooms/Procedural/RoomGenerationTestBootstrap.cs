@@ -30,6 +30,8 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
     [SerializeField] private float noRoomControllerNextBatchDelay = 1f;
     [SerializeField] private bool hideUnusedTemplates = true;
     [SerializeField] private bool addFallbackPlayerCollider = true;
+    [SerializeField] private int firstKitchenRoomNumber = 4;
+    [SerializeField] private int kitchenIntervalRooms = 4;
 
     [Header("Camera")]
     [SerializeField] private CinemachineCamera cinemachineCamera;
@@ -48,6 +50,7 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
     private RoomController activeRoomController;
     private float nextBatchAt = -1f;
     private bool waitingForRoomCompletion;
+    private int currentRoomNumber = 1;
 
     private void Start()
     {
@@ -62,7 +65,10 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
 
         currentRoom.AutoWire();
         foreach (ProceduralRoomLayout template in roomTemplates)
+        {
             template.AutoWire();
+            template.SetKitchenVisible(false);
+        }
 
         EnsurePlayerColliderForTestScene();
         EnsureCameraFollowsPlayer();
@@ -161,6 +167,7 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
         }
 
         currentRoom.ShowOnlyDoors(activeExitDirections);
+        currentRoom.SetKitchenVisible(IsKitchenRoom(currentRoomNumber));
     }
 
     private ProceduralRoomLayout CreateCandidate(
@@ -184,6 +191,7 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
         candidate.gameObject.SetActive(true);
         candidate.AutoWire();
         candidate.ShowOnlyDoors(new[] { entryDirection });
+        candidate.SetKitchenVisible(IsKitchenRoom(currentRoomNumber + 1));
 
         Vector3 offset = sourceDoor.position - candidate.GetDoor(entryDirection).position;
         candidate.transform.position += offset + GetGapOffset(exitDirection);
@@ -205,6 +213,7 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
         ProceduralRoomLayout previousRoom = currentRoom;
         currentRoom = selectedCandidate.Layout;
         blockedExitDirection = selectedCandidate.EntryDirection;
+        currentRoomNumber++;
 
         DestroyUnselectedCandidates(selectedCandidate);
         DestroyCommitTriggers();
@@ -229,6 +238,7 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
 
         activeRoomController = room.GetComponent<RoomController>();
         EnsureCameraFollowsPlayer();
+        room.SetKitchenVisible(IsKitchenRoom(currentRoomNumber));
 
         if (cinemachineCamera != null && room.CameraOrthographicSize > 0f)
         {
@@ -284,6 +294,14 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
             follow = cinemachineCamera.gameObject.AddComponent<CinemachineFollow>();
 
         follow.FollowOffset = cameraFollowOffset;
+    }
+
+    private bool IsKitchenRoom(int roomNumber)
+    {
+        if (kitchenIntervalRooms <= 0 || roomNumber < firstKitchenRoomNumber)
+            return false;
+
+        return (roomNumber - firstKitchenRoomNumber) % kitchenIntervalRooms == 0;
     }
 
     private ProceduralRoomCommitTrigger CreateCommitTrigger(Transform sourceDoor, RoomDirection exitDirection)
@@ -358,6 +376,7 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
             if (template != null && template.gameObject != currentRoom.gameObject)
             {
                 template.HideAllDoors();
+                template.SetKitchenVisible(false);
                 hiddenTemplates.Add(template);
                 template.gameObject.SetActive(false);
             }

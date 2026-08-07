@@ -66,6 +66,16 @@ public class ProceduralRoomLayout : MonoBehaviour
         SetDoorVisible(RoomDirection.Left, false);
     }
 
+    public void SetKitchenVisible(bool visible)
+    {
+        if (kitchenSpawnPoint == null)
+            return;
+
+        Renderer[] renderers = kitchenSpawnPoint.GetComponentsInChildren<Renderer>(true);
+        foreach (Renderer kitchenRenderer in renderers)
+            kitchenRenderer.enabled = visible;
+    }
+
     public void AutoWire()
     {
         upDoor = FindDoor("Arr", "Up");
