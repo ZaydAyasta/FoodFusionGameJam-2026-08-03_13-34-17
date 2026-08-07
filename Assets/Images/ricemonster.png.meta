@@ -1,0 +1,697 @@
+fileFormatVersion: 2
+guid: a48da51fa8d580c4787c3a6165563e8b
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 6431102928072173966
+    second: ricemonster_0
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 4096
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 2
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: ricemonster_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1681
+        width: 467
+        height: 367
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e8967b52a0edf3950800000000000000
+      internalID: 6431102928072173966
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ricemonster_1
+      rect:
+        serializedVersion: 2
+        x: 467
+        y: 1681
+        width: 467
+        height: 367
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 33ed3b5d2c69b7e4dab5ed6b24f50e75
+      internalID: -1273727090
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ricemonster_2
+      rect:
+        serializedVersion: 2
+        x: 934
+        y: 1681
+        width: 467
+        height: 367
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5e2f6d9fff80927488a390489ed9e35d
+      internalID: -2023720033
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ricemonster_3
+      rect:
+        serializedVersion: 2
+        x: 1401
+        y: 1681
+        width: 467
+        height: 367
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e6a3ae4ed000c80408e489f9bc35f976
+      internalID: 982159384
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ricemonster_4
+      rect:
+        serializedVersion: 2
+        x: 1868
+        y: 1681
+        width: 467
+        height: 367
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 887c0da7bc4f9c348ae48b4e2c48463e
+      internalID: -1640749215
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ricemonster_5
+      rect:
+        serializedVersion: 2
+        x: 2335
+        y: 1681
+        width: 467
+        height: 367
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 30918096a731805499b7d435e6f42db7
+      internalID: -565450802
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ricemonster_6
+      rect:
+        serializedVersion: 2
+        x: 2802
+        y: 1681
+        width: 467
+        height: 367
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ec8256fe9711636478210df1424de8d7
+      internalID: 1371094736
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ricemonster_7
+      rect:
+        serializedVersion: 2
+        x: 3269
+        y: 1681
+        width: 467
+        height: 367
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2512ca14cf9cc204084ba44133670e81
+      internalID: 2006941685
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ricemonster_8
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1314
+        width: 467
+        height: 367
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1f1b5044e97c05043af0cd397f671e7d
+      internalID: -1017782429
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ricemonster_9
+      rect:
+        serializedVersion: 2
+        x: 467
+        y: 1314
+        width: 467
+        height: 367
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1065091d05d249b49b6e01faf57a7ebb
+      internalID: -72242849
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ricemonster_10
+      rect:
+        serializedVersion: 2
+        x: 934
+        y: 1314
+        width: 467
+        height: 367
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9c2afa57c96499f45a36cbcbcc9ef424
+      internalID: -1368164676
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ricemonster_11
+      rect:
+        serializedVersion: 2
+        x: 1401
+        y: 1314
+        width: 467
+        height: 367
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5a16f93ee4c8d9e458c461cbcd86f6da
+      internalID: 1683735410
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ricemonster_12
+      rect:
+        serializedVersion: 2
+        x: 1868
+        y: 1314
+        width: 467
+        height: 367
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0b4dd15d3fe47ce41927d9f9c5881ea1
+      internalID: -689360926
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ricemonster_13
+      rect:
+        serializedVersion: 2
+        x: 2335
+        y: 1314
+        width: 467
+        height: 367
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8ecb127b39280d6418a5c906330d3c8f
+      internalID: -482110155
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ricemonster_14
+      rect:
+        serializedVersion: 2
+        x: 2802
+        y: 1314
+        width: 467
+        height: 367
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 30e7250767a30774dbc95fe4bfdf9a5e
+      internalID: -1820860965
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ricemonster_15
+      rect:
+        serializedVersion: 2
+        x: 3269
+        y: 1314
+        width: 467
+        height: 367
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 76f4345c450d53848be9d3bdca646648
+      internalID: 597468531
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ricemonster_16
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 947
+        width: 467
+        height: 367
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 35f7c0cca2524fe488fe2311faf27b5f
+      internalID: 935212050
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ricemonster_17
+      rect:
+        serializedVersion: 2
+        x: 467
+        y: 947
+        width: 467
+        height: 367
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cf5b3780a4f02b2489ef25777bb2d0f8
+      internalID: 1837867497
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ricemonster_18
+      rect:
+        serializedVersion: 2
+        x: 934
+        y: 947
+        width: 467
+        height: 367
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 70aa30977713b1a4b98e465ed6f75012
+      internalID: 922113046
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ricemonster_19
+      rect:
+        serializedVersion: 2
+        x: 1401
+        y: 947
+        width: 467
+        height: 367
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c0dc198ef6ca81741bf23c043b89a2a7
+      internalID: -2000035171
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ricemonster_20
+      rect:
+        serializedVersion: 2
+        x: 1868
+        y: 947
+        width: 467
+        height: 367
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b75c6914e9337b94e88cde6043b01a10
+      internalID: 873127155
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ricemonster_21
+      rect:
+        serializedVersion: 2
+        x: 2335
+        y: 947
+        width: 467
+        height: 367
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c362d1215cb899348ba4f72a20edc8fe
+      internalID: 88994603
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ricemonster_22
+      rect:
+        serializedVersion: 2
+        x: 2802
+        y: 947
+        width: 467
+        height: 367
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d2bb435ccb288ca48980f7a497d0d5ce
+      internalID: 1904686380
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ricemonster_23
+      rect:
+        serializedVersion: 2
+        x: 3269
+        y: 947
+        width: 467
+        height: 367
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3b249253be538554585678ea2b75ec3d
+      internalID: 2128598279
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ricemonster_24
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 580
+        width: 467
+        height: 367
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3769429fbb5d0284c8481bff9bc4ae6a
+      internalID: 311198473
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 3efc8013de7fa274f90c58ef4019a483
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":467.0,"y":367.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.0,"y":1.0},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":1,"pivotUnitMode":1,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      ricemonster_0: 6431102928072173966
+      ricemonster_1: -1273727090
+      ricemonster_10: -1368164676
+      ricemonster_11: 1683735410
+      ricemonster_12: -689360926
+      ricemonster_13: -482110155
+      ricemonster_14: -1820860965
+      ricemonster_15: 597468531
+      ricemonster_16: 935212050
+      ricemonster_17: 1837867497
+      ricemonster_18: 922113046
+      ricemonster_19: -2000035171
+      ricemonster_2: -2023720033
+      ricemonster_20: 873127155
+      ricemonster_21: 88994603
+      ricemonster_22: 1904686380
+      ricemonster_23: 2128598279
+      ricemonster_24: 311198473
+      ricemonster_3: 982159384
+      ricemonster_4: -1640749215
+      ricemonster_5: -565450802
+      ricemonster_6: 1371094736
+      ricemonster_7: 2006941685
+      ricemonster_8: -1017782429
+      ricemonster_9: -72242849
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
