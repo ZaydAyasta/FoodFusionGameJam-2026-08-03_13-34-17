@@ -16,6 +16,7 @@ public class RoomController : MonoBehaviour
     private bool entered;
     private bool rewardSpawned;
     private bool rewardClaimed;
+    private bool hadEnemiesInCombat;
     private RewardChoiceController activeRewardChoice;
 
     public RoomState State { get; private set; } = RoomState.Inactive;
@@ -82,16 +83,54 @@ public class RoomController : MonoBehaviour
                 continue;
 
             enemy.gameObject.SetActive(true);
+            enemy.Arm();
+            enemy.Died -= HandleEnemyDied;
             enemy.Died += HandleEnemyDied;
             aliveEnemies.Add(enemy);
 
             ChaserEnemy chaser = enemy.GetComponent<ChaserEnemy>();
             if (chaser != null)
                 chaser.SetTarget(player);
+
+            RangedEnemy ranged = enemy.GetComponent<RangedEnemy>();
+            if (ranged != null)
+                ranged.SetTarget(player);
         }
+
+        hadEnemiesInCombat = aliveEnemies.Count > 0;
 
         if (aliveEnemies.Count == 0)
             CompleteCombat();
+    }
+
+    public void ConfigureProcedural(
+        DoorController[] roomDoors,
+        EnemyDeathNotifier[] roomEnemies,
+        Transform roomRewardSpawnPoint,
+        IngredientData[] rewardPool)
+    {
+        doors = roomDoors ?? System.Array.Empty<DoorController>();
+        enemies = roomEnemies ?? System.Array.Empty<EnemyDeathNotifier>();
+        rewardSpawnPoint = roomRewardSpawnPoint;
+        possibleRewards = rewardPool ?? System.Array.Empty<IngredientData>();
+        entered = false;
+        rewardSpawned = false;
+        rewardClaimed = false;
+        hadEnemiesInCombat = false;
+        activeRewardChoice = null;
+        aliveEnemies.Clear();
+        State = RoomState.Inactive;
+
+        SetDoorsClosed(false);
+
+        if (!activateEnemiesOnEntry)
+            return;
+
+        foreach (EnemyDeathNotifier enemy in enemies)
+        {
+            if (enemy != null)
+                enemy.gameObject.SetActive(false);
+        }
     }
 
     private void HandleEnemyDied(EnemyDeathNotifier enemy)
@@ -138,7 +177,7 @@ public class RoomController : MonoBehaviour
 
     private bool ShouldSpawnReward()
     {
-        return !rewardSpawned && !rewardClaimed && possibleRewards != null && possibleRewards.Length >= 2;
+        return hadEnemiesInCombat && !rewardSpawned && !rewardClaimed && possibleRewards != null && possibleRewards.Length >= 2;
     }
 
     private void SpawnRewardChoice()

@@ -55,6 +55,21 @@ public class Health : MonoBehaviour, IDamageable
         HealthChanged?.Invoke(CurrentHealth, maxHealth);
     }
 
+    public void Configure(float newMaxHealth, bool resetToFull, bool destroyWhenDead)
+    {
+        maxHealth = Mathf.Max(1f, newMaxHealth);
+        destroyOnDeath = destroyWhenDead;
+
+        if (resetToFull)
+        {
+            ResetHealth();
+            return;
+        }
+
+        CurrentHealth = Mathf.Clamp(CurrentHealth, 0f, maxHealth);
+        HealthChanged?.Invoke(CurrentHealth, maxHealth);
+    }
+
     public void MakeInvulnerable(float duration)
     {
         if (duration > 0f)

@@ -1237,6 +1237,9 @@ MonoBehaviour:
   - Pro_Room_Tpye6
   minCandidateCount: 1
   maxCandidateCount: 3
+  oneDoorWeight: 1
+  twoDoorWeight: 6
+  threeDoorWeight: 3
   connectionGap: 0
   commitOffsetFromDoor: 0.75
   commitTriggerSize: {x: 1.25, y: 1.25}
@@ -1246,6 +1249,19 @@ MonoBehaviour:
   addFallbackPlayerCollider: 1
   firstKitchenRoomNumber: 4
   kitchenIntervalRooms: 4
+  generateCombatInFirstRoom: 1
+  playerMaxHealth: 100
+  initialEnemySpawnerUsage: 0.5
+  enemySpawnerUsageIncreaseAfterKitchen: 0.15
+  rangedEnemyHealth: 18
+  rangedEnemyShotDamage: 8
+  rangedEnemyShotCooldown: 1.25
+  enemyColliderRadius: 0.35
+  horizontalDoorBlockerSize: {x: 2, y: 0.55}
+  verticalDoorBlockerSize: {x: 0.55, y: 2}
+  rewardPool:
+  - {fileID: 11400000, guid: 82d95301970fef745aecf1da7f49d735, type: 2}
+  - {fileID: 11400000, guid: d5e6aa167b591b94094f8bb30ee2e86b, type: 2}
   cinemachineCamera: {fileID: 0}
   confiner: {fileID: 0}
   cameraTarget: {fileID: 0}
@@ -4907,7 +4923,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!114 &491478123
 MonoBehaviour:
   m_ObjectHideFlags: 0

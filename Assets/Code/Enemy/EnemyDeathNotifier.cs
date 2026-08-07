@@ -16,13 +16,26 @@ public class EnemyDeathNotifier : MonoBehaviour
 
     private void OnEnable()
     {
-        notified = false;
-        health.Died += HandleDied;
+        Arm();
     }
 
     private void OnDisable()
     {
+        if (health != null)
+            health.Died -= HandleDied;
+    }
+
+    public void Arm()
+    {
+        if (health == null)
+            health = GetComponent<Health>();
+
+        if (health == null)
+            return;
+
+        notified = false;
         health.Died -= HandleDied;
+        health.Died += HandleDied;
     }
 
     private void HandleDied()

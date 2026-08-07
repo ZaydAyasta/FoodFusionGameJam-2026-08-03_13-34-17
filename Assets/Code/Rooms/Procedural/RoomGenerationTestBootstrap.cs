@@ -1,6 +1,9 @@
 using System.Collections.Generic;
 using Unity.Cinemachine;
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 public class RoomGenerationTestBootstrap : MonoBehaviour
 {
@@ -36,6 +39,19 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
     [SerializeField] private int firstKitchenRoomNumber = 4;
     [SerializeField] private int kitchenIntervalRooms = 4;
 
+    [Header("Combat")]
+    [SerializeField] private bool generateCombatInFirstRoom = true;
+    [SerializeField] private float playerMaxHealth = 100f;
+    [SerializeField] private float initialEnemySpawnerUsage = 0.5f;
+    [SerializeField] private float enemySpawnerUsageIncreaseAfterKitchen = 0.15f;
+    [SerializeField] private float rangedEnemyHealth = 18f;
+    [SerializeField] private float rangedEnemyShotDamage = 8f;
+    [SerializeField] private float rangedEnemyShotCooldown = 1.25f;
+    [SerializeField] private float enemyColliderRadius = 0.35f;
+    [SerializeField] private Vector2 horizontalDoorBlockerSize = new(2f, 0.55f);
+    [SerializeField] private Vector2 verticalDoorBlockerSize = new(0.55f, 2f);
+    [SerializeField] private IngredientData[] rewardPool;
+
     [Header("Camera")]
     [SerializeField] private CinemachineCamera cinemachineCamera;
     [SerializeField] private CinemachineConfiner2D confiner;
@@ -51,6 +67,7 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
     private readonly Dictionary<ProceduralRoomLayout, Collider2D> rectangularCameraLimits = new();
     private readonly string[] placeholderThemes = { "Cheese", "Bread", "Fish", "Butter", "Corn", "Rice" };
 
+    private Sprite fallbackSprite;
     private RoomDirection? blockedExitDirection;
     private RoomController activeRoomController;
     private float nextBatchAt = -1f;
@@ -77,14 +94,26 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
         }
 
         EnsurePlayerColliderForTestScene();
+        EnsurePlayerCombatSetup();
         EnsureCameraFollowsPlayer();
         ClearGeneratedCandidates();
 
         if (hideUnusedTemplates)
             HideTemplateRooms();
 
+        if (generateCombatInFirstRoom)
+            PrepareProceduralRoomCombat(currentRoom);
+
         SetCurrentRoom(currentRoom);
-        GenerateCandidateBatch();
+        if (generateCombatInFirstRoom)
+        {
+            waitingForRoomCompletion = true;
+            nextBatchAt = Time.time + noRoomControllerNextBatchDelay;
+        }
+        else
+        {
+            GenerateCandidateBatch();
+        }
     }
 
     private void Update()
@@ -95,7 +124,7 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
         if (activeRoomController != null)
         {
             RoomState state = activeRoomController.State;
-            if (state != RoomState.Completed && state != RoomState.RewardClaimed)
+            if (state != RoomState.Completed && state != RoomState.RewardAvailable && state != RoomState.RewardClaimed)
                 return;
         }
         else if (Time.time < nextBatchAt)
@@ -259,6 +288,7 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
         DestroyUnselectedCandidates(selectedCandidate);
         DestroyCommitTriggers();
         currentRoom.HideAllDoors();
+        PrepareProceduralRoomCombat(currentRoom);
         SetCurrentRoom(currentRoom);
 
         if (previousRoom != null && previousRoom != currentRoom)
@@ -296,6 +326,222 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
             confiner.InvalidateBoundingShapeCache();
             confiner.InvalidateLensCache();
         }
+    }
+
+    private void PrepareProceduralRoomCombat(ProceduralRoomLayout room)
+    {
+        if (room == null)
+            return;
+
+        room.AutoWire();
+        Collider2D trigger = EnsureRoomTrigger(room);
+        if (trigger == null)
+            return;
+
+        DoorController[] roomDoors = CreateDoorBlockers(room);
+        EnemyDeathNotifier[] roomEnemies = CreateRoomEnemies(room);
+        RoomController controller = room.GetComponent<RoomController>();
+        if (controller == null)
+            controller = room.gameObject.AddComponent<RoomController>();
+
+        controller.ConfigureProcedural(roomDoors, roomEnemies, room.RewardSpawnPoint, GetRewardPool());
+        activeRoomController = controller;
+    }
+
+    private Collider2D EnsureRoomTrigger(ProceduralRoomLayout room)
+    {
+        Collider2D trigger = room.GetComponent<Collider2D>();
+        if (trigger == null)
+            trigger = room.gameObject.AddComponent<BoxCollider2D>();
+
+        trigger.isTrigger = true;
+
+        if (trigger is BoxCollider2D box && room.CameraLimit != null)
+        {
+            Bounds bounds = room.CameraLimit.bounds;
+            Vector3 localCenter = room.transform.InverseTransformPoint(bounds.center);
+            Vector3 scale = room.transform.lossyScale;
+            float scaleX = Mathf.Approximately(scale.x, 0f) ? 1f : Mathf.Abs(scale.x);
+            float scaleY = Mathf.Approximately(scale.y, 0f) ? 1f : Mathf.Abs(scale.y);
+            box.offset = localCenter;
+            box.size = new Vector2(bounds.size.x / scaleX, bounds.size.y / scaleY);
+        }
+
+        return trigger;
+    }
+
+    private DoorController[] CreateDoorBlockers(ProceduralRoomLayout room)
+    {
+        List<DoorController> roomDoors = new();
+        RoomDirection[] directions =
+        {
+            RoomDirection.Up,
+            RoomDirection.Right,
+            RoomDirection.Down,
+            RoomDirection.Left
+        };
+
+        foreach (RoomDirection direction in directions)
+        {
+            Transform doorAnchor = room.GetDoor(direction);
+            if (doorAnchor == null)
+                continue;
+
+            Transform existing = doorAnchor.Find("ProceduralCombatDoorBlocker");
+            GameObject blockerObject = existing != null
+                ? existing.gameObject
+                : new GameObject("ProceduralCombatDoorBlocker");
+
+            blockerObject.transform.SetParent(doorAnchor, false);
+            blockerObject.transform.localPosition = Vector3.zero;
+            blockerObject.transform.localRotation = Quaternion.identity;
+            blockerObject.transform.localScale = Vector3.one;
+
+            BoxCollider2D blocker = blockerObject.GetComponent<BoxCollider2D>();
+            if (blocker == null)
+                blocker = blockerObject.AddComponent<BoxCollider2D>();
+
+            blocker.isTrigger = false;
+            blocker.size = direction == RoomDirection.Up || direction == RoomDirection.Down
+                ? horizontalDoorBlockerSize
+                : verticalDoorBlockerSize;
+
+            DoorController doorController = blockerObject.GetComponent<DoorController>();
+            if (doorController == null)
+                doorController = blockerObject.AddComponent<DoorController>();
+
+            roomDoors.Add(doorController);
+        }
+
+        return roomDoors.ToArray();
+    }
+
+    private EnemyDeathNotifier[] CreateRoomEnemies(ProceduralRoomLayout room)
+    {
+        Transform[] spawnPoints = room.EnemySpawnPoints;
+        if (spawnPoints == null || spawnPoints.Length == 0)
+            return System.Array.Empty<EnemyDeathNotifier>();
+
+        HideSpawnMarkers(spawnPoints);
+
+        int enemyCount = GetActiveEnemySpawnerCount(spawnPoints.Length);
+        List<EnemyDeathNotifier> enemies = new();
+        for (int i = 0; i < enemyCount; i++)
+        {
+            EnemyDeathNotifier enemy = CreateRangedEnemy(room.transform, spawnPoints[i].position, i);
+            enemy.gameObject.SetActive(false);
+            enemies.Add(enemy);
+        }
+
+        return enemies.ToArray();
+    }
+
+    private int GetActiveEnemySpawnerCount(int totalSpawnerCount)
+    {
+        if (totalSpawnerCount <= 0)
+            return 0;
+
+        int completedKitchenMilestones = 0;
+        int firstPostKitchenRoom = firstKitchenRoomNumber + 1;
+        if (kitchenIntervalRooms > 0 && currentRoomNumber >= firstPostKitchenRoom)
+            completedKitchenMilestones = ((currentRoomNumber - firstPostKitchenRoom) / kitchenIntervalRooms) + 1;
+
+        float usage = initialEnemySpawnerUsage + completedKitchenMilestones * enemySpawnerUsageIncreaseAfterKitchen;
+        usage = Mathf.Clamp01(usage);
+        return Mathf.Clamp(Mathf.CeilToInt(totalSpawnerCount * usage), 1, totalSpawnerCount);
+    }
+
+    private EnemyDeathNotifier CreateRangedEnemy(Transform parent, Vector3 position, int index)
+    {
+        GameObject enemyObject = CreateEnemyBase($"RangedEnemy_{index}", parent, position, new Color(0.25f, 0.55f, 1f));
+        Health health = enemyObject.GetComponent<Health>();
+        health.Configure(rangedEnemyHealth, true, true);
+        RangedEnemy rangedEnemy = enemyObject.AddComponent<RangedEnemy>();
+        rangedEnemy.Configure(4f, 1.6f, rangedEnemyShotCooldown, 7f, rangedEnemyShotDamage);
+        return enemyObject.GetComponent<EnemyDeathNotifier>();
+    }
+
+    private GameObject CreateEnemyBase(string enemyName, Transform parent, Vector3 position, Color color)
+    {
+        GameObject enemyObject = new(enemyName);
+        enemyObject.transform.SetParent(parent, true);
+        enemyObject.transform.position = position;
+        enemyObject.transform.localScale = GetPlayerVisualScale();
+
+        SpriteRenderer renderer = enemyObject.AddComponent<SpriteRenderer>();
+        renderer.sprite = GetFallbackSprite();
+        renderer.color = color;
+        renderer.sortingOrder = 8;
+
+        CircleCollider2D collider = enemyObject.AddComponent<CircleCollider2D>();
+        collider.radius = enemyColliderRadius;
+
+        Rigidbody2D rb = enemyObject.AddComponent<Rigidbody2D>();
+        rb.gravityScale = 0f;
+        rb.freezeRotation = true;
+
+        enemyObject.AddComponent<FactionMember>().SetFaction(CombatFaction.Enemy);
+        enemyObject.AddComponent<Health>();
+        enemyObject.AddComponent<EnemyDeathNotifier>();
+
+        return enemyObject;
+    }
+
+    private Vector3 GetPlayerVisualScale()
+    {
+        CharacterInput player = FindFirstObjectByType<CharacterInput>();
+        if (player == null)
+            return Vector3.one;
+
+        SpriteRenderer playerRenderer = player.GetComponentInChildren<SpriteRenderer>();
+        if (playerRenderer == null)
+            return player.transform.lossyScale;
+
+        Bounds bounds = playerRenderer.bounds;
+        return new Vector3(
+            Mathf.Max(0.1f, bounds.size.x) * 0.65f,
+            Mathf.Max(0.1f, bounds.size.y) * 0.65f,
+            1f
+        );
+    }
+
+    private void HideSpawnMarkers(Transform[] spawnPoints)
+    {
+        foreach (Transform spawnPoint in spawnPoints)
+        {
+            if (spawnPoint == null)
+                continue;
+
+            Renderer[] renderers = spawnPoint.GetComponentsInChildren<Renderer>(true);
+            foreach (Renderer spawnRenderer in renderers)
+                spawnRenderer.enabled = false;
+        }
+    }
+
+    private IngredientData[] GetRewardPool()
+    {
+        if (rewardPool != null && rewardPool.Length >= 2)
+            return rewardPool;
+
+#if UNITY_EDITOR
+        string[] guids = AssetDatabase.FindAssets("t:IngredientData", new[] { "Assets/GameData/Ingredients" });
+        List<IngredientData> ingredients = new();
+        foreach (string guid in guids)
+        {
+            string path = AssetDatabase.GUIDToAssetPath(guid);
+            IngredientData ingredient = AssetDatabase.LoadAssetAtPath<IngredientData>(path);
+            if (ingredient != null)
+                ingredients.Add(ingredient);
+        }
+
+        if (ingredients.Count >= 2)
+        {
+            rewardPool = ingredients.ToArray();
+            return rewardPool;
+        }
+#endif
+
+        return rewardPool ?? System.Array.Empty<IngredientData>();
     }
 
     private Collider2D GetConfinerShapeForRoom(ProceduralRoomLayout room)
@@ -512,6 +758,46 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
         CircleCollider2D collider = player.gameObject.AddComponent<CircleCollider2D>();
         collider.radius = 0.35f;
         collider.isTrigger = false;
+    }
+
+    private void EnsurePlayerCombatSetup()
+    {
+        CharacterInput player = FindFirstObjectByType<CharacterInput>();
+        if (player == null)
+            return;
+
+        Health health = player.GetComponent<Health>();
+        if (health == null)
+            health = player.gameObject.AddComponent<Health>();
+
+        health.Configure(playerMaxHealth, true, false);
+
+        FactionMember faction = player.GetComponent<FactionMember>();
+        if (faction == null)
+            faction = player.gameObject.AddComponent<FactionMember>();
+
+        faction.SetFaction(CombatFaction.Player);
+
+        if (player.GetComponent<IngredientInventory>() == null)
+            player.gameObject.AddComponent<IngredientInventory>();
+
+        PlayerHealthHud hud = FindFirstObjectByType<PlayerHealthHud>();
+        if (hud == null)
+            hud = new GameObject("PlayerHealthHUD").AddComponent<PlayerHealthHud>();
+
+        hud.Initialize(health);
+    }
+
+    private Sprite GetFallbackSprite()
+    {
+        if (fallbackSprite != null)
+            return fallbackSprite;
+
+        Texture2D texture = new(1, 1);
+        texture.SetPixel(0, 0, Color.white);
+        texture.Apply();
+        fallbackSprite = Sprite.Create(texture, new Rect(0f, 0f, 1f, 1f), new Vector2(0.5f, 0.5f), 1f);
+        return fallbackSprite;
     }
 
     private static void Shuffle<T>(IList<T> list)
