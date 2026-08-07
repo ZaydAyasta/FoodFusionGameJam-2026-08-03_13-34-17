@@ -1,0 +1,509 @@
+fileFormatVersion: 2
+guid: 4aa4f5174858948488a470a3f9bbe45f
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 6414126581136614343
+    second: milkDropper_0
+  - first:
+      213: -1895371797416689819
+    second: milkDropper_1
+  - first:
+      213: 1458568963209688575
+    second: milkDropper_2
+  - first:
+      213: -3466428223496380374
+    second: milkDropper_3
+  - first:
+      213: 4361541550626344039
+    second: milkDropper_4
+  - first:
+      213: -3039385688104468546
+    second: milkDropper_5
+  - first:
+      213: -8642389516340407088
+    second: milkDropper_6
+  - first:
+      213: -6354480163803635192
+    second: milkDropper_7
+  - first:
+      213: 7588119144076148595
+    second: milkDropper_8
+  - first:
+      213: -1342424223140954774
+    second: milkDropper_9
+  - first:
+      213: 6268683510551051204
+    second: milkDropper_10
+  - first:
+      213: 5454698648372520296
+    second: milkDropper_11
+  - first:
+      213: 2039193924455541089
+    second: milkDropper_12
+  - first:
+      213: 5835704432959768715
+    second: milkDropper_13
+  - first:
+      213: 2805217815717224907
+    second: milkDropper_14
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 4096
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 2
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: milkDropper_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 3372
+        width: 617
+        height: 724
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7c3e90d542e830950800000000000000
+      internalID: 6414126581136614343
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: milkDropper_1
+      rect:
+        serializedVersion: 2
+        x: 617
+        y: 3372
+        width: 617
+        height: 724
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 56f3fa1746942b5e0800000000000000
+      internalID: -1895371797416689819
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: milkDropper_2
+      rect:
+        serializedVersion: 2
+        x: 1234
+        y: 3372
+        width: 617
+        height: 724
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ff5f5848eb0ed3410800000000000000
+      internalID: 1458568963209688575
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: milkDropper_3
+      rect:
+        serializedVersion: 2
+        x: 1851
+        y: 3372
+        width: 617
+        height: 724
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a202c1b85e5c4efc0800000000000000
+      internalID: -3466428223496380374
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: milkDropper_4
+      rect:
+        serializedVersion: 2
+        x: 2468
+        y: 3372
+        width: 617
+        height: 724
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 76c803e8eee478c30800000000000000
+      internalID: 4361541550626344039
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: milkDropper_5
+      rect:
+        serializedVersion: 2
+        x: 3085
+        y: 3372
+        width: 617
+        height: 724
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ebf702de1dee1d5d0800000000000000
+      internalID: -3039385688104468546
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: milkDropper_6
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 2648
+        width: 617
+        height: 724
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0d458f33680101880800000000000000
+      internalID: -8642389516340407088
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: milkDropper_7
+      rect:
+        serializedVersion: 2
+        x: 617
+        y: 2648
+        width: 617
+        height: 724
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 802e73065f950d7a0800000000000000
+      internalID: -6354480163803635192
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: milkDropper_8
+      rect:
+        serializedVersion: 2
+        x: 1234
+        y: 2648
+        width: 617
+        height: 724
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 37fffff682a6e4960800000000000000
+      internalID: 7588119144076148595
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: milkDropper_9
+      rect:
+        serializedVersion: 2
+        x: 1851
+        y: 2648
+        width: 617
+        height: 724
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a6dbdc11840ce5de0800000000000000
+      internalID: -1342424223140954774
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: milkDropper_10
+      rect:
+        serializedVersion: 2
+        x: 2468
+        y: 2648
+        width: 617
+        height: 724
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4cb7ebf9076def650800000000000000
+      internalID: 6268683510551051204
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: milkDropper_11
+      rect:
+        serializedVersion: 2
+        x: 3085
+        y: 2648
+        width: 617
+        height: 724
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8652c0d358bf2bb40800000000000000
+      internalID: 5454698648372520296
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: milkDropper_12
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1924
+        width: 617
+        height: 724
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 169ae47f11cac4c10800000000000000
+      internalID: 2039193924455541089
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: milkDropper_13
+      rect:
+        serializedVersion: 2
+        x: 617
+        y: 1924
+        width: 617
+        height: 724
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b884dbc43469cf050800000000000000
+      internalID: 5835704432959768715
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: milkDropper_14
+      rect:
+        serializedVersion: 2
+        x: 1234
+        y: 1924
+        width: 617
+        height: 724
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bc12c6f9db22ee620800000000000000
+      internalID: 2805217815717224907
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 8d1000d0bb75ee544aac531b452ab62a
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":617.0,"y":724.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      milkDropper_0: 6414126581136614343
+      milkDropper_1: -1895371797416689819
+      milkDropper_10: 6268683510551051204
+      milkDropper_11: 5454698648372520296
+      milkDropper_12: 2039193924455541089
+      milkDropper_13: 5835704432959768715
+      milkDropper_14: 2805217815717224907
+      milkDropper_2: 1458568963209688575
+      milkDropper_3: -3466428223496380374
+      milkDropper_4: 4361541550626344039
+      milkDropper_5: -3039385688104468546
+      milkDropper_6: -8642389516340407088
+      milkDropper_7: -6354480163803635192
+      milkDropper_8: 7588119144076148595
+      milkDropper_9: -1342424223140954774
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
