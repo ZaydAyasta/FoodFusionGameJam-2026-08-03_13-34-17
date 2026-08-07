@@ -41,9 +41,11 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
     [SerializeField] private bool autoFitOrthographicSizeToCameraLimit = true;
     [SerializeField] private float cameraLimitPadding = 0.35f;
     [SerializeField] private float minimumOrthographicSize = 3.5f;
+    [SerializeField] private string[] rectangularConfinerRoomNameTokens = { "Pro_Room_Tpye3", "Pro_Room_Type3" };
 
     private readonly List<ProceduralRoomCandidate> candidates = new();
     private readonly List<ProceduralRoomLayout> hiddenTemplates = new();
+    private readonly Dictionary<ProceduralRoomLayout, Collider2D> rectangularCameraLimits = new();
     private readonly string[] placeholderThemes = { "Cheese", "Bread", "Fish", "Butter", "Corn", "Rice" };
 
     private RoomDirection? blockedExitDirection;
@@ -248,12 +250,59 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
             cinemachineCamera.Lens = lens;
         }
 
-        if (confiner != null && room.CameraLimit != null)
+        Collider2D boundingShape = GetConfinerShapeForRoom(room);
+        if (confiner != null && boundingShape != null)
         {
-            confiner.BoundingShape2D = room.CameraLimit;
+            confiner.BoundingShape2D = boundingShape;
             confiner.InvalidateBoundingShapeCache();
             confiner.InvalidateLensCache();
         }
+    }
+
+    private Collider2D GetConfinerShapeForRoom(ProceduralRoomLayout room)
+    {
+        if (room == null || room.CameraLimit == null)
+            return null;
+
+        if (!UsesRectangularConfiner(room))
+            return room.CameraLimit;
+
+        if (rectangularCameraLimits.TryGetValue(room, out Collider2D existingLimit) && existingLimit != null)
+            return existingLimit;
+
+        Bounds bounds = room.CameraLimit.bounds;
+        GameObject limitObject = new("Runtime_RectangularCameraLimit");
+        limitObject.transform.SetParent(room.transform, true);
+        limitObject.transform.position = bounds.center;
+
+        PolygonCollider2D rectangularLimit = limitObject.AddComponent<PolygonCollider2D>();
+        rectangularLimit.isTrigger = true;
+        rectangularLimit.pathCount = 1;
+        rectangularLimit.SetPath(0, new[]
+        {
+            new Vector2(-bounds.extents.x, -bounds.extents.y),
+            new Vector2(-bounds.extents.x, bounds.extents.y),
+            new Vector2(bounds.extents.x, bounds.extents.y),
+            new Vector2(bounds.extents.x, -bounds.extents.y)
+        });
+
+        rectangularCameraLimits[room] = rectangularLimit;
+        return rectangularLimit;
+    }
+
+    private bool UsesRectangularConfiner(ProceduralRoomLayout room)
+    {
+        if (room == null || rectangularConfinerRoomNameTokens == null)
+            return false;
+
+        string roomName = room.name.Replace("(Clone)", string.Empty).Trim();
+        foreach (string token in rectangularConfinerRoomNameTokens)
+        {
+            if (!string.IsNullOrWhiteSpace(token) && roomName.Contains(token, System.StringComparison.OrdinalIgnoreCase))
+                return true;
+        }
+
+        return false;
     }
 
     private float GetOrthographicSizeForRoom(ProceduralRoomLayout room)
