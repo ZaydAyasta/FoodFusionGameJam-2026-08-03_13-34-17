@@ -1,0 +1,951 @@
+fileFormatVersion: 2
+guid: 8a2d521caf98d7e4792c9730db26f318
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -9034648750322456423
+    second: FishMonster_0
+  - first:
+      213: 8748229762625929480
+    second: FishMonster_1
+  - first:
+      213: 4360195359610235701
+    second: FishMonster_2
+  - first:
+      213: -1706059204483375311
+    second: FishMonster_3
+  - first:
+      213: -184880791472825759
+    second: FishMonster_4
+  - first:
+      213: -3508021436530993037
+    second: FishMonster_5
+  - first:
+      213: -2811806049566149034
+    second: FishMonster_6
+  - first:
+      213: -7340211812547620644
+    second: FishMonster_7
+  - first:
+      213: -5183097761647127149
+    second: FishMonster_8
+  - first:
+      213: -9033140993856141093
+    second: FishMonster_9
+  - first:
+      213: -8169126893854989137
+    second: FishMonster_10
+  - first:
+      213: -4597207346381951989
+    second: FishMonster_11
+  - first:
+      213: -5694723202056729657
+    second: FishMonster_12
+  - first:
+      213: 6742883960179916517
+    second: FishMonster_13
+  - first:
+      213: -4461677331736970901
+    second: FishMonster_14
+  - first:
+      213: -2939501207118452042
+    second: FishMonster_15
+  - first:
+      213: -2484067828220610632
+    second: FishMonster_16
+  - first:
+      213: -5612731111434183137
+    second: FishMonster_17
+  - first:
+      213: 5277043286766543644
+    second: FishMonster_18
+  - first:
+      213: 2553365936258732520
+    second: FishMonster_19
+  - first:
+      213: -7596639270688331287
+    second: FishMonster_20
+  - first:
+      213: -7803306924191970451
+    second: FishMonster_21
+  - first:
+      213: 1770874273462545395
+    second: FishMonster_22
+  - first:
+      213: -1859042251683536490
+    second: FishMonster_23
+  - first:
+      213: -8551828351454442625
+    second: FishMonster_24
+  - first:
+      213: -1287476089131560863
+    second: FishMonster_25
+  - first:
+      213: 5766607711464207948
+    second: FishMonster_26
+  - first:
+      213: 3091049413671012302
+    second: FishMonster_27
+  - first:
+      213: -6319153989087628424
+    second: FishMonster_28
+  - first:
+      213: 608958923846717513
+    second: FishMonster_29
+  - first:
+      213: -1959440835868153757
+    second: FishMonster_30
+  - first:
+      213: -559520479331455856
+    second: FishMonster_31
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 4096
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 2
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: FishMonster_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 3646
+        width: 603
+        height: 450
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9986a9644da7e9280800000000000000
+      internalID: -9034648750322456423
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FishMonster_1
+      rect:
+        serializedVersion: 2
+        x: 603
+        y: 3646
+        width: 603
+        height: 450
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 80181d67e94f76970800000000000000
+      internalID: 8748229762625929480
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FishMonster_2
+      rect:
+        serializedVersion: 2
+        x: 1206
+        y: 3646
+        width: 603
+        height: 450
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 53befd80496828c30800000000000000
+      internalID: 4360195359610235701
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FishMonster_3
+      rect:
+        serializedVersion: 2
+        x: 1809
+        y: 3646
+        width: 603
+        height: 450
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 13f9bfe413cd258e0800000000000000
+      internalID: -1706059204483375311
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FishMonster_4
+      rect:
+        serializedVersion: 2
+        x: 2412
+        y: 3646
+        width: 603
+        height: 450
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 16a187256eb2f6df0800000000000000
+      internalID: -184880791472825759
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FishMonster_5
+      rect:
+        serializedVersion: 2
+        x: 3015
+        y: 3646
+        width: 603
+        height: 450
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3785d1bf611015fc0800000000000000
+      internalID: -3508021436530993037
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FishMonster_6
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 3196
+        width: 603
+        height: 450
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 656b056ab457af8d0800000000000000
+      internalID: -2811806049566149034
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FishMonster_7
+      rect:
+        serializedVersion: 2
+        x: 603
+        y: 3196
+        width: 603
+        height: 450
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cd019f02f34522a90800000000000000
+      internalID: -7340211812547620644
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FishMonster_8
+      rect:
+        serializedVersion: 2
+        x: 1206
+        y: 3196
+        width: 603
+        height: 450
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 39596e80c00f118b0800000000000000
+      internalID: -5183097761647127149
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FishMonster_9
+      rect:
+        serializedVersion: 2
+        x: 1809
+        y: 3196
+        width: 603
+        height: 450
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bd88f2f2026d3a280800000000000000
+      internalID: -9033140993856141093
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FishMonster_10
+      rect:
+        serializedVersion: 2
+        x: 2412
+        y: 3196
+        width: 603
+        height: 450
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fa4eea63f5e61ae80800000000000000
+      internalID: -8169126893854989137
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FishMonster_11
+      rect:
+        serializedVersion: 2
+        x: 3015
+        y: 3196
+        width: 603
+        height: 450
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b0c661886407330c0800000000000000
+      internalID: -4597207346381951989
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FishMonster_12
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 2746
+        width: 603
+        height: 450
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7cbcb3f6b6748f0b0800000000000000
+      internalID: -5694723202056729657
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FishMonster_13
+      rect:
+        serializedVersion: 2
+        x: 603
+        y: 2746
+        width: 603
+        height: 450
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5eef3388c39839d50800000000000000
+      internalID: 6742883960179916517
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FishMonster_14
+      rect:
+        serializedVersion: 2
+        x: 1206
+        y: 2746
+        width: 603
+        height: 450
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b69b7631b10f412c0800000000000000
+      internalID: -4461677331736970901
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FishMonster_15
+      rect:
+        serializedVersion: 2
+        x: 1809
+        y: 2746
+        width: 603
+        height: 450
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6ba6fdce93bc437d0800000000000000
+      internalID: -2939501207118452042
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FishMonster_16
+      rect:
+        serializedVersion: 2
+        x: 2412
+        y: 2746
+        width: 603
+        height: 450
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8b73feca871d68dd0800000000000000
+      internalID: -2484067828220610632
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FishMonster_17
+      rect:
+        serializedVersion: 2
+        x: 3015
+        y: 2746
+        width: 603
+        height: 450
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f1e9e2baac29b12b0800000000000000
+      internalID: -5612731111434183137
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FishMonster_18
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 2296
+        width: 603
+        height: 450
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c13641c09e2db3940800000000000000
+      internalID: 5277043286766543644
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FishMonster_19
+      rect:
+        serializedVersion: 2
+        x: 603
+        y: 2296
+        width: 603
+        height: 450
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8e1d84c6ac06f6320800000000000000
+      internalID: 2553365936258732520
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FishMonster_20
+      rect:
+        serializedVersion: 2
+        x: 1206
+        y: 2296
+        width: 603
+        height: 450
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9e9e6dff4d0539690800000000000000
+      internalID: -7596639270688331287
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FishMonster_21
+      rect:
+        serializedVersion: 2
+        x: 1809
+        y: 2296
+        width: 603
+        height: 450
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d6b013632b515b390800000000000000
+      internalID: -7803306924191970451
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FishMonster_22
+      rect:
+        serializedVersion: 2
+        x: 2412
+        y: 2296
+        width: 603
+        height: 450
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3fbec9be4c8639810800000000000000
+      internalID: 1770874273462545395
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FishMonster_23
+      rect:
+        serializedVersion: 2
+        x: 3015
+        y: 2296
+        width: 603
+        height: 450
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 691e5f5fbea5336e0800000000000000
+      internalID: -1859042251683536490
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FishMonster_24
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1846
+        width: 603
+        height: 450
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f7b81738c6dc15980800000000000000
+      internalID: -8551828351454442625
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FishMonster_25
+      rect:
+        serializedVersion: 2
+        x: 603
+        y: 1846
+        width: 603
+        height: 450
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 160118a7157f12ee0800000000000000
+      internalID: -1287476089131560863
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FishMonster_26
+      rect:
+        serializedVersion: 2
+        x: 1206
+        y: 1846
+        width: 603
+        height: 450
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c463ad8292b170050800000000000000
+      internalID: 5766607711464207948
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FishMonster_27
+      rect:
+        serializedVersion: 2
+        x: 1809
+        y: 1846
+        width: 603
+        height: 450
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ec74a0d801d95ea20800000000000000
+      internalID: 3091049413671012302
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FishMonster_28
+      rect:
+        serializedVersion: 2
+        x: 2412
+        y: 1846
+        width: 603
+        height: 450
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 873707f5deadd48a0800000000000000
+      internalID: -6319153989087628424
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FishMonster_29
+      rect:
+        serializedVersion: 2
+        x: 3015
+        y: 1846
+        width: 603
+        height: 450
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 94010b23ae4737800800000000000000
+      internalID: 608958923846717513
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FishMonster_30
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1396
+        width: 603
+        height: 450
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3682fabf0faaec4e0800000000000000
+      internalID: -1959440835868153757
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FishMonster_31
+      rect:
+        serializedVersion: 2
+        x: 603
+        y: 1396
+        width: 603
+        height: 450
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 09c64e8a61f2c38f0800000000000000
+      internalID: -559520479331455856
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: c7345d1523aab6b4f89cad9eb95c9a80
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":603.0,"y":450.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      FishMonster_0: -9034648750322456423
+      FishMonster_1: 8748229762625929480
+      FishMonster_10: -8169126893854989137
+      FishMonster_11: -4597207346381951989
+      FishMonster_12: -5694723202056729657
+      FishMonster_13: 6742883960179916517
+      FishMonster_14: -4461677331736970901
+      FishMonster_15: -2939501207118452042
+      FishMonster_16: -2484067828220610632
+      FishMonster_17: -5612731111434183137
+      FishMonster_18: 5277043286766543644
+      FishMonster_19: 2553365936258732520
+      FishMonster_2: 4360195359610235701
+      FishMonster_20: -7596639270688331287
+      FishMonster_21: -7803306924191970451
+      FishMonster_22: 1770874273462545395
+      FishMonster_23: -1859042251683536490
+      FishMonster_24: -8551828351454442625
+      FishMonster_25: -1287476089131560863
+      FishMonster_26: 5766607711464207948
+      FishMonster_27: 3091049413671012302
+      FishMonster_28: -6319153989087628424
+      FishMonster_29: 608958923846717513
+      FishMonster_3: -1706059204483375311
+      FishMonster_30: -1959440835868153757
+      FishMonster_31: -559520479331455856
+      FishMonster_4: -184880791472825759
+      FishMonster_5: -3508021436530993037
+      FishMonster_6: -2811806049566149034
+      FishMonster_7: -7340211812547620644
+      FishMonster_8: -5183097761647127149
+      FishMonster_9: -9033140993856141093
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
