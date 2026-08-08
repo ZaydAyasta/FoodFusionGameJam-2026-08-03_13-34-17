@@ -18,6 +18,8 @@ public class CharacterMovement : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         input = GetComponent<CharacterInput>();
         dash = GetComponent<PlayerDash>();
+        if (animator == null)
+            animator = GetComponentInChildren<Animator>();
 
         rb.gravityScale = 0f;
     }
@@ -31,8 +33,11 @@ public class CharacterMovement : MonoBehaviour
         if (isMoving)
             lastDirection = GetDirection(move);
 
-        animator.SetBool("IsMoving", isMoving);
-        animator.SetInteger("Direction", lastDirection);
+        if (animator != null)
+        {
+            animator.SetBool("IsMoving", isMoving);
+            animator.SetInteger("Direction", lastDirection);
+        }
     }
 
     private void FixedUpdate()

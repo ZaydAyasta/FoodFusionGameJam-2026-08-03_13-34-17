@@ -20,7 +20,11 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
         "Pro_Room_Tpye3",
         "Pro_Room_Tpye4",
         "Pro_Room_Tpye5",
-        "Pro_Room_Tpye6"
+        "Pro_Room_Tpye6",
+        "Pro_Room_Tpye7",
+        "Pro_Room_Tpye8",
+        "Pro_Room_Tpye9",
+        "Pro_Room_Tpye10"
     };
 
     [Header("Generation")]
@@ -52,6 +56,18 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
     [SerializeField] private Vector2 verticalDoorBlockerSize = new(0.55f, 2f);
     [SerializeField] private IngredientData[] rewardPool;
 
+    [Header("Hazards")]
+    [SerializeField] private float trapDamage = 10f;
+    [SerializeField] private float trapDamageInterval = 0.5f;
+
+    [Header("Door Visuals")]
+    [SerializeField] private Sprite doorSprite;
+    [SerializeField] private Vector3 upDoorVisualOffset = new(0.08f, -0.92f, -1.76f);
+    [SerializeField] private Vector3 rightDoorVisualOffset = new(-1.53f, 0.1f, -1.76f);
+    [SerializeField] private Vector3 downDoorVisualOffset = new(0.23f, 0.33f, -1.5f);
+    [SerializeField] private Vector3 leftDoorVisualOffset = new(0.5f, -0.06f, -1.21f);
+    [SerializeField] private Vector3 doorVisualWorldScale = new(0.73f, 0.72f, 0.73f);
+
     [Header("Camera")]
     [SerializeField] private CinemachineCamera cinemachineCamera;
     [SerializeField] private CinemachineConfiner2D confiner;
@@ -65,9 +81,13 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
     private readonly List<ProceduralRoomCandidate> candidates = new();
     private readonly List<ProceduralRoomLayout> hiddenTemplates = new();
     private readonly Dictionary<ProceduralRoomLayout, Collider2D> rectangularCameraLimits = new();
+    private readonly Dictionary<RoomDirection, Quaternion> doorVisualRotations = new();
     private readonly string[] placeholderThemes = { "Cheese", "Bread", "Fish", "Butter", "Corn", "Rice" };
 
     private Sprite fallbackSprite;
+    private Material doorVisualMaterial;
+    private string doorVisualSortingLayer = "Default";
+    private int doorVisualSortingOrder;
     private RoomDirection? blockedExitDirection;
     private RoomController activeRoomController;
     private float nextBatchAt = -1f;
@@ -78,6 +98,7 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
     private void Start()
     {
         ResolveSceneReferences();
+        ResolveDoorVisualReferences();
 
         if (currentRoom == null || roomTemplates == null || roomTemplates.Length == 0)
         {
@@ -87,9 +108,11 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
         }
 
         currentRoom.AutoWire();
+        EnsureDoorVisuals(currentRoom);
         foreach (ProceduralRoomLayout template in roomTemplates)
         {
             template.AutoWire();
+            EnsureDoorVisuals(template);
             template.SetKitchenVisible(false);
         }
 
@@ -181,12 +204,81 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
         return layout;
     }
 
+    private void ResolveDoorVisualReferences()
+    {
+        doorVisualRotations.Clear();
+        doorVisualRotations[RoomDirection.Up] = Quaternion.Euler(270f, 0f, 0f);
+        doorVisualRotations[RoomDirection.Right] = Quaternion.Euler(359.57f, 91.99f, 269.99f);
+        doorVisualRotations[RoomDirection.Down] = Quaternion.Euler(89.22f, 90.9f, 268.91f);
+        doorVisualRotations[RoomDirection.Left] = Quaternion.Euler(359.11f, 271.99f, 90.01f);
+
+        if (doorSprite == null)
+            doorSprite = ResolveDoorSpriteFromScene();
+
+#if UNITY_EDITOR
+        if (doorSprite == null)
+        {
+            Object[] doorAssets = AssetDatabase.LoadAllAssetsAtPath("Assets/Images/Backgrounds/door.png");
+            foreach (Object asset in doorAssets)
+            {
+                if (asset is Sprite sprite)
+                {
+                    doorSprite = sprite;
+                    break;
+                }
+            }
+        }
+#endif
+
+        if (currentRoom == null)
+            return;
+
+        CaptureDoorVisualPrototype(RoomDirection.Up, "door_0", ref upDoorVisualOffset);
+        CaptureDoorVisualPrototype(RoomDirection.Right, "door_0 (1)", ref rightDoorVisualOffset);
+        CaptureDoorVisualPrototype(RoomDirection.Down, "door_0 (2)", ref downDoorVisualOffset);
+        CaptureDoorVisualPrototype(RoomDirection.Left, "door_0 (3)", ref leftDoorVisualOffset);
+    }
+
+    private Sprite ResolveDoorSpriteFromScene()
+    {
+        SpriteRenderer prototype = FindDoorVisualPrototype("door_0");
+        return prototype != null ? prototype.sprite : null;
+    }
+
+    private void CaptureDoorVisualPrototype(RoomDirection direction, string prototypeName, ref Vector3 offset)
+    {
+        SpriteRenderer prototype = FindDoorVisualPrototype(prototypeName);
+        Transform doorAnchor = currentRoom.GetDoor(direction);
+        if (prototype == null || doorAnchor == null)
+            return;
+
+        if (prototype.sprite != null)
+            doorSprite = prototype.sprite;
+
+        doorVisualMaterial = prototype.sharedMaterial;
+        doorVisualSortingLayer = prototype.sortingLayerName;
+        doorVisualSortingOrder = prototype.sortingOrder;
+        offset = currentRoom.transform.InverseTransformVector(prototype.transform.position - doorAnchor.position);
+        doorVisualRotations[direction] = Quaternion.Inverse(currentRoom.transform.rotation) * prototype.transform.rotation;
+        doorVisualWorldScale = prototype.transform.lossyScale;
+    }
+
+    private SpriteRenderer FindDoorVisualPrototype(string objectName)
+    {
+        GameObject prototypeObject = GameObject.Find(objectName);
+        if (prototypeObject == null)
+            return null;
+
+        return prototypeObject.GetComponent<SpriteRenderer>();
+    }
+
     private void GenerateCandidateBatch()
     {
         ClearGeneratedCandidates();
 
         ProceduralRoomLayout selectedTemplate = roomTemplates[Random.Range(0, roomTemplates.Length)];
         selectedTemplate.AutoWire();
+        EnsureDoorVisuals(selectedTemplate);
 
         List<RoomDirection> directions = GetAllowedExitDirections();
         Shuffle(directions);
@@ -201,6 +293,7 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
                 activeExitDirections.Add(exitDirection);
         }
 
+        EnsureDoorVisuals(currentRoom);
         currentRoom.ShowOnlyDoors(activeExitDirections);
         currentRoom.SetKitchenVisible(IsKitchenRoom(currentRoomNumber));
         lastGeneratedExitCount = activeExitDirections.Count;
@@ -260,6 +353,7 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
         candidate.name = instanceName;
         candidate.gameObject.SetActive(true);
         candidate.AutoWire();
+        EnsureDoorVisuals(candidate);
         candidate.ShowOnlyDoors(new[] { entryDirection });
         candidate.SetKitchenVisible(IsKitchenRoom(currentRoomNumber + 1));
 
@@ -288,6 +382,7 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
         DestroyUnselectedCandidates(selectedCandidate);
         DestroyCommitTriggers();
         currentRoom.HideAllDoors();
+        EnsureDoorVisuals(currentRoom);
         PrepareProceduralRoomCombat(currentRoom);
         SetCurrentRoom(currentRoom);
 
@@ -308,6 +403,7 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
             return;
 
         activeRoomController = room.GetComponent<RoomController>();
+        EnsureDoorVisuals(room);
         EnsureCameraFollowsPlayer();
         room.SetKitchenVisible(IsKitchenRoom(currentRoomNumber));
 
@@ -340,6 +436,8 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
 
         DoorController[] roomDoors = CreateDoorBlockers(room);
         EnemyDeathNotifier[] roomEnemies = CreateRoomEnemies(room);
+        ConfigureTrapZones(room);
+        ConfigureCollisionBlocks(room);
         RoomController controller = room.GetComponent<RoomController>();
         if (controller == null)
             controller = room.gameObject.AddComponent<RoomController>();
@@ -414,6 +512,162 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
         }
 
         return roomDoors.ToArray();
+    }
+
+    private void EnsureDoorVisuals(ProceduralRoomLayout room)
+    {
+        if (room == null || doorSprite == null)
+            return;
+
+        EnsureDoorVisual(room, RoomDirection.Up, "door_0", upDoorVisualOffset);
+        EnsureDoorVisual(room, RoomDirection.Right, "door_0 (1)", rightDoorVisualOffset);
+        EnsureDoorVisual(room, RoomDirection.Down, "door_0 (2)", downDoorVisualOffset);
+        EnsureDoorVisual(room, RoomDirection.Left, "door_0 (3)", leftDoorVisualOffset);
+    }
+
+    private void EnsureDoorVisual(ProceduralRoomLayout room, RoomDirection direction, string prototypeName, Vector3 localOffset)
+    {
+        Transform doorAnchor = room.GetDoor(direction);
+        if (doorAnchor == null)
+            return;
+
+        string proceduralName = $"ProceduralDoorSprite_{direction}";
+        SpriteRenderer visual = FindRoomDoorVisual(room, proceduralName);
+        if (visual == null)
+            visual = FindRoomDoorVisual(room, prototypeName);
+
+        if (visual == null)
+        {
+            GameObject visualObject = new(proceduralName);
+            visual = visualObject.AddComponent<SpriteRenderer>();
+        }
+
+        Transform visualTransform = visual.transform;
+        if (visual.name.StartsWith("ProceduralDoorSprite_", System.StringComparison.OrdinalIgnoreCase))
+            visual.name = proceduralName;
+
+        visualTransform.SetParent(room.transform, true);
+        visualTransform.position = doorAnchor.position + room.transform.TransformVector(localOffset);
+        visualTransform.rotation = room.transform.rotation * GetDoorVisualRotation(direction);
+        SetWorldScale(visualTransform, doorVisualWorldScale);
+
+        visual.sprite = doorSprite;
+        if (doorVisualMaterial != null)
+            visual.sharedMaterial = doorVisualMaterial;
+        visual.sortingLayerName = doorVisualSortingLayer;
+        visual.sortingOrder = doorVisualSortingOrder;
+    }
+
+    private SpriteRenderer FindRoomDoorVisual(ProceduralRoomLayout room, string objectName)
+    {
+        SpriteRenderer[] renderers = room.GetComponentsInChildren<SpriteRenderer>(true);
+        foreach (SpriteRenderer renderer in renderers)
+        {
+            if (renderer != null && renderer.name.Equals(objectName, System.StringComparison.OrdinalIgnoreCase))
+                return renderer;
+        }
+
+        return null;
+    }
+
+    private Quaternion GetDoorVisualRotation(RoomDirection direction)
+    {
+        return doorVisualRotations.TryGetValue(direction, out Quaternion rotation)
+            ? rotation
+            : Quaternion.identity;
+    }
+
+    private static void SetWorldScale(Transform target, Vector3 worldScale)
+    {
+        Transform parent = target.parent;
+        if (parent == null)
+        {
+            target.localScale = worldScale;
+            return;
+        }
+
+        Vector3 parentScale = parent.lossyScale;
+        target.localScale = new Vector3(
+            Mathf.Approximately(parentScale.x, 0f) ? worldScale.x : worldScale.x / parentScale.x,
+            Mathf.Approximately(parentScale.y, 0f) ? worldScale.y : worldScale.y / parentScale.y,
+            Mathf.Approximately(parentScale.z, 0f) ? worldScale.z : worldScale.z / parentScale.z);
+    }
+
+    private void ConfigureTrapZones(ProceduralRoomLayout room)
+    {
+        Transform trapsRoot = FindChildByNameContains(room.transform, "Traps");
+        if (trapsRoot == null)
+            return;
+
+        Renderer[] trapRenderers = trapsRoot.GetComponentsInChildren<Renderer>(true);
+        foreach (Renderer trapRenderer in trapRenderers)
+        {
+            if (trapRenderer == null)
+                continue;
+
+            GameObject trapObject = trapRenderer.gameObject;
+            BoxCollider2D trapCollider = trapObject.GetComponent<BoxCollider2D>();
+            if (trapCollider == null)
+                trapCollider = trapObject.AddComponent<BoxCollider2D>();
+
+            ConfigureBoxColliderFromRenderer(trapCollider, trapRenderer);
+            trapCollider.isTrigger = true;
+
+            TrapDamageZone trap = trapObject.GetComponent<TrapDamageZone>();
+            if (trap == null)
+                trap = trapObject.AddComponent<TrapDamageZone>();
+
+            trap.Configure(trapDamage, trapDamageInterval, CombatFaction.Player);
+        }
+    }
+
+    private void ConfigureCollisionBlocks(ProceduralRoomLayout room)
+    {
+        Transform collisionsRoot = FindChildByNameContains(room.transform, "Collisions");
+        if (collisionsRoot == null)
+            return;
+
+        Renderer[] collisionRenderers = collisionsRoot.GetComponentsInChildren<Renderer>(true);
+        foreach (Renderer collisionRenderer in collisionRenderers)
+        {
+            if (collisionRenderer == null)
+                continue;
+
+            BoxCollider2D collision = collisionRenderer.gameObject.GetComponent<BoxCollider2D>();
+            if (collision == null)
+                collision = collisionRenderer.gameObject.AddComponent<BoxCollider2D>();
+
+            ConfigureBoxColliderFromRenderer(collision, collisionRenderer);
+            collision.isTrigger = false;
+        }
+    }
+
+    private static void ConfigureBoxColliderFromRenderer(BoxCollider2D collider, Renderer sourceRenderer)
+    {
+        if (collider == null || sourceRenderer == null)
+            return;
+
+        Vector3 localCenter = sourceRenderer.transform.InverseTransformPoint(sourceRenderer.bounds.center);
+        Vector3 scale = sourceRenderer.transform.lossyScale;
+        float scaleX = Mathf.Approximately(scale.x, 0f) ? 1f : Mathf.Abs(scale.x);
+        float scaleY = Mathf.Approximately(scale.y, 0f) ? 1f : Mathf.Abs(scale.y);
+        collider.offset = localCenter;
+        collider.size = new Vector2(sourceRenderer.bounds.size.x / scaleX, sourceRenderer.bounds.size.y / scaleY);
+    }
+
+    private static Transform FindChildByNameContains(Transform root, string token)
+    {
+        if (root == null || string.IsNullOrWhiteSpace(token))
+            return null;
+
+        Transform[] children = root.GetComponentsInChildren<Transform>(true);
+        foreach (Transform child in children)
+        {
+            if (child != root && child.name.Contains(token, System.StringComparison.OrdinalIgnoreCase))
+                return child;
+        }
+
+        return null;
     }
 
     private EnemyDeathNotifier[] CreateRoomEnemies(ProceduralRoomLayout room)

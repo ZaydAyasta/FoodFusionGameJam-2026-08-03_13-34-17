@@ -109,6 +109,12 @@ public class ProceduralRoomLayout : MonoBehaviour
         foreach (Transform child in children)
         {
             string childName = child.name;
+            if (childName.Contains("ProceduralDoorSprite", StringComparison.OrdinalIgnoreCase)
+                || childName.StartsWith("door_", StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
             if (!childName.Contains("Puerta", StringComparison.OrdinalIgnoreCase)
                 && !childName.Contains("Door", StringComparison.OrdinalIgnoreCase))
             {
@@ -153,11 +159,36 @@ public class ProceduralRoomLayout : MonoBehaviour
     private void SetDoorVisible(RoomDirection direction, bool visible)
     {
         Transform door = GetDoor(direction);
-        if (door == null)
-            return;
+        if (door != null)
+        {
+            Renderer[] renderers = door.GetComponentsInChildren<Renderer>(true);
+            foreach (Renderer doorRenderer in renderers)
+                doorRenderer.enabled = visible;
+        }
 
-        Renderer[] renderers = door.GetComponentsInChildren<Renderer>(true);
-        foreach (Renderer doorRenderer in renderers)
-            doorRenderer.enabled = visible;
+        SetProceduralDoorVisualVisible(direction, visible);
+    }
+
+    private void SetProceduralDoorVisualVisible(RoomDirection direction, bool visible)
+    {
+        string proceduralName = $"ProceduralDoorSprite_{direction}";
+        string prototypeName = direction switch
+        {
+            RoomDirection.Up => "door_0",
+            RoomDirection.Right => "door_0 (1)",
+            RoomDirection.Down => "door_0 (2)",
+            RoomDirection.Left => "door_0 (3)",
+            _ => string.Empty
+        };
+
+        SpriteRenderer[] renderers = GetComponentsInChildren<SpriteRenderer>(true);
+        foreach (SpriteRenderer spriteRenderer in renderers)
+        {
+            if (spriteRenderer.name.Equals(proceduralName, StringComparison.OrdinalIgnoreCase)
+                || spriteRenderer.name.Equals(prototypeName, StringComparison.OrdinalIgnoreCase))
+            {
+                spriteRenderer.enabled = visible;
+            }
+        }
     }
 }
