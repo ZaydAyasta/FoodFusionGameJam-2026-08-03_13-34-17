@@ -9,7 +9,7 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] private float cooldown = 0.25f;
     [SerializeField] private float projectileSpeed = 12f;
     [SerializeField] private float projectileDamage = 1f;
-    [SerializeField] private float projectileLifetime = 1.5f;
+    [SerializeField] private float projectileRange = 4.5f;
 
     private CharacterInput input;
     private PlayerAim aim;
@@ -34,6 +34,10 @@ public class PlayerAttack : MonoBehaviour
     {
         Vector2 direction = aim.AimDirection;
         Vector3 origin = firePoint != null ? firePoint.position : transform.position + (Vector3)(direction * 0.55f);
+        float projectileLifetime = projectileSpeed > 0.01f
+            ? projectileRange / projectileSpeed
+            : 0.1f;
+
         Projectile projectile = Instantiate(GetProjectilePrefab(), origin, Quaternion.identity);
         projectile.gameObject.SetActive(true);
         projectile.Launch(direction, projectileSpeed, projectileDamage, CombatFaction.Player, projectileLifetime);

@@ -7826,7 +7826,7 @@ MonoBehaviour:
   cooldown: 0.25
   projectileSpeed: 12
   projectileDamage: 1
-  projectileLifetime: 1.5
+  projectileRange: 4.5
 --- !u!114 &491478127
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7839,7 +7839,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5bd8c110e2544c146805d63b61151352, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAim
-  targetCamera: {fileID: 0}
+  defaultDirection: {x: 0, y: -1}
+  directionDeadZone: 0.1
 --- !u!114 &491478128
 MonoBehaviour:
   m_ObjectHideFlags: 0
