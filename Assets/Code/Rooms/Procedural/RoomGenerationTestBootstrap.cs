@@ -356,6 +356,7 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
         EnsureDoorVisuals(candidate);
         candidate.ShowOnlyDoors(new[] { entryDirection });
         candidate.SetKitchenVisible(IsKitchenRoom(currentRoomNumber + 1));
+        SetFrontWallVisible(candidate, false);
 
         Vector3 offset = sourceDoor.position - candidate.GetDoor(entryDirection).position;
         candidate.transform.position += offset + GetGapOffset(exitDirection);
@@ -376,6 +377,7 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
 
         ProceduralRoomLayout previousRoom = currentRoom;
         currentRoom = selectedCandidate.Layout;
+        SetFrontWallVisible(previousRoom, false);
         blockedExitDirection = selectedCandidate.EntryDirection;
         currentRoomNumber++;
 
@@ -402,6 +404,7 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
         if (room == null)
             return;
 
+        SetFrontWallVisible(room, true);
         activeRoomController = room.GetComponent<RoomController>();
         EnsureDoorVisuals(room);
         EnsureCameraFollowsPlayer();
@@ -1061,5 +1064,44 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
             int randomIndex = Random.Range(i, list.Count);
             (list[i], list[randomIndex]) = (list[randomIndex], list[i]);
         }
+    }
+
+    private void SetFrontWallVisible(ProceduralRoomLayout room, bool visible)
+    {
+        if (room == null)
+            return;
+
+        Transform frontWall = FindChildExact(room.transform, "pared_frente");
+
+        if (frontWall == null)
+            return;
+
+        Renderer[] renderers = frontWall.GetComponentsInChildren<Renderer>(true);
+
+        foreach (Renderer renderer in renderers)
+        {
+            if (renderer != null)
+                renderer.enabled = visible;
+        }
+    }
+
+    private static Transform FindChildExact(Transform root, string childName)
+    {
+        if (root == null)
+            return null;
+
+        Transform[] children = root.GetComponentsInChildren<Transform>(true);
+
+        foreach (Transform child in children)
+        {
+            if (child.name.Equals(
+                childName,
+                System.StringComparison.OrdinalIgnoreCase))
+            {
+                return child;
+            }
+        }
+
+        return null;
     }
 }
