@@ -15,6 +15,7 @@ public class RiceEnemy : MonoBehaviour
     [SerializeField] private float preShotApproachSpeed = 2.1f;
     [SerializeField] private float minShootCooldown = 1f;
     [SerializeField] private float maxShootCooldown = 2.3f;
+    [SerializeField] private Projectile projectilePrefab;
     [SerializeField] private float projectileSpeed = 7f;
     [SerializeField] private float projectileDamage = 8f;
     [SerializeField] private float projectileLifetime = 2.1f;
@@ -181,9 +182,23 @@ public class RiceEnemy : MonoBehaviour
         if (direction.sqrMagnitude <= 0.001f)
             direction = Vector2.down;
 
-        Projectile projectile = Instantiate(CreateProjectilePrefab(), transform.position, Quaternion.identity);
+        Projectile prefab = projectilePrefab != null ? projectilePrefab : CreateProjectilePrefab();
+        Projectile projectile = Instantiate(prefab, GetProjectileSpawnPosition(), prefab.transform.rotation);
         projectile.gameObject.SetActive(true);
         projectile.Launch(direction, projectileSpeed, projectileDamage, CombatFaction.Enemy, projectileLifetime);
+    }
+
+    private Vector3 GetProjectileSpawnPosition()
+    {
+        SpriteRenderer spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+        if (spriteRenderer != null)
+            return spriteRenderer.bounds.center;
+
+        Collider2D hitbox = GetComponentInChildren<Collider2D>();
+        if (hitbox != null)
+            return hitbox.bounds.center;
+
+        return transform.position;
     }
 
     private Vector2 GetShotDirection()

@@ -182,12 +182,25 @@ public class ProceduralRoomLayout : MonoBehaviour
         };
 
         SpriteRenderer[] renderers = GetComponentsInChildren<SpriteRenderer>(true);
+        bool hasProceduralVisual = false;
         foreach (SpriteRenderer spriteRenderer in renderers)
         {
-            if (spriteRenderer.name.Equals(proceduralName, StringComparison.OrdinalIgnoreCase)
-                || spriteRenderer.name.Equals(prototypeName, StringComparison.OrdinalIgnoreCase))
+            if (spriteRenderer.name.Equals(proceduralName, StringComparison.OrdinalIgnoreCase))
+            {
+                hasProceduralVisual = true;
+                break;
+            }
+        }
+
+        foreach (SpriteRenderer spriteRenderer in renderers)
+        {
+            if (spriteRenderer.name.Equals(proceduralName, StringComparison.OrdinalIgnoreCase))
             {
                 spriteRenderer.enabled = visible;
+            }
+            else if (spriteRenderer.name.Equals(prototypeName, StringComparison.OrdinalIgnoreCase))
+            {
+                spriteRenderer.enabled = visible && !hasProceduralVisual;
             }
         }
     }

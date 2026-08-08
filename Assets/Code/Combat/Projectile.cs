@@ -22,12 +22,18 @@ public class Projectile : MonoBehaviour
         if (direction.sqrMagnitude <= 0.001f)
             direction = Vector2.right;
 
+        direction.Normalize();
         lifetime = duration;
         despawnAt = Time.time + lifetime;
         GetComponent<FactionMember>().SetFaction(faction);
         GetComponent<DamageDealer>().Configure(faction, damage, true);
         rb.gravityScale = 0f;
-        rb.linearVelocity = direction.normalized * speed;
+        rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
+        rb.linearVelocity = direction * speed;
+
+        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        Vector3 baseAngles = transform.eulerAngles;
+        transform.rotation = Quaternion.Euler(baseAngles.x, baseAngles.y, angle);
     }
 
     private void Update()

@@ -38,7 +38,8 @@ public class PlayerAttack : MonoBehaviour
             ? projectileRange / projectileSpeed
             : 0.1f;
 
-        Projectile projectile = Instantiate(GetProjectilePrefab(), origin, Quaternion.identity);
+        Projectile prefab = GetProjectilePrefab();
+        Projectile projectile = Instantiate(prefab, origin, prefab.transform.rotation);
         projectile.gameObject.SetActive(true);
         projectile.Launch(direction, projectileSpeed, projectileDamage, CombatFaction.Player, projectileLifetime);
     }

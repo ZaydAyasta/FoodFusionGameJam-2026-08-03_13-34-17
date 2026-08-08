@@ -47,7 +47,8 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
     [SerializeField] private bool generateCombatInFirstRoom = true;
     [SerializeField] private float playerMaxHealth = 100f;
     [SerializeField] private float rangedEnemyShotDamage = 8f;
-    [SerializeField] private float enemyColliderRadius = 0.35f;
+    [SerializeField] private Vector2 riceEnemyHitboxSize = new(0.85f, 0.9f);
+    [SerializeField] private EnemyDeathNotifier riceEnemyPrefab;
     [SerializeField] private float riceEnemyHitsToKill = 4f;
     [SerializeField] private Sprite riceEnemySprite;
     [SerializeField] private Vector3 riceEnemyScale = new(0.8f, 0.8f, 0.8f);
@@ -545,8 +546,7 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
         }
 
         Transform visualTransform = visual.transform;
-        if (visual.name.StartsWith("ProceduralDoorSprite_", System.StringComparison.OrdinalIgnoreCase))
-            visual.name = proceduralName;
+        visual.name = proceduralName;
 
         visualTransform.SetParent(room.transform, true);
         visualTransform.position = doorAnchor.position + room.transform.TransformVector(localOffset);
@@ -556,8 +556,28 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
         visual.sprite = doorSprite;
         if (doorVisualMaterial != null)
             visual.sharedMaterial = doorVisualMaterial;
+
         visual.sortingLayerName = doorVisualSortingLayer;
         visual.sortingOrder = doorVisualSortingOrder;
+        DisableDuplicateDoorVisuals(room, direction, visual, prototypeName);
+    }
+
+    private void DisableDuplicateDoorVisuals(ProceduralRoomLayout room, RoomDirection direction, SpriteRenderer activeVisual, string prototypeName)
+    {
+        string proceduralName = $"ProceduralDoorSprite_{direction}";
+        SpriteRenderer[] renderers = room.GetComponentsInChildren<SpriteRenderer>(true);
+        foreach (SpriteRenderer renderer in renderers)
+        {
+            if (renderer == null || renderer == activeVisual)
+                continue;
+
+            bool isSameDoorVisual =
+                renderer.name.Equals(proceduralName, System.StringComparison.OrdinalIgnoreCase)
+                || renderer.name.Equals(prototypeName, System.StringComparison.OrdinalIgnoreCase);
+
+            if (isSameDoorVisual)
+                renderer.enabled = false;
+        }
     }
 
     private SpriteRenderer FindRoomDoorVisual(ProceduralRoomLayout room, string objectName)
@@ -703,12 +723,70 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
 
     private EnemyDeathNotifier CreateRangedEnemy(Transform parent, Vector3 position, int index)
     {
-        GameObject enemyObject = CreateEnemyBase($"RiceEnemy_{index}", parent, position, Color.white);
+        GameObject enemyObject = CreateRiceEnemyObject(parent, position, index);
         Health health = enemyObject.GetComponent<Health>();
+        if (health == null)
+            health = enemyObject.AddComponent<Health>();
+
         health.Configure(riceEnemyHitsToKill, true, true);
-        RiceEnemy riceEnemy = enemyObject.AddComponent<RiceEnemy>();
+
+        FactionMember faction = enemyObject.GetComponent<FactionMember>();
+        if (faction == null)
+            faction = enemyObject.AddComponent<FactionMember>();
+
+        faction.SetFaction(CombatFaction.Enemy);
+        EnsureEnemyHitbox(enemyObject);
+
+        RiceEnemy riceEnemy = enemyObject.GetComponent<RiceEnemy>();
+        if (riceEnemy == null)
+            riceEnemy = enemyObject.AddComponent<RiceEnemy>();
+
         ConfigureRiceEnemyForCurrentRoom(riceEnemy, index);
-        return enemyObject.GetComponent<EnemyDeathNotifier>();
+
+        EnemyDeathNotifier notifier = enemyObject.GetComponent<EnemyDeathNotifier>();
+        if (notifier == null)
+            notifier = enemyObject.AddComponent<EnemyDeathNotifier>();
+
+        return notifier;
+    }
+
+    private GameObject CreateRiceEnemyObject(Transform parent, Vector3 position, int index)
+    {
+        EnemyDeathNotifier prefab = GetRiceEnemyPrefab();
+        if (prefab != null)
+        {
+            EnemyDeathNotifier instance = Instantiate(prefab, position, prefab.transform.rotation, parent);
+            instance.name = $"RiceEnemy_{index}";
+            return instance.gameObject;
+        }
+
+        return CreateEnemyBase($"RiceEnemy_{index}", parent, position, Color.white);
+    }
+
+    private EnemyDeathNotifier GetRiceEnemyPrefab()
+    {
+        if (riceEnemyPrefab != null)
+            return riceEnemyPrefab;
+
+#if UNITY_EDITOR
+        riceEnemyPrefab = AssetDatabase.LoadAssetAtPath<EnemyDeathNotifier>("Assets/Prefabs/Enemies/RiceEnemy.prefab");
+#endif
+        return riceEnemyPrefab;
+    }
+
+    private void EnsureEnemyHitbox(GameObject enemyObject)
+    {
+        BoxCollider2D hitbox = enemyObject.GetComponent<BoxCollider2D>();
+        if (hitbox == null)
+            hitbox = enemyObject.AddComponent<BoxCollider2D>();
+
+        hitbox.isTrigger = false;
+        hitbox.offset = Vector2.zero;
+        hitbox.size = riceEnemyHitboxSize;
+
+        CircleCollider2D circle = enemyObject.GetComponent<CircleCollider2D>();
+        if (circle != null)
+            circle.enabled = false;
     }
 
     private void ConfigureRiceEnemyForCurrentRoom(RiceEnemy riceEnemy, int index)
@@ -751,8 +829,8 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
         renderer.color = color;
         renderer.sortingOrder = 8;
 
-        CircleCollider2D collider = enemyObject.AddComponent<CircleCollider2D>();
-        collider.radius = enemyColliderRadius;
+        BoxCollider2D collider = enemyObject.AddComponent<BoxCollider2D>();
+        collider.size = riceEnemyHitboxSize;
 
         Rigidbody2D rb = enemyObject.AddComponent<Rigidbody2D>();
         rb.gravityScale = 0f;
