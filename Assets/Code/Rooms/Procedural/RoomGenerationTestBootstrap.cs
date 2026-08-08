@@ -60,6 +60,9 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
     [SerializeField] private float trapDamage = 10f;
     [SerializeField] private float trapDamageInterval = 0.5f;
 
+    [Header("2.5D Collision")]
+    [SerializeField] private Vector2 wallCollisionOffset = new(0f, 0.75f);
+
     [Header("Door Visuals")]
     [SerializeField] private Sprite doorSprite;
     [SerializeField] private Vector3 upDoorVisualOffset = new(0.08f, -0.92f, -1.76f);
@@ -659,12 +662,17 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
             if (collision == null)
                 collision = collisionRenderer.gameObject.AddComponent<BoxCollider2D>();
 
-            ConfigureBoxColliderFromRenderer(collision, collisionRenderer);
+            ConfigureBoxColliderFromRenderer(collision, collisionRenderer, wallCollisionOffset);
             collision.isTrigger = false;
         }
     }
 
     private static void ConfigureBoxColliderFromRenderer(BoxCollider2D collider, Renderer sourceRenderer)
+    {
+        ConfigureBoxColliderFromRenderer(collider, sourceRenderer, Vector2.zero);
+    }
+
+    private static void ConfigureBoxColliderFromRenderer(BoxCollider2D collider, Renderer sourceRenderer, Vector2 localOffset)
     {
         if (collider == null || sourceRenderer == null)
             return;
@@ -673,7 +681,7 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
         Vector3 scale = sourceRenderer.transform.lossyScale;
         float scaleX = Mathf.Approximately(scale.x, 0f) ? 1f : Mathf.Abs(scale.x);
         float scaleY = Mathf.Approximately(scale.y, 0f) ? 1f : Mathf.Abs(scale.y);
-        collider.offset = localCenter;
+        collider.offset = (Vector2)localCenter + localOffset;
         collider.size = new Vector2(sourceRenderer.bounds.size.x / scaleX, sourceRenderer.bounds.size.y / scaleY);
     }
 
