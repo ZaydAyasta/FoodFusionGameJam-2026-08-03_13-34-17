@@ -26,6 +26,7 @@ public class RiceEnemy : MonoBehaviour
     private static Projectile fallbackProjectilePrefab;
 
     private Rigidbody2D rb;
+    private Collider2D ownHitbox;
     private float nextShotAt;
     private float nextStrafeSwitchAt;
     private float burstChance;
@@ -35,6 +36,8 @@ public class RiceEnemy : MonoBehaviour
 
     private void Awake()
     {
+        KeepPhysicsRootFlat();
+        FitHitboxToSpriteSquare();
         EnsureRigidbody();
     }
 
@@ -57,6 +60,89 @@ public class RiceEnemy : MonoBehaviour
 
         rb.gravityScale = 0f;
         rb.freezeRotation = true;
+        rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
+    }
+
+    private void KeepPhysicsRootFlat()
+    {
+        Vector3 euler = transform.eulerAngles;
+        bool hasTilt = !Mathf.Approximately(Mathf.DeltaAngle(euler.x, 0f), 0f)
+            || !Mathf.Approximately(Mathf.DeltaAngle(euler.y, 0f), 0f);
+
+        if (!hasTilt)
+            return;
+
+        Transform visualRoot = transform.Find("Visuals");
+        if (visualRoot == null)
+        {
+            GameObject visualObject = new("Visuals");
+            visualRoot = visualObject.transform;
+            visualRoot.SetParent(transform, false);
+            CopyRootSpriteRendererToVisual(visualObject);
+        }
+
+        visualRoot.localRotation = Quaternion.Euler(euler.x, euler.y, 0f);
+        transform.rotation = Quaternion.Euler(0f, 0f, euler.z);
+    }
+
+    private void CopyRootSpriteRendererToVisual(GameObject visualObject)
+    {
+        SpriteRenderer rootRenderer = GetComponent<SpriteRenderer>();
+        if (rootRenderer == null)
+            return;
+
+        SpriteRenderer visualRenderer = visualObject.AddComponent<SpriteRenderer>();
+        visualRenderer.sprite = rootRenderer.sprite;
+        visualRenderer.color = rootRenderer.color;
+        visualRenderer.flipX = rootRenderer.flipX;
+        visualRenderer.flipY = rootRenderer.flipY;
+        visualRenderer.drawMode = rootRenderer.drawMode;
+        visualRenderer.size = rootRenderer.size;
+        visualRenderer.sortingLayerID = rootRenderer.sortingLayerID;
+        visualRenderer.sortingOrder = rootRenderer.sortingOrder;
+        visualRenderer.sharedMaterial = rootRenderer.sharedMaterial;
+        rootRenderer.enabled = false;
+    }
+
+    public void FitHitboxToSpriteSquare()
+    {
+        SpriteRenderer spriteRenderer = GetVisualSpriteRenderer();
+        if (spriteRenderer == null || spriteRenderer.sprite == null)
+            return;
+
+        BoxCollider2D hitbox = GetComponent<BoxCollider2D>();
+        if (hitbox == null)
+            hitbox = gameObject.AddComponent<BoxCollider2D>();
+
+        Bounds spriteBounds = spriteRenderer.sprite.bounds;
+        float side = Mathf.Max(spriteBounds.size.x, spriteBounds.size.y);
+        hitbox.enabled = true;
+        hitbox.isTrigger = false;
+        hitbox.offset = spriteBounds.center;
+        hitbox.size = new Vector2(side, side);
+        ownHitbox = hitbox;
+
+        CircleCollider2D circle = GetComponent<CircleCollider2D>();
+        if (circle != null)
+            circle.enabled = false;
+    }
+
+    private SpriteRenderer GetVisualSpriteRenderer()
+    {
+        SpriteRenderer[] renderers = GetComponentsInChildren<SpriteRenderer>(true);
+        foreach (SpriteRenderer renderer in renderers)
+        {
+            if (renderer != null && renderer.sprite != null && renderer.enabled)
+                return renderer;
+        }
+
+        foreach (SpriteRenderer renderer in renderers)
+        {
+            if (renderer != null && renderer.sprite != null)
+                return renderer;
+        }
+
+        return null;
     }
 
     private void FixedUpdate()
@@ -71,7 +157,8 @@ public class RiceEnemy : MonoBehaviour
             return;
         }
 
-        Vector2 toTarget = target.position - transform.position;
+        Vector2 enemyPosition = GetEnemyCenter();
+        Vector2 toTarget = GetTargetCenter() - enemyPosition;
         float distance = toTarget.magnitude;
         if (distance <= 0.001f)
         {
@@ -145,7 +232,7 @@ public class RiceEnemy : MonoBehaviour
         float approachUntil = Time.time + preShotApproachDuration;
         while (Time.time < approachUntil && target != null)
         {
-            Vector2 direction = target.position - transform.position;
+            Vector2 direction = GetTargetCenter() - GetEnemyCenter();
             rb.linearVelocity = direction.sqrMagnitude > 0.001f
                 ? direction.normalized * preShotApproachSpeed
                 : Vector2.zero;
@@ -190,15 +277,69 @@ public class RiceEnemy : MonoBehaviour
 
     private Vector3 GetProjectileSpawnPosition()
     {
-        SpriteRenderer spriteRenderer = GetComponentInChildren<SpriteRenderer>();
-        if (spriteRenderer != null)
-            return spriteRenderer.bounds.center;
+        return GetEnemyCenter();
+    }
 
-        Collider2D hitbox = GetComponentInChildren<Collider2D>();
-        if (hitbox != null)
-            return hitbox.bounds.center;
+    private Vector2 GetEnemyCenter()
+    {
+        if (ownHitbox == null || !ownHitbox.enabled)
+            ownHitbox = GetActiveHitbox();
+
+        if (ownHitbox != null)
+            return ownHitbox.bounds.center;
 
         return transform.position;
+    }
+
+    private Collider2D GetActiveHitbox()
+    {
+        Collider2D[] colliders = GetComponents<Collider2D>();
+        foreach (Collider2D collider in colliders)
+        {
+            if (collider != null && collider.enabled && !collider.isTrigger)
+                return collider;
+        }
+
+        foreach (Collider2D collider in colliders)
+        {
+            if (collider != null && collider.enabled)
+                return collider;
+        }
+
+        return null;
+    }
+
+    private Vector2 GetTargetCenter()
+    {
+        if (target == null)
+            return Vector2.zero;
+
+        Collider2D targetCollider = GetActiveTargetCollider();
+        if (targetCollider != null)
+            return targetCollider.bounds.center;
+
+        return target.position;
+    }
+
+    private Collider2D GetActiveTargetCollider()
+    {
+        if (target == null)
+            return null;
+
+        Collider2D[] colliders = target.GetComponentsInChildren<Collider2D>();
+        foreach (Collider2D collider in colliders)
+        {
+            if (collider != null && collider.enabled && !collider.isTrigger)
+                return collider;
+        }
+
+        foreach (Collider2D collider in colliders)
+        {
+            if (collider != null && collider.enabled)
+                return collider;
+        }
+
+        return null;
     }
 
     private Vector2 GetShotDirection()
@@ -206,19 +347,19 @@ public class RiceEnemy : MonoBehaviour
         if (target == null)
             return Vector2.down;
 
-        Vector2 targetPosition = target.position;
+        Vector2 targetPosition = GetTargetCenter();
         if (predictTargetMovement)
         {
             Rigidbody2D targetBody = target.GetComponent<Rigidbody2D>();
             if (targetBody != null)
             {
-                float distance = Vector2.Distance(transform.position, target.position);
+                float distance = Vector2.Distance(GetEnemyCenter(), targetPosition);
                 float leadTime = distance / Mathf.Max(0.1f, projectileSpeed);
                 targetPosition += targetBody.linearVelocity * (leadTime * predictionStrength);
             }
         }
 
-        return targetPosition - (Vector2)transform.position;
+        return targetPosition - GetEnemyCenter();
     }
 
     private static Projectile CreateProjectilePrefab()

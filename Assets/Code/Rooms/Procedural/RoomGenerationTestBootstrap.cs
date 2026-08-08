@@ -47,7 +47,7 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
     [SerializeField] private bool generateCombatInFirstRoom = true;
     [SerializeField] private float playerMaxHealth = 100f;
     [SerializeField] private float rangedEnemyShotDamage = 8f;
-    [SerializeField] private Vector2 riceEnemyHitboxSize = new(0.85f, 0.9f);
+    [SerializeField] private Vector2 fallbackRiceEnemyHitboxSize = new(1.15f, 1.15f);
     [SerializeField] private EnemyDeathNotifier riceEnemyPrefab;
     [SerializeField] private float riceEnemyHitsToKill = 4f;
     [SerializeField] private Sprite riceEnemySprite;
@@ -741,6 +741,7 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
         if (riceEnemy == null)
             riceEnemy = enemyObject.AddComponent<RiceEnemy>();
 
+        riceEnemy.FitHitboxToSpriteSquare();
         ConfigureRiceEnemyForCurrentRoom(riceEnemy, index);
 
         EnemyDeathNotifier notifier = enemyObject.GetComponent<EnemyDeathNotifier>();
@@ -782,7 +783,16 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
 
         hitbox.isTrigger = false;
         hitbox.offset = Vector2.zero;
-        hitbox.size = riceEnemyHitboxSize;
+        RiceEnemy riceEnemy = enemyObject.GetComponent<RiceEnemy>();
+        if (riceEnemy != null)
+        {
+            riceEnemy.FitHitboxToSpriteSquare();
+        }
+        else
+        {
+            hitbox.offset = Vector2.zero;
+            hitbox.size = fallbackRiceEnemyHitboxSize;
+        }
 
         CircleCollider2D circle = enemyObject.GetComponent<CircleCollider2D>();
         if (circle != null)
@@ -830,7 +840,7 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
         renderer.sortingOrder = 8;
 
         BoxCollider2D collider = enemyObject.AddComponent<BoxCollider2D>();
-        collider.size = riceEnemyHitboxSize;
+        collider.size = fallbackRiceEnemyHitboxSize;
 
         Rigidbody2D rb = enemyObject.AddComponent<Rigidbody2D>();
         rb.gravityScale = 0f;
