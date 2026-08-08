@@ -8,11 +8,13 @@ public class RiceEnemy : MonoBehaviour
     [SerializeField] private float approachDistance = 3.2f;
     [SerializeField] private float retreatDistance = 2.2f;
     [SerializeField] private float moveSpeed = 1.45f;
-    [SerializeField] private float strafeSpeed = 0.8f;
+    [SerializeField] private float strafeSpeed = 1.55f;
+    [SerializeField] private float minStrafeSwitchInterval = 0.45f;
+    [SerializeField] private float maxStrafeSwitchInterval = 0.85f;
     [SerializeField] private float preShotApproachDuration = 0.25f;
     [SerializeField] private float preShotApproachSpeed = 2.1f;
     [SerializeField] private float minShootCooldown = 1f;
-    [SerializeField] private float maxShootCooldown = 1.9f;
+    [SerializeField] private float maxShootCooldown = 2.3f;
     [SerializeField] private float projectileSpeed = 7f;
     [SerializeField] private float projectileDamage = 8f;
     [SerializeField] private float projectileLifetime = 2.1f;
@@ -24,6 +26,7 @@ public class RiceEnemy : MonoBehaviour
 
     private Rigidbody2D rb;
     private float nextShotAt;
+    private float nextStrafeSwitchAt;
     private float burstChance;
     private int maxBurstShots = 1;
     private int strafeDirection = 1;
@@ -39,6 +42,7 @@ public class RiceEnemy : MonoBehaviour
         EnsureRigidbody();
         nextShotAt = Time.time + Random.Range(0.4f, maxShootCooldown);
         strafeDirection = Random.value < 0.5f ? -1 : 1;
+        nextStrafeSwitchAt = Time.time + Random.Range(minStrafeSwitchInterval, maxStrafeSwitchInterval);
         attacking = false;
     }
 
@@ -80,6 +84,12 @@ public class RiceEnemy : MonoBehaviour
         {
             rb.linearVelocity = forward * moveSpeed;
             return;
+        }
+
+        if (Time.time >= nextStrafeSwitchAt)
+        {
+            strafeDirection = Random.value < 0.5f ? -1 : 1;
+            nextStrafeSwitchAt = Time.time + Random.Range(minStrafeSwitchInterval, maxStrafeSwitchInterval);
         }
 
         Vector2 desiredVelocity = strafe * (strafeSpeed * strafeDirection);

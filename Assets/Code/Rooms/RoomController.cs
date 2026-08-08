@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,6 +8,7 @@ public class RoomController : MonoBehaviour
     [SerializeField] private DoorController[] doors;
     [SerializeField] private EnemyDeathNotifier[] enemies;
     [SerializeField] private bool activateEnemiesOnEntry = true;
+    [SerializeField] private float enemyWakeUpDelay = 1.3f;
     [Header("Rewards")]
     [SerializeField] private Transform rewardSpawnPoint;
     [SerializeField] private RewardChoiceController rewardChoicePrefab;
@@ -18,6 +20,7 @@ public class RoomController : MonoBehaviour
     private bool rewardClaimed;
     private bool hadEnemiesInCombat;
     private RewardChoiceController activeRewardChoice;
+    private Coroutine enemyWakeUpRoutine;
 
     public RoomState State { get; private set; } = RoomState.Inactive;
 
@@ -87,24 +90,21 @@ public class RoomController : MonoBehaviour
             enemy.Died -= HandleEnemyDied;
             enemy.Died += HandleEnemyDied;
             aliveEnemies.Add(enemy);
-
-            ChaserEnemy chaser = enemy.GetComponent<ChaserEnemy>();
-            if (chaser != null)
-                chaser.SetTarget(player);
-
-            RangedEnemy ranged = enemy.GetComponent<RangedEnemy>();
-            if (ranged != null)
-                ranged.SetTarget(player);
-
-            RiceEnemy rice = enemy.GetComponent<RiceEnemy>();
-            if (rice != null)
-                rice.SetTarget(player);
+            StopEnemyMotion(enemy);
         }
 
         hadEnemiesInCombat = aliveEnemies.Count > 0;
 
         if (aliveEnemies.Count == 0)
+        {
             CompleteCombat();
+            return;
+        }
+
+        if (enemyWakeUpRoutine != null)
+            StopCoroutine(enemyWakeUpRoutine);
+
+        enemyWakeUpRoutine = StartCoroutine(WakeEnemiesAfterDelay(player));
     }
 
     public void ConfigureProcedural(
@@ -122,6 +122,10 @@ public class RoomController : MonoBehaviour
         rewardClaimed = false;
         hadEnemiesInCombat = false;
         activeRewardChoice = null;
+        if (enemyWakeUpRoutine != null)
+            StopCoroutine(enemyWakeUpRoutine);
+
+        enemyWakeUpRoutine = null;
         aliveEnemies.Clear();
         State = RoomState.Inactive;
 
@@ -146,8 +150,63 @@ public class RoomController : MonoBehaviour
             CompleteCombat();
     }
 
+    private IEnumerator WakeEnemiesAfterDelay(Transform player)
+    {
+        float wakeAt = Time.time + Mathf.Max(0f, enemyWakeUpDelay);
+        while (Time.time < wakeAt)
+        {
+            EnemyDeathNotifier[] snapshot = new EnemyDeathNotifier[aliveEnemies.Count];
+            aliveEnemies.CopyTo(snapshot);
+            foreach (EnemyDeathNotifier enemy in snapshot)
+                StopEnemyMotion(enemy);
+
+            yield return null;
+        }
+
+        EnemyDeathNotifier[] enemiesToWake = new EnemyDeathNotifier[aliveEnemies.Count];
+        aliveEnemies.CopyTo(enemiesToWake);
+        foreach (EnemyDeathNotifier enemy in enemiesToWake)
+        {
+            if (enemy == null)
+                continue;
+
+            ChaserEnemy chaser = enemy.GetComponent<ChaserEnemy>();
+            if (chaser != null)
+                chaser.SetTarget(player);
+
+            RangedEnemy ranged = enemy.GetComponent<RangedEnemy>();
+            if (ranged != null)
+                ranged.SetTarget(player);
+
+            RiceEnemy rice = enemy.GetComponent<RiceEnemy>();
+            if (rice != null)
+                rice.SetTarget(player);
+        }
+
+        enemyWakeUpRoutine = null;
+    }
+
+    private static void StopEnemyMotion(EnemyDeathNotifier enemy)
+    {
+        if (enemy == null)
+            return;
+
+        Rigidbody2D[] bodies = enemy.GetComponentsInChildren<Rigidbody2D>(true);
+        foreach (Rigidbody2D body in bodies)
+        {
+            if (body != null)
+                body.linearVelocity = Vector2.zero;
+        }
+    }
+
     private void CompleteCombat()
     {
+        if (enemyWakeUpRoutine != null)
+        {
+            StopCoroutine(enemyWakeUpRoutine);
+            enemyWakeUpRoutine = null;
+        }
+
         SetDoorsClosed(false);
 
         if (ShouldSpawnReward())

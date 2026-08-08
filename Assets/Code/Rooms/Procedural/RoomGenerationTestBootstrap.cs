@@ -720,7 +720,7 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
         float burstChance = Mathf.Clamp01(upgradeTier <= 0 ? 0f : 0.5f + (upgradeTier - 1) * 0.2f);
         int burstLimit = Mathf.Clamp(1 + upgradeTier, 1, 4);
         float speed = 1.45f + upgradeTier * 0.12f;
-        float strafeSpeed = 0.8f + upgradeTier * 0.08f;
+        float strafeSpeed = 1.55f + upgradeTier * 0.12f;
         float minCooldown = Mathf.Max(0.65f, 1f - upgradeTier * 0.06f);
         float maxCooldown = Mathf.Max(minCooldown, 1.9f - upgradeTier * 0.08f);
         bool usesPrediction = Random.value < Mathf.Clamp01(0.3f + upgradeTier * 0.05f);
