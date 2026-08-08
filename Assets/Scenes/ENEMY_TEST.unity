@@ -2116,12 +2116,11 @@ MonoBehaviour:
   kitchenIntervalRooms: 4
   generateCombatInFirstRoom: 1
   playerMaxHealth: 100
-  initialEnemySpawnerUsage: 0.5
-  enemySpawnerUsageIncreaseAfterKitchen: 0.15
-  rangedEnemyHealth: 18
   rangedEnemyShotDamage: 8
-  rangedEnemyShotCooldown: 1.25
   enemyColliderRadius: 0.35
+  riceEnemyHitsToKill: 2
+  riceEnemySprite: {fileID: 0}
+  riceEnemyScale: {x: 0.8, y: 0.8, z: 0.8}
   horizontalDoorBlockerSize: {x: 2, y: 0.55}
   verticalDoorBlockerSize: {x: 0.55, y: 2}
   rewardPool:
@@ -22021,7 +22020,7 @@ Transform:
   m_GameObject: {fileID: 1534699823}
   serializedVersion: 2
   m_LocalRotation: {x: -0.34333193, y: 0, z: 0, w: 0.9392141}
-  m_LocalPosition: {x: 0.35026175, y: -4.6953225, z: -5.750843}
+  m_LocalPosition: {x: 0.012384772, y: -4.698196, z: -5.748418}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

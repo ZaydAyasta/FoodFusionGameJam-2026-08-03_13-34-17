@@ -46,12 +46,11 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
     [Header("Combat")]
     [SerializeField] private bool generateCombatInFirstRoom = true;
     [SerializeField] private float playerMaxHealth = 100f;
-    [SerializeField] private float initialEnemySpawnerUsage = 0.5f;
-    [SerializeField] private float enemySpawnerUsageIncreaseAfterKitchen = 0.15f;
-    [SerializeField] private float rangedEnemyHealth = 18f;
     [SerializeField] private float rangedEnemyShotDamage = 8f;
-    [SerializeField] private float rangedEnemyShotCooldown = 1.25f;
     [SerializeField] private float enemyColliderRadius = 0.35f;
+    [SerializeField] private float riceEnemyHitsToKill = 4f;
+    [SerializeField] private Sprite riceEnemySprite;
+    [SerializeField] private Vector3 riceEnemyScale = new(0.8f, 0.8f, 0.8f);
     [SerializeField] private Vector2 horizontalDoorBlockerSize = new(2f, 0.55f);
     [SerializeField] private Vector2 verticalDoorBlockerSize = new(0.55f, 2f);
     [SerializeField] private IngredientData[] rewardPool;
@@ -698,24 +697,46 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
         if (totalSpawnerCount <= 0)
             return 0;
 
-        int completedKitchenMilestones = 0;
-        int firstPostKitchenRoom = firstKitchenRoomNumber + 1;
-        if (kitchenIntervalRooms > 0 && currentRoomNumber >= firstPostKitchenRoom)
-            completedKitchenMilestones = ((currentRoomNumber - firstPostKitchenRoom) / kitchenIntervalRooms) + 1;
-
-        float usage = initialEnemySpawnerUsage + completedKitchenMilestones * enemySpawnerUsageIncreaseAfterKitchen;
-        usage = Mathf.Clamp01(usage);
-        return Mathf.Clamp(Mathf.CeilToInt(totalSpawnerCount * usage), 1, totalSpawnerCount);
+        int maxEnemiesForCurrentRoom = Mathf.Max(1, currentRoomNumber + 1);
+        return Mathf.Clamp(maxEnemiesForCurrentRoom, 1, totalSpawnerCount);
     }
 
     private EnemyDeathNotifier CreateRangedEnemy(Transform parent, Vector3 position, int index)
     {
-        GameObject enemyObject = CreateEnemyBase($"RangedEnemy_{index}", parent, position, new Color(0.25f, 0.55f, 1f));
+        GameObject enemyObject = CreateEnemyBase($"RiceEnemy_{index}", parent, position, Color.white);
         Health health = enemyObject.GetComponent<Health>();
-        health.Configure(rangedEnemyHealth, true, true);
-        RangedEnemy rangedEnemy = enemyObject.AddComponent<RangedEnemy>();
-        rangedEnemy.Configure(4f, 1.6f, rangedEnemyShotCooldown, 7f, rangedEnemyShotDamage);
+        health.Configure(riceEnemyHitsToKill, true, true);
+        RiceEnemy riceEnemy = enemyObject.AddComponent<RiceEnemy>();
+        ConfigureRiceEnemyForCurrentRoom(riceEnemy, index);
         return enemyObject.GetComponent<EnemyDeathNotifier>();
+    }
+
+    private void ConfigureRiceEnemyForCurrentRoom(RiceEnemy riceEnemy, int index)
+    {
+        if (riceEnemy == null)
+            return;
+
+        int upgradeTier = Mathf.Max(0, (currentRoomNumber - 1) / 4);
+        float burstChance = Mathf.Clamp01(upgradeTier <= 0 ? 0f : 0.5f + (upgradeTier - 1) * 0.2f);
+        int burstLimit = Mathf.Clamp(1 + upgradeTier, 1, 4);
+        float speed = 1.45f + upgradeTier * 0.12f;
+        float strafeSpeed = 0.8f + upgradeTier * 0.08f;
+        float minCooldown = Mathf.Max(0.65f, 1f - upgradeTier * 0.06f);
+        float maxCooldown = Mathf.Max(minCooldown, 1.9f - upgradeTier * 0.08f);
+        bool usesPrediction = Random.value < Mathf.Clamp01(0.3f + upgradeTier * 0.05f);
+
+        riceEnemy.Configure(
+            3.2f,
+            2.2f,
+            speed,
+            strafeSpeed,
+            minCooldown,
+            maxCooldown,
+            7f,
+            rangedEnemyShotDamage,
+            burstChance,
+            burstLimit,
+            usesPrediction);
     }
 
     private GameObject CreateEnemyBase(string enemyName, Transform parent, Vector3 position, Color color)
@@ -723,10 +744,10 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
         GameObject enemyObject = new(enemyName);
         enemyObject.transform.SetParent(parent, true);
         enemyObject.transform.position = position;
-        enemyObject.transform.localScale = GetPlayerVisualScale();
+        enemyObject.transform.localScale = riceEnemyScale;
 
         SpriteRenderer renderer = enemyObject.AddComponent<SpriteRenderer>();
-        renderer.sprite = GetFallbackSprite();
+        renderer.sprite = GetRiceEnemySprite();
         renderer.color = color;
         renderer.sortingOrder = 8;
 
@@ -1055,6 +1076,35 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
         texture.Apply();
         fallbackSprite = Sprite.Create(texture, new Rect(0f, 0f, 1f, 1f), new Vector2(0.5f, 0.5f), 1f);
         return fallbackSprite;
+    }
+
+    private Sprite GetRiceEnemySprite()
+    {
+        if (riceEnemySprite != null)
+            return riceEnemySprite;
+
+#if UNITY_EDITOR
+        Object[] riceAssets = AssetDatabase.LoadAllAssetsAtPath("Assets/Images/ricemonster.png");
+        foreach (Object asset in riceAssets)
+        {
+            if (asset is Sprite sprite && sprite.name == "ricemonster_0")
+            {
+                riceEnemySprite = sprite;
+                return riceEnemySprite;
+            }
+        }
+
+        foreach (Object asset in riceAssets)
+        {
+            if (asset is Sprite sprite)
+            {
+                riceEnemySprite = sprite;
+                return riceEnemySprite;
+            }
+        }
+#endif
+
+        return GetFallbackSprite();
     }
 
     private static void Shuffle<T>(IList<T> list)
