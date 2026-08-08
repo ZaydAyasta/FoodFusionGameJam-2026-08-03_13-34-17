@@ -95,6 +95,10 @@ public class RoomController : MonoBehaviour
             RangedEnemy ranged = enemy.GetComponent<RangedEnemy>();
             if (ranged != null)
                 ranged.SetTarget(player);
+
+            RiceEnemy rice = enemy.GetComponent<RiceEnemy>();
+            if (rice != null)
+                rice.SetTarget(player);
         }
 
         hadEnemiesInCombat = aliveEnemies.Count > 0;
