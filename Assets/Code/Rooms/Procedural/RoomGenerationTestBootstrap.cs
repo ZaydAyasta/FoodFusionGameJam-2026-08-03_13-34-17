@@ -253,6 +253,28 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
         CaptureDoorVisualPrototype(RoomDirection.Right, "door_0 (1)", ref rightDoorVisualOffset);
         CaptureDoorVisualPrototype(RoomDirection.Down, "door_0 (2)", ref downDoorVisualOffset);
         CaptureDoorVisualPrototype(RoomDirection.Left, "door_0 (3)", ref leftDoorVisualOffset);
+        ConvertDoorRotationsToAnchorOffsets();
+    }
+
+    private void ConvertDoorRotationsToAnchorOffsets()
+    {
+        RoomDirection[] directions =
+        {
+            RoomDirection.Up,
+            RoomDirection.Right,
+            RoomDirection.Down,
+            RoomDirection.Left
+        };
+
+        foreach (RoomDirection direction in directions)
+        {
+            Transform anchor = currentRoom.GetDoor(direction);
+            if (anchor == null || !doorVisualRotations.TryGetValue(direction, out Quaternion roomRotation))
+                continue;
+
+            Quaternion prototypeWorldRotation = currentRoom.transform.rotation * roomRotation;
+            doorVisualRotations[direction] = Quaternion.Inverse(anchor.rotation) * prototypeWorldRotation;
+        }
     }
 
     private Sprite ResolveDoorSpriteFromScene()
@@ -412,7 +434,9 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
         candidate.gameObject.SetActive(true);
         candidate.AutoWire();
         EnsureDoorVisuals(candidate);
-        candidate.ShowOnlyDoors(new[] { entryDirection });
+        // Candidate rooms stay visually open until the player commits to them,
+        // just like their front wall. The anchors remain active for alignment.
+        candidate.HideAllDoors();
         SetKitchenVisible(candidate, IsKitchenRoom(currentRoomNumber + 1));
         SetFrontWallVisible(candidate, false);
 
@@ -441,8 +465,8 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
 
         DestroyUnselectedCandidates(selectedCandidate);
         DestroyCommitTriggers();
-        currentRoom.HideAllDoors();
         EnsureDoorVisuals(currentRoom);
+        currentRoom.ShowOnlyDoors(new[] { selectedCandidate.EntryDirection });
         MovePlayerInsideCommittedRoom(selectedCandidate, player);
         PrepareProceduralRoomCombat(currentRoom);
         SetCurrentRoom(currentRoom);
@@ -751,7 +775,7 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
 
         visualTransform.SetParent(room.transform, true);
         visualTransform.position = doorAnchor.position + room.transform.TransformVector(localOffset);
-        visualTransform.rotation = room.transform.rotation * GetDoorVisualRotation(direction);
+        visualTransform.rotation = doorAnchor.rotation * GetDoorVisualRotation(direction);
         SetWorldScale(visualTransform, doorVisualWorldScale);
 
         visual.sprite = doorSprite;
