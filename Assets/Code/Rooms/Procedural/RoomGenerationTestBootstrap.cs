@@ -1143,13 +1143,13 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
 
     private EnemyDeathNotifier CreateLinkedEnemy(Transform parent, Vector3 position, int index, IngredientData promisedReward)
     {
-        EnemyDeathNotifier linkedPrefab = promisedReward != null ? promisedReward.EnemyPrefab : null;
+        GameObject linkedPrefab = promisedReward != null ? promisedReward.EnemyPrefab : null;
         GameObject enemyObject;
         if (linkedPrefab != null)
         {
-            EnemyDeathNotifier instance = Instantiate(linkedPrefab, position, linkedPrefab.transform.rotation, parent);
+            GameObject instance = Instantiate(linkedPrefab, position, linkedPrefab.transform.rotation, parent);
             instance.name = $"{promisedReward.Id}_Enemy_{index}";
-            enemyObject = instance.gameObject;
+            enemyObject = instance;
         }
         else
         {

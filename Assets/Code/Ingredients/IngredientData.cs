@@ -10,12 +10,12 @@ public class IngredientData : ScriptableObject
     [SerializeField] private string description;
     [SerializeField] private CuisineType cuisine;
     [Tooltip("Enemy type that guards this ingredient when it is selected at a door.")]
-    [SerializeField] private EnemyDeathNotifier enemyPrefab;
+    [SerializeField] private GameObject linkedEnemyPrefab;
 
     public string Id => id;
     public string DisplayName => displayName;
     public Sprite Icon => icon;
     public string Description => description;
     public CuisineType Cuisine => cuisine;
-    public EnemyDeathNotifier EnemyPrefab => enemyPrefab;
+    public GameObject EnemyPrefab => linkedEnemyPrefab;
 }

@@ -17,3 +17,4 @@ MonoBehaviour:
   icon: {fileID: 1208114341188321758, guid: 400d16625af4f5a42b219a22f8ed7e27, type: 3}
   description: Ingredient reward.
   cuisine: 3
+  linkedEnemyPrefab: {fileID: 100000, guid: 63e0edc09a711ae42bd2a0b6fc241d45, type: 3}

@@ -181,6 +181,10 @@ public class RoomController : MonoBehaviour
             RiceEnemy rice = enemy.GetComponent<RiceEnemy>();
             if (rice != null)
                 rice.SetTarget(player);
+
+            MeashyEnemy meashy = enemy.GetComponent<MeashyEnemy>();
+            if (meashy != null)
+                meashy.SetTarget(player);
         }
 
         enemyWakeUpRoutine = null;

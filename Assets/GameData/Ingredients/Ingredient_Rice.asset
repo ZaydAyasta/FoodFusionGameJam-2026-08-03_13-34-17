@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9fc16a21d28bc244f889217352f478c5, type: 3}
-  m_Name: Ingredient_Meat
+  m_Name: Ingredient_Rice
   m_EditorClassIdentifier: Assembly-CSharp::IngredientData
-  id: meat
-  displayName: Meat
-  icon: {fileID: 8984754096541894249, guid: 4045555a741c08d459b9bc99e2352313, type: 3}
+  id: rice
+  displayName: Rice
+  icon: {fileID: 9135130128162984572, guid: 51199cc1091fa754b8d2477575de7ef8, type: 3}
   description: Ingredient reward.
-  cuisine: 0
-  linkedEnemyPrefab: {fileID: 100000, guid: 63e0edc09a711ae42bd2a0b6fc241d45, type: 3}
+  cuisine: 1
+  enemyPrefab: {fileID: 100000, guid: 41450f3a4cbf80843aa072e7ef0f4de5, type: 3}
