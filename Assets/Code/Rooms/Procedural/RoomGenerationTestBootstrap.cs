@@ -829,6 +829,28 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
         SetWorldScale(visualTransform, kitchenVisualWorldScale);
         AlignRendererCenterToPosition(visual, marker.bounds.center + room.transform.TransformVector(kitchenVisualOffset));
         SetKitchenVisualRotation(visualTransform, markerDirection);
+        EnsureKitchenInteractable(visual);
+    }
+
+    private static void EnsureKitchenInteractable(SpriteRenderer visual)
+    {
+        if (visual == null)
+            return;
+
+        BoxCollider2D collider = visual.GetComponent<BoxCollider2D>();
+        if (collider == null)
+            collider = visual.gameObject.AddComponent<BoxCollider2D>();
+
+        if (visual.sprite != null)
+        {
+            collider.size = visual.sprite.bounds.size;
+            collider.offset = visual.sprite.bounds.center;
+        }
+
+        collider.isTrigger = true;
+
+        if (visual.GetComponent<FusionKitchenInteractable>() == null)
+            visual.gameObject.AddComponent<FusionKitchenInteractable>();
     }
 
     private Renderer FindKitchenMarkerRenderer(ProceduralRoomLayout room)
