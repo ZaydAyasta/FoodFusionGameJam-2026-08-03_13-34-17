@@ -1153,25 +1153,30 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
 
     private IngredientData[] GetRewardPool()
     {
-        if (rewardPool != null && rewardPool.Length >= 2)
-            return rewardPool;
-
 #if UNITY_EDITOR
         string[] guids = AssetDatabase.FindAssets("t:IngredientData", new[] { "Assets/GameData/Ingredients" });
         List<IngredientData> ingredients = new();
+        List<IngredientData> ingredientsWithIcons = new();
         foreach (string guid in guids)
         {
             string path = AssetDatabase.GUIDToAssetPath(guid);
             IngredientData ingredient = AssetDatabase.LoadAssetAtPath<IngredientData>(path);
-            if (ingredient != null)
-                ingredients.Add(ingredient);
+            if (ingredient == null)
+                continue;
+
+            ingredients.Add(ingredient);
+            if (ingredient.Icon != null)
+                ingredientsWithIcons.Add(ingredient);
         }
 
-        if (ingredients.Count >= 2)
+        if (ingredientsWithIcons.Count > 0)
         {
-            rewardPool = ingredients.ToArray();
+            rewardPool = ingredientsWithIcons.ToArray();
             return rewardPool;
         }
+
+        if (ingredients.Count > 0)
+            return ingredients.ToArray();
 #endif
 
         return rewardPool ?? System.Array.Empty<IngredientData>();

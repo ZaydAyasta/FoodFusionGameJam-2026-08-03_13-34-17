@@ -56,6 +56,7 @@ public class RewardChoiceController : MonoBehaviour
             : CreateFallbackReward(transform);
 
         reward.transform.localPosition = Vector3.zero;
+        reward.transform.localRotation = Quaternion.Euler(-45f, 0f, 0f);
         reward.Initialize(ingredient, this, Color.white, requireInteract);
 
         if (firstReward == null)
