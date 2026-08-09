@@ -1,0 +1,912 @@
+fileFormatVersion: 2
+guid: ee911e74d467c0148b73cfe8dc14c03b
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -4128309923297256020
+    second: bread 1_0
+  - first:
+      213: 1896660022837474685
+    second: bread 1_1
+  - first:
+      213: 3703032034872782717
+    second: bread 1_2
+  - first:
+      213: 1527806038534197392
+    second: bread 1_3
+  - first:
+      213: -7975450844606459626
+    second: bread 1_4
+  - first:
+      213: -407029608663684094
+    second: bread 1_5
+  - first:
+      213: -7938462109471971723
+    second: bread 1_6
+  - first:
+      213: -3511272838352840555
+    second: bread 1_7
+  - first:
+      213: -8851606758317832577
+    second: bread 1_8
+  - first:
+      213: 6854098415406232693
+    second: bread 1_9
+  - first:
+      213: -6807289364002569082
+    second: bread 1_10
+  - first:
+      213: -7114046494332489184
+    second: bread 1_11
+  - first:
+      213: 8662669762428085688
+    second: bread 1_12
+  - first:
+      213: 5099961119689146635
+    second: bread 1_13
+  - first:
+      213: -804692546220243539
+    second: bread 1_14
+  - first:
+      213: -4856699515860805117
+    second: bread 1_15
+  - first:
+      213: -1825905052552635767
+    second: bread 1_16
+  - first:
+      213: -8727662222269607883
+    second: bread 1_17
+  - first:
+      213: -3277636864582480752
+    second: bread 1_18
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 4096
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 2
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: bread 1_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1623
+        width: 468
+        height: 425
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cad952b5ffb45b6c0800000000000000
+      internalID: -4128309923297256020
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bread 1_1
+      rect:
+        serializedVersion: 2
+        x: 468
+        y: 1623
+        width: 468
+        height: 425
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d7579e8ed3a425a10800000000000000
+      internalID: 1896660022837474685
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bread 1_2
+      rect:
+        serializedVersion: 2
+        x: 936
+        y: 1623
+        width: 468
+        height: 425
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d7feb762400d36330800000000000000
+      internalID: 3703032034872782717
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bread 1_3
+      rect:
+        serializedVersion: 2
+        x: 1404
+        y: 1623
+        width: 468
+        height: 425
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 09017845f7bd33510800000000000000
+      internalID: 1527806038534197392
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bread 1_4
+      rect:
+        serializedVersion: 2
+        x: 1872
+        y: 1623
+        width: 468
+        height: 425
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 61194ab66b1815190800000000000000
+      internalID: -7975450844606459626
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bread 1_5
+      rect:
+        serializedVersion: 2
+        x: 2340
+        y: 1623
+        width: 468
+        height: 425
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 20ce88a3ab0f95af0800000000000000
+      internalID: -407029608663684094
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bread 1_6
+      rect:
+        serializedVersion: 2
+        x: 2808
+        y: 1623
+        width: 468
+        height: 425
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 576660e65cae4d190800000000000000
+      internalID: -7938462109471971723
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bread 1_7
+      rect:
+        serializedVersion: 2
+        x: 3276
+        y: 1623
+        width: 468
+        height: 425
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 598508005f3754fc0800000000000000
+      internalID: -3511272838352840555
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bread 1_8
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1198
+        width: 468
+        height: 425
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f76c4071d86c82580800000000000000
+      internalID: -8851606758317832577
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bread 1_9
+      rect:
+        serializedVersion: 2
+        x: 468
+        y: 1198
+        width: 468
+        height: 425
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5743bd9b136ae1f50800000000000000
+      internalID: 6854098415406232693
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bread 1_10
+      rect:
+        serializedVersion: 2
+        x: 936
+        y: 1198
+        width: 468
+        height: 425
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6840557d366a781a0800000000000000
+      internalID: -6807289364002569082
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bread 1_11
+      rect:
+        serializedVersion: 2
+        x: 1404
+        y: 1198
+        width: 468
+        height: 425
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 022f2bdb764d54d90800000000000000
+      internalID: -7114046494332489184
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bread 1_12
+      rect:
+        serializedVersion: 2
+        x: 1872
+        y: 1198
+        width: 468
+        height: 425
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8b52b0c804cf73870800000000000000
+      internalID: 8662669762428085688
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bread 1_13
+      rect:
+        serializedVersion: 2
+        x: 2340
+        y: 1198
+        width: 468
+        height: 425
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b01006b1e93b6c640800000000000000
+      internalID: 5099961119689146635
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bread 1_14
+      rect:
+        serializedVersion: 2
+        x: 2808
+        y: 1198
+        width: 468
+        height: 425
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: da54325846825d4f0800000000000000
+      internalID: -804692546220243539
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bread 1_15
+      rect:
+        serializedVersion: 2
+        x: 3276
+        y: 1198
+        width: 468
+        height: 425
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 30a1e40b589899cb0800000000000000
+      internalID: -4856699515860805117
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bread 1_16
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 773
+        width: 468
+        height: 425
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 98a520d570519a6e0800000000000000
+      internalID: -1825905052552635767
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bread 1_17
+      rect:
+        serializedVersion: 2
+        x: 468
+        y: 773
+        width: 468
+        height: 425
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5301602337d11e680800000000000000
+      internalID: -8727662222269607883
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bread 1_18
+      rect:
+        serializedVersion: 2
+        x: 936
+        y: 773
+        width: 468
+        height: 425
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 09c06d723ae7382d0800000000000000
+      internalID: -3277636864582480752
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bread 1_19
+      rect:
+        serializedVersion: 2
+        x: 1404
+        y: 773
+        width: 468
+        height: 425
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 64a352a323b6de642be988b90a3f87f4
+      internalID: -1511632506
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bread 1_20
+      rect:
+        serializedVersion: 2
+        x: 1872
+        y: 773
+        width: 468
+        height: 425
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0ab01fdf06dcc7a419460094abc55db4
+      internalID: 560582055
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bread 1_21
+      rect:
+        serializedVersion: 2
+        x: 2340
+        y: 773
+        width: 468
+        height: 425
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a7d73bac7f45dd24b98c8cb8ab377f2a
+      internalID: 1688730856
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bread 1_22
+      rect:
+        serializedVersion: 2
+        x: 2808
+        y: 773
+        width: 468
+        height: 425
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3c4a158c5d917f947b741bb86147a235
+      internalID: 80002319
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bread 1_23
+      rect:
+        serializedVersion: 2
+        x: 3276
+        y: 773
+        width: 468
+        height: 425
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 99b7462fa6aee6e429dcac04d143c25d
+      internalID: -1417561568
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bread 1_24
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 348
+        width: 468
+        height: 425
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 72a403f8306768c4fb9ab89fc6398a18
+      internalID: 86409879
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bread 1_25
+      rect:
+        serializedVersion: 2
+        x: 468
+        y: 348
+        width: 468
+        height: 425
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 780935a029536c6479752bd8ebecd420
+      internalID: -324567548
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bread 1_26
+      rect:
+        serializedVersion: 2
+        x: 936
+        y: 348
+        width: 468
+        height: 425
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3b3ac6b424784894d94db47885984d27
+      internalID: 1379326980
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bread 1_27
+      rect:
+        serializedVersion: 2
+        x: 1404
+        y: 348
+        width: 468
+        height: 425
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 854b102bc9a576540bbf8a6a4983996e
+      internalID: -1221053632
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bread 1_28
+      rect:
+        serializedVersion: 2
+        x: 1872
+        y: 348
+        width: 468
+        height: 425
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2af60e5c4f9a4174c998dfaf0fc7d87e
+      internalID: 810741010
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bread 1_29
+      rect:
+        serializedVersion: 2
+        x: 2340
+        y: 348
+        width: 468
+        height: 425
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7697800513eed1949b5c46d31e99f296
+      internalID: 1177854750
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bread 1_30
+      rect:
+        serializedVersion: 2
+        x: 2808
+        y: 348
+        width: 468
+        height: 425
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8238c6388d5c029468577c81567fbcb6
+      internalID: -609142149
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bread 1_31
+      rect:
+        serializedVersion: 2
+        x: 3276
+        y: 348
+        width: 468
+        height: 425
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b5ff705945aa2fc45af884aa7351a862
+      internalID: 1191295701
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: c3af2a019ee586e46ac6bc95b4bd8937
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":468.0,"y":425.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      bread 1_0: -4128309923297256020
+      bread 1_1: 1896660022837474685
+      bread 1_10: -6807289364002569082
+      bread 1_11: -7114046494332489184
+      bread 1_12: 8662669762428085688
+      bread 1_13: 5099961119689146635
+      bread 1_14: -804692546220243539
+      bread 1_15: -4856699515860805117
+      bread 1_16: -1825905052552635767
+      bread 1_17: -8727662222269607883
+      bread 1_18: -3277636864582480752
+      bread 1_19: -1511632506
+      bread 1_2: 3703032034872782717
+      bread 1_20: 560582055
+      bread 1_21: 1688730856
+      bread 1_22: 80002319
+      bread 1_23: -1417561568
+      bread 1_24: 86409879
+      bread 1_25: -324567548
+      bread 1_26: 1379326980
+      bread 1_27: -1221053632
+      bread 1_28: 810741010
+      bread 1_29: 1177854750
+      bread 1_3: 1527806038534197392
+      bread 1_30: -609142149
+      bread 1_31: 1191295701
+      bread 1_4: -7975450844606459626
+      bread 1_5: -407029608663684094
+      bread 1_6: -7938462109471971723
+      bread 1_7: -3511272838352840555
+      bread 1_8: -8851606758317832577
+      bread 1_9: 6854098415406232693
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
