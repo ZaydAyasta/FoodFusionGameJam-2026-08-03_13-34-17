@@ -82,10 +82,10 @@ public class ProceduralRoomLayout : MonoBehaviour
         rightDoor = FindDoor("Der", "Right");
         downDoor = FindDoor("Abj", "Down");
         leftDoor = FindDoor("Izq", "Left");
-        cameraLimit = GetComponentInChildren<PolygonCollider2D>(true);
+        cameraLimit = FindCameraLimit();
         enemySpawnPoints = FindSpawnChildren("Enemy_Spawns");
         rewardSpawnPoint = FindByNameContains("Reward_Spawn");
-        kitchenSpawnPoint = FindByNameContains("Kitchen_Spawn");
+        kitchenSpawnPoint = FindKitchenSpawnPoint();
         decorationSpawnPoints = FindSpawnChildren("Decorations_Spawn");
     }
 
@@ -100,7 +100,9 @@ public class ProceduralRoomLayout : MonoBehaviour
         if (leftDoor == null)
             leftDoor = FindDoor("Izq", "Left");
         if (cameraLimit == null)
-            cameraLimit = GetComponentInChildren<PolygonCollider2D>(true);
+            cameraLimit = FindCameraLimit();
+        if (kitchenSpawnPoint == null)
+            kitchenSpawnPoint = FindKitchenSpawnPoint();
     }
 
     private Transform FindDoor(params string[] directionTokens)
@@ -131,6 +133,18 @@ public class ProceduralRoomLayout : MonoBehaviour
         return null;
     }
 
+    private PolygonCollider2D FindCameraLimit()
+    {
+        PolygonCollider2D[] colliders = GetComponentsInChildren<PolygonCollider2D>(true);
+        foreach (PolygonCollider2D candidate in colliders)
+        {
+            if (candidate != null && candidate.name.Contains("CameraLimit", StringComparison.OrdinalIgnoreCase))
+                return candidate;
+        }
+
+        return colliders.Length > 0 ? colliders[0] : null;
+    }
+
     private Transform FindByNameContains(string token)
     {
         Transform[] children = GetComponentsInChildren<Transform>(true);
@@ -141,6 +155,33 @@ public class ProceduralRoomLayout : MonoBehaviour
         }
 
         return null;
+    }
+
+    private Transform FindKitchenSpawnPoint()
+    {
+        Transform kitchenSpawn = FindByNameContains("Kitchen_Spawn");
+        if (kitchenSpawn != null)
+            return kitchenSpawn;
+
+        Transform[] children = GetComponentsInChildren<Transform>(true);
+        foreach (Transform child in children)
+        {
+            if (child == transform)
+                continue;
+
+            if (IsKitchenMarkerName(child.name))
+                return child;
+        }
+
+        return null;
+    }
+
+    private static bool IsKitchenMarkerName(string objectName)
+    {
+        return objectName.Equals("co_up", StringComparison.OrdinalIgnoreCase)
+            || objectName.Equals("co_down", StringComparison.OrdinalIgnoreCase)
+            || objectName.Equals("co_left", StringComparison.OrdinalIgnoreCase)
+            || objectName.Equals("co_right", StringComparison.OrdinalIgnoreCase);
     }
 
     private Transform[] FindSpawnChildren(string parentNameToken)

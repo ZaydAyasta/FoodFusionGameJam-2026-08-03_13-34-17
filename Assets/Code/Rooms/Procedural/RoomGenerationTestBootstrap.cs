@@ -72,6 +72,11 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
     [SerializeField] private Vector3 leftDoorVisualOffset = new(0.5f, -0.06f, -1.21f);
     [SerializeField] private Vector3 doorVisualWorldScale = new(0.73f, 0.72f, 0.73f);
 
+    [Header("Kitchen Visuals")]
+    [SerializeField] private Sprite kitchenSprite;
+    [SerializeField] private Vector3 kitchenVisualWorldScale = new(0.1f, 0.1f, 0.1f);
+    [SerializeField] private Vector3 kitchenVisualOffset = new(0f, 0f, -0.25f);
+
     [Header("Camera")]
     [SerializeField] private CinemachineCamera cinemachineCamera;
     [SerializeField] private CinemachineConfiner2D confiner;
@@ -80,6 +85,8 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
     [SerializeField] private bool autoFitOrthographicSizeToCameraLimit = true;
     [SerializeField] private float cameraLimitPadding = 0.35f;
     [SerializeField] private float minimumOrthographicSize = 3.5f;
+    [SerializeField] private float confinerDamping = 0f;
+    [SerializeField] private float confinerSlowingDistance = 0f;
     [SerializeField] private string[] rectangularConfinerRoomNameTokens = { "Pro_Room_Tpye3", "Pro_Room_Type3" };
 
     private readonly List<ProceduralRoomCandidate> candidates = new();
@@ -92,6 +99,9 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
     private Material doorVisualMaterial;
     private string doorVisualSortingLayer = "Default";
     private int doorVisualSortingOrder;
+    private Material kitchenVisualMaterial;
+    private string kitchenVisualSortingLayer = "Default";
+    private int kitchenVisualSortingOrder;
     private RoomDirection? blockedExitDirection;
     private RoomController activeRoomController;
     private float nextBatchAt = -1f;
@@ -103,6 +113,7 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
     {
         ResolveSceneReferences();
         ResolveDoorVisualReferences();
+        ResolveKitchenVisualReferences();
 
         if (currentRoom == null || roomTemplates == null || roomTemplates.Length == 0)
         {
@@ -117,7 +128,7 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
         {
             template.AutoWire();
             EnsureDoorVisuals(template);
-            template.SetKitchenVisible(false);
+            SetKitchenVisible(template, false);
         }
 
         EnsurePlayerColliderForTestScene();
@@ -289,6 +300,35 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
         return null;
     }
 
+    private void ResolveKitchenVisualReferences()
+    {
+#if UNITY_EDITOR
+        if (kitchenSprite == null)
+        {
+            UnityEngine.Object[] kitchenAssets = AssetDatabase.LoadAllAssetsAtPath("Assets/Images/Backgrounds/COCINA.png");
+            foreach (UnityEngine.Object asset in kitchenAssets)
+            {
+                if (asset is Sprite sprite)
+                {
+                    kitchenSprite = sprite;
+                    break;
+                }
+            }
+        }
+#endif
+
+        if (currentRoom == null)
+            return;
+
+        Renderer marker = FindKitchenMarkerRenderer(currentRoom);
+        if (marker is SpriteRenderer spriteRenderer)
+        {
+            kitchenVisualMaterial = spriteRenderer.sharedMaterial;
+            kitchenVisualSortingLayer = spriteRenderer.sortingLayerName;
+            kitchenVisualSortingOrder = spriteRenderer.sortingOrder;
+        }
+    }
+
     private void GenerateCandidateBatch()
     {
         ClearGeneratedCandidates();
@@ -312,7 +352,7 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
 
         EnsureDoorVisuals(currentRoom);
         currentRoom.ShowOnlyDoors(activeExitDirections);
-        currentRoom.SetKitchenVisible(IsKitchenRoom(currentRoomNumber));
+        SetKitchenVisible(currentRoom, IsKitchenRoom(currentRoomNumber));
         lastGeneratedExitCount = activeExitDirections.Count;
     }
 
@@ -372,7 +412,7 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
         candidate.AutoWire();
         EnsureDoorVisuals(candidate);
         candidate.ShowOnlyDoors(new[] { entryDirection });
-        candidate.SetKitchenVisible(IsKitchenRoom(currentRoomNumber + 1));
+        SetKitchenVisible(candidate, IsKitchenRoom(currentRoomNumber + 1));
         SetFrontWallVisible(candidate, false);
 
         Vector3 offset = sourceDoor.position - candidate.GetDoor(entryDirection).position;
@@ -425,13 +465,16 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
         activeRoomController = room.GetComponent<RoomController>();
         EnsureDoorVisuals(room);
         EnsureCameraFollowsPlayer();
-        room.SetKitchenVisible(IsKitchenRoom(currentRoomNumber));
+        SetKitchenVisible(room, IsKitchenRoom(currentRoomNumber));
         ConfigureCollisionBlocks(room);
 
         Collider2D boundingShape = GetConfinerShapeForRoom(room);
         if (confiner != null && boundingShape != null)
         {
+            ApplyOrthographicSize(room);
             confiner.BoundingShape2D = boundingShape;
+            confiner.Damping = confinerDamping;
+            confiner.SlowingDistance = confinerSlowingDistance;
             confiner.InvalidateBoundingShapeCache();
             confiner.InvalidateLensCache();
         }
@@ -535,6 +578,129 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
         EnsureDoorVisual(room, RoomDirection.Right, "door_0 (1)", rightDoorVisualOffset);
         EnsureDoorVisual(room, RoomDirection.Down, "door_0 (2)", downDoorVisualOffset);
         EnsureDoorVisual(room, RoomDirection.Left, "door_0 (3)", leftDoorVisualOffset);
+    }
+
+    private void SetKitchenVisible(ProceduralRoomLayout room, bool visible)
+    {
+        if (room == null)
+            return;
+
+        EnsureKitchenVisual(room, visible);
+        room.SetKitchenVisible(visible);
+    }
+
+    private void EnsureKitchenVisual(ProceduralRoomLayout room, bool visible)
+    {
+        Renderer marker = FindKitchenMarkerRenderer(room);
+        RoomDirection? markerDirection = GetKitchenMarkerDirection(marker);
+        SpriteRenderer visual = FindRoomDoorVisual(room, "ProceduralKitchenSprite");
+        if (visual == null)
+        {
+            GameObject visualObject = new("ProceduralKitchenSprite");
+            visual = visualObject.AddComponent<SpriteRenderer>();
+        }
+
+        visual.enabled = visible && kitchenSprite != null && marker != null;
+        if (!visual.enabled)
+            return;
+
+        visual.sprite = kitchenSprite;
+        if (kitchenVisualMaterial != null)
+            visual.sharedMaterial = kitchenVisualMaterial;
+
+        visual.sortingLayerName = kitchenVisualSortingLayer;
+        visual.sortingOrder = kitchenVisualSortingOrder + 1;
+
+        Transform visualTransform = visual.transform;
+        visualTransform.SetParent(room.transform, true);
+        visualTransform.position = marker.bounds.center + room.transform.TransformVector(kitchenVisualOffset);
+        SetKitchenVisualRotation(visualTransform, markerDirection);
+        SetWorldScale(visualTransform, kitchenVisualWorldScale);
+        AlignRendererCenterToPosition(visual, marker.bounds.center + room.transform.TransformVector(kitchenVisualOffset));
+        SetKitchenVisualRotation(visualTransform, markerDirection);
+    }
+
+    private Renderer FindKitchenMarkerRenderer(ProceduralRoomLayout room)
+    {
+        if (room == null)
+            return null;
+
+        Renderer namedMarker = FindNamedKitchenMarkerRenderer(room);
+        if (namedMarker != null)
+            return namedMarker;
+
+        if (room.KitchenSpawnPoint == null)
+            return null;
+
+        Renderer[] renderers = room.KitchenSpawnPoint.GetComponentsInChildren<Renderer>(true);
+        foreach (Renderer renderer in renderers)
+        {
+            if (renderer is SpriteRenderer spriteRenderer && spriteRenderer.color.r > 0.7f && spriteRenderer.color.g < 0.25f)
+                return renderer;
+        }
+
+        foreach (Renderer renderer in renderers)
+        {
+            if (renderer != null)
+                return renderer;
+        }
+
+        return null;
+    }
+
+    private Renderer FindNamedKitchenMarkerRenderer(ProceduralRoomLayout room)
+    {
+        Renderer[] renderers = room.GetComponentsInChildren<Renderer>(true);
+        foreach (Renderer renderer in renderers)
+        {
+            if (renderer != null && GetKitchenMarkerDirection(renderer).HasValue)
+                return renderer;
+        }
+
+        return null;
+    }
+
+    private static RoomDirection? GetKitchenMarkerDirection(Component marker)
+    {
+        if (marker == null)
+            return null;
+
+        string markerName = marker.name;
+        if (markerName.Equals("co_up", System.StringComparison.OrdinalIgnoreCase))
+            return RoomDirection.Up;
+        if (markerName.Equals("co_right", System.StringComparison.OrdinalIgnoreCase))
+            return RoomDirection.Right;
+        if (markerName.Equals("co_down", System.StringComparison.OrdinalIgnoreCase))
+            return RoomDirection.Down;
+        if (markerName.Equals("co_left", System.StringComparison.OrdinalIgnoreCase))
+            return RoomDirection.Left;
+
+        return null;
+    }
+
+    private static void SetKitchenVisualRotation(Transform visualTransform, RoomDirection? direction)
+    {
+        Vector3 angles = visualTransform.eulerAngles;
+        angles.x = 0f;
+        angles.y = 0f;
+        angles.z = direction switch
+        {
+            RoomDirection.Up => 0f,
+            RoomDirection.Right => -90f,
+            RoomDirection.Down => -180f,
+            RoomDirection.Left => 90f,
+            _ => 0f
+        };
+
+        visualTransform.eulerAngles = angles;
+    }
+
+    private static void AlignRendererCenterToPosition(Renderer renderer, Vector3 targetCenter)
+    {
+        if (renderer == null)
+            return;
+
+        renderer.transform.position += targetCenter - renderer.bounds.center;
     }
 
     private void EnsureDoorVisual(ProceduralRoomLayout room, RoomDirection direction, string prototypeName, Vector3 localOffset)
@@ -1018,6 +1184,16 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
         return Mathf.Max(0.5f, Mathf.Min(requestedSize, Mathf.Max(fittedSize, minimumOrthographicSize)));
     }
 
+    private void ApplyOrthographicSize(ProceduralRoomLayout room)
+    {
+        if (cinemachineCamera == null || room == null)
+            return;
+
+        LensSettings lens = cinemachineCamera.Lens;
+        lens.OrthographicSize = GetOrthographicSizeForRoom(room);
+        cinemachineCamera.Lens = lens;
+    }
+
     private void EnsureCameraFollowsPlayer()
     {
         if (cinemachineCamera == null)
@@ -1123,7 +1299,7 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
             if (template != null && template.gameObject != currentRoom.gameObject)
             {
                 template.HideAllDoors();
-                template.SetKitchenVisible(false);
+                SetKitchenVisible(template, false);
                 hiddenTemplates.Add(template);
                 template.gameObject.SetActive(false);
             }
