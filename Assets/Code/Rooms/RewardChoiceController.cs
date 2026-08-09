@@ -1,10 +1,12 @@
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 public class RewardChoiceController : MonoBehaviour
 {
     [SerializeField] private IngredientReward rewardPrefab;
-    [SerializeField] private float optionSpacing = 1.4f;
-    [SerializeField] private bool requireInteract = true;
+    [SerializeField] private bool requireInteract;
 
     private RoomController room;
     private IngredientReward firstReward;
@@ -13,11 +15,18 @@ public class RewardChoiceController : MonoBehaviour
 
     public bool Claimed => claimed;
 
+    private void Awake()
+    {
+#if UNITY_EDITOR
+        if (rewardPrefab == null)
+            rewardPrefab = AssetDatabase.LoadAssetAtPath<IngredientReward>("Assets/Prefabs/Rewards/RiceReward.prefab");
+#endif
+    }
+
     public void Initialize(RoomController owner, IngredientData first, IngredientData second)
     {
         room = owner;
-        SpawnReward(first, -optionSpacing * 0.5f, new Color(1f, 0.86f, 0.2f));
-        SpawnReward(second, optionSpacing * 0.5f, new Color(0.35f, 0.85f, 1f));
+        SpawnReward(first);
     }
 
     public void Claim(IngredientReward selected)
@@ -37,7 +46,7 @@ public class RewardChoiceController : MonoBehaviour
         Destroy(gameObject);
     }
 
-    private void SpawnReward(IngredientData ingredient, float xOffset, Color fallbackColor)
+    private void SpawnReward(IngredientData ingredient)
     {
         if (ingredient == null)
             return;
@@ -46,8 +55,8 @@ public class RewardChoiceController : MonoBehaviour
             ? Instantiate(rewardPrefab, transform)
             : CreateFallbackReward(transform);
 
-        reward.transform.localPosition = new Vector3(xOffset, 0f, 0f);
-        reward.Initialize(ingredient, this, fallbackColor, requireInteract);
+        reward.transform.localPosition = Vector3.zero;
+        reward.Initialize(ingredient, this, Color.white, requireInteract);
 
         if (firstReward == null)
             firstReward = reward;
@@ -60,10 +69,34 @@ public class RewardChoiceController : MonoBehaviour
         GameObject rewardObject = new("IngredientReward");
         rewardObject.transform.SetParent(parent, false);
         SpriteRenderer renderer = rewardObject.AddComponent<SpriteRenderer>();
-        renderer.sprite = CreateFallbackSprite();
-        CircleCollider2D collider = rewardObject.AddComponent<CircleCollider2D>();
-        collider.radius = 0.35f;
+        renderer.sprite = LoadRiceSprite();
+        if (renderer.sprite == null)
+            renderer.sprite = CreateFallbackSprite();
+
+        BoxCollider2D collider = rewardObject.AddComponent<BoxCollider2D>();
+        collider.size = Vector2.one;
+        collider.isTrigger = true;
         return rewardObject.AddComponent<IngredientReward>();
+    }
+
+    private static Sprite LoadRiceSprite()
+    {
+#if UNITY_EDITOR
+        Object[] assets = AssetDatabase.LoadAllAssetsAtPath("Assets/Images/rice.png");
+        foreach (Object asset in assets)
+        {
+            if (asset is Sprite sprite && sprite.name == "rice_0")
+                return sprite;
+        }
+
+        foreach (Object asset in assets)
+        {
+            if (asset is Sprite sprite)
+                return sprite;
+        }
+#endif
+
+        return null;
     }
 
     private static Sprite CreateFallbackSprite()

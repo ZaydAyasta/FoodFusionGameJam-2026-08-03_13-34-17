@@ -22,6 +22,7 @@ public class IngredientReward : MonoBehaviour
             spriteRenderer = GetComponent<SpriteRenderer>();
 
         RefreshVisual();
+        FitSquareColliderToSprite();
     }
 
     private void Update()
@@ -39,6 +40,7 @@ public class IngredientReward : MonoBehaviour
         owner = choiceOwner;
         requireInteract = useInteract;
         RefreshVisual(fallbackColor);
+        FitSquareColliderToSprite();
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -87,6 +89,22 @@ public class IngredientReward : MonoBehaviour
             return;
         }
 
-        spriteRenderer.color = fallbackColor;
+        spriteRenderer.color = Color.white;
+    }
+
+    private void FitSquareColliderToSprite()
+    {
+        if (spriteRenderer == null || spriteRenderer.sprite == null)
+            return;
+
+        BoxCollider2D box = GetComponent<BoxCollider2D>();
+        if (box == null)
+            return;
+
+        Bounds spriteBounds = spriteRenderer.sprite.bounds;
+        float side = Mathf.Max(spriteBounds.size.x, spriteBounds.size.y);
+        box.size = new Vector2(side, side);
+        box.offset = spriteBounds.center;
+        box.isTrigger = true;
     }
 }

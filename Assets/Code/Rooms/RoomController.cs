@@ -240,7 +240,7 @@ public class RoomController : MonoBehaviour
 
     private bool ShouldSpawnReward()
     {
-        return hadEnemiesInCombat && !rewardSpawned && !rewardClaimed && possibleRewards != null && possibleRewards.Length >= 2;
+        return hadEnemiesInCombat && !rewardSpawned && !rewardClaimed && possibleRewards != null && possibleRewards.Length >= 1;
     }
 
     private void SpawnRewardChoice()
@@ -250,17 +250,16 @@ public class RoomController : MonoBehaviour
 
         rewardSpawned = true;
         Transform spawnPoint = rewardSpawnPoint != null ? rewardSpawnPoint : transform;
-        IngredientData first = possibleRewards[0];
-        IngredientData second = possibleRewards[1];
+        IngredientData reward = possibleRewards[0];
 
-        if (possibleRewards.Length > 2)
-            PickTwoRewards(out first, out second);
+        if (possibleRewards.Length > 1)
+            reward = possibleRewards[Random.Range(0, possibleRewards.Length)];
 
         activeRewardChoice = rewardChoicePrefab != null
             ? Instantiate(rewardChoicePrefab, spawnPoint.position, Quaternion.identity, transform)
             : CreateFallbackRewardChoice(spawnPoint.position);
 
-        activeRewardChoice.Initialize(this, first, second);
+        activeRewardChoice.Initialize(this, reward, null);
     }
 
     private void PickTwoRewards(out IngredientData first, out IngredientData second)
