@@ -4,6 +4,15 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 public class RiceEnemy : MonoBehaviour
 {
+    [Header("Animation")]
+    [SerializeField] private Animator animator;
+
+    [Header("Hop Movement")]
+    [SerializeField] private float preJumpDuration = 0.2f;
+    [SerializeField] private float movementBurstDuration = 0.65f;
+    [SerializeField] private float postJumpDuration = 0.2f;
+    [SerializeField] private float restBetweenJumps = 0.35f;
+
     [SerializeField] private Transform target;
     [SerializeField] private float approachDistance = 3.2f;
     [SerializeField] private float retreatDistance = 2.2f;
@@ -33,12 +42,29 @@ public class RiceEnemy : MonoBehaviour
     private int maxBurstShots = 1;
     private int strafeDirection = 1;
     private bool attacking;
+    private HopPhase hopPhase;
+    private float hopPhaseEndsAt;
+    private float nextHopAt;
+
+    private static readonly int IsMovingParameter = Animator.StringToHash("IsMoving");
+    private static readonly int JumpParameter = Animator.StringToHash("Jump");
+    private static readonly int ChargeParameter = Animator.StringToHash("Charge");
+    private static readonly int AttackParameter = Animator.StringToHash("Attack");
+
+    private enum HopPhase
+    {
+        Resting,
+        Preparing,
+        Moving,
+        Landing
+    }
 
     private void Awake()
     {
         KeepPhysicsRootFlat();
         FitHitboxToSpriteSquare();
         EnsureRigidbody();
+        ResolveAnimator();
     }
 
     private void OnEnable()
@@ -48,6 +74,15 @@ public class RiceEnemy : MonoBehaviour
         strafeDirection = Random.value < 0.5f ? -1 : 1;
         nextStrafeSwitchAt = Time.time + Random.Range(minStrafeSwitchInterval, maxStrafeSwitchInterval);
         attacking = false;
+        hopPhase = HopPhase.Resting;
+        nextHopAt = Time.time + restBetweenJumps;
+        SetAnimatorBool(IsMovingParameter, false);
+    }
+
+    private void ResolveAnimator()
+    {
+        if (animator == null)
+            animator = GetComponentInChildren<Animator>(true);
     }
 
     private void EnsureRigidbody()
@@ -151,7 +186,7 @@ public class RiceEnemy : MonoBehaviour
         if (rb == null)
             return;
 
-        if (target == null || attacking)
+        if (target == null || attacking || hopPhase != HopPhase.Moving)
         {
             rb.linearVelocity = Vector2.zero;
             return;
@@ -189,15 +224,53 @@ public class RiceEnemy : MonoBehaviour
 
     private void Update()
     {
+        UpdateHopCycle();
+
         if (target == null || attacking || Time.time < nextShotAt)
             return;
 
         StartCoroutine(AttackRoutine());
     }
 
+    private void UpdateHopCycle()
+    {
+        if (target == null || attacking)
+            return;
+
+        switch (hopPhase)
+        {
+            case HopPhase.Resting when Time.time >= nextHopAt:
+                hopPhase = HopPhase.Preparing;
+                hopPhaseEndsAt = Time.time + Mathf.Max(0f, preJumpDuration);
+                SetAnimatorTrigger(JumpParameter);
+                break;
+
+            case HopPhase.Preparing when Time.time >= hopPhaseEndsAt:
+                hopPhase = HopPhase.Moving;
+                hopPhaseEndsAt = Time.time + Mathf.Max(0.05f, movementBurstDuration);
+                SetAnimatorBool(IsMovingParameter, true);
+                break;
+
+            case HopPhase.Moving when Time.time >= hopPhaseEndsAt:
+                StopMovement();
+                hopPhase = HopPhase.Landing;
+                hopPhaseEndsAt = Time.time + Mathf.Max(0f, postJumpDuration);
+                SetAnimatorBool(IsMovingParameter, false);
+                break;
+
+            case HopPhase.Landing when Time.time >= hopPhaseEndsAt:
+                hopPhase = HopPhase.Resting;
+                nextHopAt = Time.time + Mathf.Max(0f, restBetweenJumps);
+                break;
+        }
+    }
+
     public void SetTarget(Transform newTarget)
     {
         target = newTarget;
+        hopPhase = HopPhase.Resting;
+        nextHopAt = Time.time + Mathf.Max(0f, restBetweenJumps);
+        SetAnimatorBool(IsMovingParameter, false);
     }
 
     public void Configure(
@@ -229,6 +302,8 @@ public class RiceEnemy : MonoBehaviour
     private IEnumerator AttackRoutine()
     {
         attacking = true;
+        CancelHopForAttack();
+        SetAnimatorTrigger(ChargeParameter);
         float approachUntil = Time.time + preShotApproachDuration;
         while (Time.time < approachUntil && target != null)
         {
@@ -242,6 +317,7 @@ public class RiceEnemy : MonoBehaviour
 
         rb.linearVelocity = Vector2.zero;
         int shotsToFire = RollShotCount();
+        SetAnimatorTrigger(AttackParameter);
         for (int i = 0; i < shotsToFire; i++)
         {
             Shoot();
@@ -252,6 +328,46 @@ public class RiceEnemy : MonoBehaviour
         strafeDirection *= -1;
         nextShotAt = Time.time + Random.Range(minShootCooldown, maxShootCooldown);
         attacking = false;
+        hopPhase = HopPhase.Resting;
+        nextHopAt = Time.time + Mathf.Max(0f, restBetweenJumps);
+    }
+
+    private void CancelHopForAttack()
+    {
+        StopMovement();
+        SetAnimatorBool(IsMovingParameter, false);
+        hopPhase = HopPhase.Resting;
+    }
+
+    private void StopMovement()
+    {
+        if (rb != null)
+            rb.linearVelocity = Vector2.zero;
+    }
+
+    private void SetAnimatorBool(int parameterHash, bool value)
+    {
+        ResolveAnimator();
+        if (animator != null && HasAnimatorParameter(parameterHash, AnimatorControllerParameterType.Bool))
+            animator.SetBool(parameterHash, value);
+    }
+
+    private void SetAnimatorTrigger(int parameterHash)
+    {
+        ResolveAnimator();
+        if (animator != null && HasAnimatorParameter(parameterHash, AnimatorControllerParameterType.Trigger))
+            animator.SetTrigger(parameterHash);
+    }
+
+    private bool HasAnimatorParameter(int parameterHash, AnimatorControllerParameterType type)
+    {
+        foreach (AnimatorControllerParameter parameter in animator.parameters)
+        {
+            if (parameter.nameHash == parameterHash && parameter.type == type)
+                return true;
+        }
+
+        return false;
     }
 
     private int RollShotCount()
