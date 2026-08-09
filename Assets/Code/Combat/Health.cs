@@ -7,6 +7,7 @@ public class Health : MonoBehaviour, IDamageable
     [SerializeField] private float invulnerabilityDuration;
     [SerializeField] private bool destroyOnDeath;
 
+    private DamageFlash damageFlash;
     private float invulnerableUntil;
     private bool dead;
 
@@ -19,6 +20,10 @@ public class Health : MonoBehaviour, IDamageable
 
     private void Awake()
     {
+        damageFlash = GetComponent<DamageFlash>();
+        if (damageFlash == null)
+            damageFlash = gameObject.AddComponent<DamageFlash>();
+
         CurrentHealth = maxHealth;
         HealthChanged?.Invoke(CurrentHealth, maxHealth);
     }
@@ -29,6 +34,8 @@ public class Health : MonoBehaviour, IDamageable
             return;
 
         CurrentHealth = Mathf.Max(0f, CurrentHealth - amount);
+        damageFlash?.Flash();
+
         if (invulnerabilityDuration > 0f)
             invulnerableUntil = Time.time + invulnerabilityDuration;
 
