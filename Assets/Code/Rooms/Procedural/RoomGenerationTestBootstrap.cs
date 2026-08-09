@@ -36,6 +36,7 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
     [SerializeField] private float connectionGap;
     [SerializeField] private float commitOffsetFromDoor = 0.75f;
     [SerializeField] private Vector2 commitTriggerSize = new(1.25f, 1.25f);
+    [SerializeField] private float playerEntryPushDistance = 1.6f;
     [SerializeField] private float previousRoomDestroyDelay = 0.5f;
     [SerializeField] private float noRoomControllerNextBatchDelay = 1f;
     [SerializeField] private bool hideUnusedTemplates = true;
@@ -442,6 +443,7 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
         DestroyCommitTriggers();
         currentRoom.HideAllDoors();
         EnsureDoorVisuals(currentRoom);
+        MovePlayerInsideCommittedRoom(selectedCandidate, player);
         PrepareProceduralRoomCombat(currentRoom);
         SetCurrentRoom(currentRoom);
 
@@ -454,6 +456,30 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
         activeRoomController = currentRoom.GetComponent<RoomController>();
         waitingForRoomCompletion = true;
         nextBatchAt = Time.time + noRoomControllerNextBatchDelay;
+    }
+
+    private void MovePlayerInsideCommittedRoom(ProceduralRoomCandidate selectedCandidate, Transform player)
+    {
+        if (selectedCandidate == null || player == null || currentRoom == null)
+            return;
+
+        Transform entryDoor = currentRoom.GetDoor(selectedCandidate.EntryDirection);
+        if (entryDoor == null)
+            return;
+
+        Vector3 inwardDirection = GetDirectionVector(selectedCandidate.ExitDirectionFromPreviousRoom);
+        Vector3 targetPosition = entryDoor.position + inwardDirection * playerEntryPushDistance;
+        targetPosition.z = player.position.z;
+
+        Rigidbody2D playerBody = player.GetComponent<Rigidbody2D>();
+        if (playerBody != null)
+        {
+            playerBody.linearVelocity = Vector2.zero;
+            playerBody.position = targetPosition;
+        }
+
+        player.position = targetPosition;
+        Physics2D.SyncTransforms();
     }
 
     private void SetCurrentRoom(ProceduralRoomLayout room)
