@@ -18,12 +18,14 @@ public class ProceduralRoomLayout : MonoBehaviour
     [SerializeField] private Transform[] enemySpawnPoints;
     [SerializeField] private Transform rewardSpawnPoint;
     [SerializeField] private Transform kitchenSpawnPoint;
+    [SerializeField] private Transform shopSpawnPoint;
     [SerializeField] private Transform[] decorationSpawnPoints;
 
     public PolygonCollider2D CameraLimit => cameraLimit;
     public float CameraOrthographicSize => cameraOrthographicSize;
     public Transform RewardSpawnPoint => rewardSpawnPoint;
     public Transform KitchenSpawnPoint => kitchenSpawnPoint;
+    public Transform ShopSpawnPoint => shopSpawnPoint;
     public Transform[] EnemySpawnPoints => enemySpawnPoints;
     public Transform[] DecorationSpawnPoints => decorationSpawnPoints;
 
@@ -86,6 +88,7 @@ public class ProceduralRoomLayout : MonoBehaviour
         enemySpawnPoints = FindSpawnChildren("Enemy_Spawns");
         rewardSpawnPoint = FindByNameContains("Reward_Spawn");
         kitchenSpawnPoint = FindKitchenSpawnPoint();
+        shopSpawnPoint = FindByNameContains("ShopSpawn");
         decorationSpawnPoints = FindSpawnChildren("Decorations_Spawn");
     }
 
@@ -103,6 +106,8 @@ public class ProceduralRoomLayout : MonoBehaviour
             cameraLimit = FindCameraLimit();
         if (kitchenSpawnPoint == null)
             kitchenSpawnPoint = FindKitchenSpawnPoint();
+        if (shopSpawnPoint == null)
+            shopSpawnPoint = FindByNameContains("ShopSpawn");
     }
 
     private Transform FindDoor(params string[] directionTokens)

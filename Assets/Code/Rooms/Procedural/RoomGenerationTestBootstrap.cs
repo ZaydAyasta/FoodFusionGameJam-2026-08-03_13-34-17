@@ -78,6 +78,12 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
     [SerializeField] private Vector3 kitchenVisualWorldScale = new(0.1f, 0.1f, 0.1f);
     [SerializeField] private Vector3 kitchenVisualOffset = new(0f, 0f, -0.25f);
 
+    [Header("Shop Visuals")]
+    [SerializeField] private ShopVisual shopPrefab;
+    [SerializeField, Range(0f, 1f)] private float kitchenRoomShopChance = 0.65f;
+    [SerializeField] private Vector3 shopVisualOffset = new(0f, 0f, -0.25f);
+    [SerializeField] private Vector3 shopVisualEulerAngles = new(-45f, 0f, 0f);
+
     [Header("Camera")]
     [SerializeField] private CinemachineCamera cinemachineCamera;
     [SerializeField] private CinemachineConfiner2D confiner;
@@ -115,6 +121,7 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
         ResolveSceneReferences();
         ResolveDoorVisualReferences();
         ResolveKitchenVisualReferences();
+        ResolveShopReferences();
 
         if (currentRoom == null || roomTemplates == null || roomTemplates.Length == 0)
         {
@@ -130,6 +137,7 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
             template.AutoWire();
             EnsureDoorVisuals(template);
             SetKitchenVisible(template, false);
+            SetShopVisible(template, false, false, false);
         }
 
         EnsurePlayerColliderForTestScene();
@@ -352,6 +360,14 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
         }
     }
 
+    private void ResolveShopReferences()
+    {
+#if UNITY_EDITOR
+        if (shopPrefab == null)
+            shopPrefab = AssetDatabase.LoadAssetAtPath<ShopVisual>("Assets/Prefabs/Shops/Shop.prefab");
+#endif
+    }
+
     private void GenerateCandidateBatch()
     {
         ClearGeneratedCandidates();
@@ -376,6 +392,7 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
         EnsureDoorVisuals(currentRoom);
         currentRoom.ShowOnlyDoors(activeExitDirections);
         SetKitchenVisible(currentRoom, IsKitchenRoom(currentRoomNumber));
+        SetShopVisible(currentRoom, IsKitchenRoom(currentRoomNumber), false, true);
         lastGeneratedExitCount = activeExitDirections.Count;
     }
 
@@ -438,6 +455,7 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
         // just like their front wall. The anchors remain active for alignment.
         candidate.HideAllDoors();
         SetKitchenVisible(candidate, IsKitchenRoom(currentRoomNumber + 1));
+        SetShopVisible(candidate, IsKitchenRoom(currentRoomNumber + 1), true, false);
         SetFrontWallVisible(candidate, false);
 
         Vector3 offset = sourceDoor.position - candidate.GetDoor(entryDirection).position;
@@ -520,6 +538,7 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
         EnsureDoorVisuals(room);
         EnsureCameraFollowsPlayer();
         SetKitchenVisible(room, IsKitchenRoom(currentRoomNumber));
+        SetShopVisible(room, IsKitchenRoom(currentRoomNumber), false, true);
         ConfigureCollisionBlocks(room);
 
         Collider2D boundingShape = GetConfinerShapeForRoom(room);
@@ -641,6 +660,81 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
 
         EnsureKitchenVisual(room, visible);
         room.SetKitchenVisible(visible);
+    }
+
+    private void SetShopVisible(ProceduralRoomLayout room, bool canSpawnShop, bool rollChance, bool revealShop)
+    {
+        if (room == null)
+            return;
+
+        HideShopSpawnMarker(room);
+
+        ShopVisual existingShop = FindRoomShop(room);
+        if (!canSpawnShop)
+        {
+            if (existingShop != null)
+                existingShop.gameObject.SetActive(false);
+
+            return;
+        }
+
+        if (existingShop != null)
+        {
+            existingShop.gameObject.SetActive(revealShop);
+            PositionShop(room, existingShop.transform);
+            return;
+        }
+
+        if (!rollChance)
+            return;
+
+        if (Random.value > kitchenRoomShopChance)
+            return;
+
+        if (shopPrefab == null || room.ShopSpawnPoint == null)
+            return;
+
+        ShopVisual shop = Instantiate(shopPrefab, room.transform);
+        shop.name = "ProceduralShop";
+        PositionShop(room, shop.transform);
+        shop.gameObject.SetActive(revealShop);
+    }
+
+    private void PositionShop(ProceduralRoomLayout room, Transform shopTransform)
+    {
+        if (room == null || shopTransform == null || room.ShopSpawnPoint == null)
+            return;
+
+        shopTransform.position = room.ShopSpawnPoint.position + room.transform.TransformVector(shopVisualOffset);
+        shopTransform.rotation = Quaternion.Euler(shopVisualEulerAngles);
+    }
+
+    private static ShopVisual FindRoomShop(ProceduralRoomLayout room)
+    {
+        if (room == null)
+            return null;
+
+        ShopVisual[] shops = room.GetComponentsInChildren<ShopVisual>(true);
+        foreach (ShopVisual shop in shops)
+        {
+            if (shop != null && shop.name.Equals("ProceduralShop", System.StringComparison.OrdinalIgnoreCase))
+                return shop;
+        }
+
+        return null;
+    }
+
+    private static void HideShopSpawnMarker(ProceduralRoomLayout room)
+    {
+        if (room == null || room.ShopSpawnPoint == null)
+            return;
+
+        Renderer[] renderers = room.ShopSpawnPoint.GetComponentsInChildren<Renderer>(true);
+        foreach (Renderer renderer in renderers)
+        {
+            if (renderer != null)
+                renderer.enabled = false;
+        }
     }
 
     private void EnsureKitchenVisual(ProceduralRoomLayout room, bool visible)
@@ -1359,6 +1453,7 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
             {
                 template.HideAllDoors();
                 SetKitchenVisible(template, false);
+                SetShopVisible(template, false, false, false);
                 hiddenTemplates.Add(template);
                 template.gameObject.SetActive(false);
             }
