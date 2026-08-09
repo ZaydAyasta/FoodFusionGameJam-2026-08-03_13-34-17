@@ -13,10 +13,11 @@ GameObject:
   - component: {fileID: 610000}
   - component: {fileID: 500000}
   - component: {fileID: 600001}
+  - component: {fileID: 600002}
   - component: {fileID: 600003}
-  - component: {fileID: 194636761788299344}
+  - component: {fileID: 5914046269308927882}
   m_Layer: 0
-  m_Name: BreadNoodle
+  m_Name: Cheaser
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -33,7 +34,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.8, y: 0.8, z: 0.8}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 7788299797194607730}
   m_Father: {fileID: 0}
@@ -108,7 +109,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0.20688534, y: 0.11431742}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 1}
@@ -118,7 +119,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 4.67, y: 4.67}
+  m_Size: {x: 5.083771, y: 3.1809726}
   m_EdgeRadius: 0
 --- !u!50 &500000
 Rigidbody2D:
@@ -159,9 +160,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69c7998c110d22748837cd5a5b531bc1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Health
-  maxHealth: 4
+  maxHealth: 7
   invulnerabilityDuration: 0
   destroyOnDeath: 1
+--- !u!114 &600002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1df4b25f63838b4f958a2e181aada85, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FactionMember
+  faction: 1
 --- !u!114 &600003
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -174,8 +188,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7d1fc15eef246a4bbd934620753d3e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyDeathNotifier
-  populationWeight: 0
---- !u!114 &194636761788299344
+  populationWeight: -1
+--- !u!114 &5914046269308927882
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -184,34 +198,21 @@ MonoBehaviour:
   m_GameObject: {fileID: 100000}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8539b559bcb602c44bbdae2f8b02beea, type: 3}
+  m_Script: {fileID: 11500000, guid: e3a45c72934935b40bade2e98f937f31, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::BreadEnemy
+  m_EditorClassIdentifier: Assembly-CSharp::CheeseMinionEnemy
   animator: {fileID: 0}
   visualRenderer: {fileID: 0}
   spriteFacesRight: 0
-  preJumpDuration: 0.2
-  movementBurstDuration: 0.65
-  postJumpDuration: 0.2
-  restBetweenJumps: 0.35
-  moveSpeed: 1.45
-  approachDistance: 4.2
-  retreatDistance: 2.2
-  strafeSpeed: 1.25
-  strafeSwitchInterval: 0.7
-  target: {fileID: 0}
-  ringPrefab: {fileID: 211320256566257580, guid: a091681b41c7be64882011cfbe63ff86, type: 3}
-  projectileOrigin: {fileID: 0}
-  attackRange: 7.5
-  stationaryChargeDuration: 1.25
-  minRingsPerAttack: 1
-  maxRingsPerAttack: 2
-  delayBetweenRings: 0.65
-  attackCooldown: 3.2
-  ringSpeed: 5
-  ringDamage: 10
-  ringLifetime: 20
-  ringWallBounces: 3
+  birthDuration: 0.85
+  wanderSpeed: 1.35
+  minWanderDirectionDuration: 0.8
+  maxWanderDirectionDuration: 1.8
+  detectionDistance: 6
+  chaseSpeed: 4.25
+  loseTargetDistance: 8
+  contactDamage: 8
+  contactRadius: 0.45
 --- !u!1 &4414882099815170411
 GameObject:
   m_ObjectHideFlags: 0
@@ -240,7 +241,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0.3420201, y: 0, z: 0, w: 0.9396927}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.76, y: 0.76, z: 0.76}
+  m_LocalScale: {x: 1.19, y: 1.19, z: 1.19}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 400000}
@@ -255,7 +256,7 @@ Animator:
   m_GameObject: {fileID: 4414882099815170411}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 9396cd3a81d185f42841ae0f511cf79c, type: 2}
+  m_Controller: {fileID: 9100000, guid: e5c9d0cb0f3a4bb46b792280a47d1d64, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -316,7 +317,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 8
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -4128309923297256020, guid: ee911e74d467c0148b73cfe8dc14c03b, type: 3}
+  m_Sprite: {fileID: 1825435395, guid: 615bda0a82e178b4d81e501070b0a2b0, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

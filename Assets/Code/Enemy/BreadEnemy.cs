@@ -6,6 +6,8 @@ public class BreadEnemy : MonoBehaviour
 {
     [Header("Animation")]
     [SerializeField] private Animator animator;
+    [SerializeField] private SpriteRenderer visualRenderer;
+    [SerializeField] private bool spriteFacesRight = false;
 
     [Header("Hop Movement")]
     [SerializeField] private float preJumpDuration = 0.2f;
@@ -115,6 +117,8 @@ public class BreadEnemy : MonoBehaviour
     private void Update()
     {
         UpdateHopCycle();
+        if (target != null)
+            UpdateFacing(GetTargetCenter().x - GetEnemyCenter().x);
         if (target == null || attacking || Time.time < nextAttackAt)
             return;
 
@@ -246,6 +250,22 @@ public class BreadEnemy : MonoBehaviour
     {
         if (animator == null)
             animator = GetComponentInChildren<Animator>(true);
+        if (visualRenderer == null && animator != null)
+            visualRenderer = animator.GetComponentInChildren<SpriteRenderer>(true);
+        if (visualRenderer == null)
+            visualRenderer = GetComponentInChildren<SpriteRenderer>(true);
+    }
+
+    private void UpdateFacing(float horizontalDirection)
+    {
+        if (Mathf.Abs(horizontalDirection) <= 0.01f)
+            return;
+
+        ResolveAnimator();
+        if (visualRenderer != null)
+            visualRenderer.flipX = spriteFacesRight
+                ? horizontalDirection < 0f
+                : horizontalDirection > 0f;
     }
 
     private void SetAnimatorBool(int hash, bool value)

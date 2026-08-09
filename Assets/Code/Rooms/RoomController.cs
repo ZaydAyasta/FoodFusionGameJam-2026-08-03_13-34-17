@@ -20,6 +20,7 @@ public class RoomController : MonoBehaviour
     private bool hadEnemiesInCombat;
     private RewardChoiceController activeRewardChoice;
     private Coroutine enemyWakeUpRoutine;
+    private Transform activePlayer;
 
     public RoomState State { get; private set; } = RoomState.Inactive;
 
@@ -76,6 +77,7 @@ public class RoomController : MonoBehaviour
     {
         entered = true;
         State = RoomState.Combat;
+        activePlayer = playerInput.transform;
         aliveEnemies.Clear();
         SetDoorsClosed(true);
 
@@ -85,6 +87,7 @@ public class RoomController : MonoBehaviour
                 continue;
 
             enemy.gameObject.SetActive(true);
+            IgnorePhysicalCollisionsWithPlayer(enemy, activePlayer);
             enemy.Arm();
             enemy.Died -= HandleEnemyDied;
             enemy.Died += HandleEnemyDied;
@@ -121,6 +124,7 @@ public class RoomController : MonoBehaviour
         rewardClaimed = false;
         hadEnemiesInCombat = false;
         activeRewardChoice = null;
+        activePlayer = null;
         if (enemyWakeUpRoutine != null)
             StopCoroutine(enemyWakeUpRoutine);
 
@@ -147,6 +151,21 @@ public class RoomController : MonoBehaviour
 
         if (State == RoomState.Combat && aliveEnemies.Count == 0)
             CompleteCombat();
+    }
+
+    public bool RegisterSpawnedEnemy(EnemyDeathNotifier enemy)
+    {
+        if (enemy == null || State != RoomState.Combat)
+            return false;
+
+        enemy.gameObject.SetActive(true);
+        IgnorePhysicalCollisionsWithPlayer(enemy, activePlayer);
+        enemy.Arm();
+        enemy.Died -= HandleEnemyDied;
+        enemy.Died += HandleEnemyDied;
+        aliveEnemies.Add(enemy);
+        hadEnemiesInCombat = true;
+        return true;
     }
 
     private IEnumerator WakeEnemiesAfterInput(CharacterInput playerInput)
@@ -194,6 +213,14 @@ public class RoomController : MonoBehaviour
             BreadEnemy bread = enemy.GetComponent<BreadEnemy>();
             if (bread != null)
                 bread.SetTarget(player);
+
+            CheeseMinionEnemy cheese = enemy.GetComponent<CheeseMinionEnemy>();
+            if (cheese != null)
+                cheese.SetTarget(player);
+
+            MilkDropperEnemy dropper = enemy.GetComponent<MilkDropperEnemy>();
+            if (dropper != null)
+                dropper.SetCombatContext(player, this);
         }
 
         enemyWakeUpRoutine = null;
@@ -276,6 +303,28 @@ public class RoomController : MonoBehaviour
             : CreateFallbackRewardChoice(spawnPoint.position);
 
         activeRewardChoice.Initialize(this, promisedReward, null);
+    }
+
+    private static void IgnorePhysicalCollisionsWithPlayer(EnemyDeathNotifier enemy, Transform player)
+    {
+        if (enemy == null || player == null)
+            return;
+
+        Collider2D[] enemyColliders = enemy.GetComponentsInChildren<Collider2D>(true);
+        Collider2D[] playerColliders = player.GetComponentsInChildren<Collider2D>(true);
+        foreach (Collider2D enemyCollider in enemyColliders)
+        {
+            if (enemyCollider == null || enemyCollider.isTrigger)
+                continue;
+
+            foreach (Collider2D playerCollider in playerColliders)
+            {
+                if (playerCollider == null || playerCollider.isTrigger)
+                    continue;
+
+                Physics2D.IgnoreCollision(enemyCollider, playerCollider, true);
+            }
+        }
     }
 
     private RewardChoiceController CreateFallbackRewardChoice(Vector3 position)

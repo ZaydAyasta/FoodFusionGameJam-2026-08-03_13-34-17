@@ -202,6 +202,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MeashyEnemy
   animator: {fileID: 0}
+  visualRenderer: {fileID: 0}
+  spriteFacesRight: 0
   preJumpDuration: 0.2
   movementBurstDuration: 0.65
   postJumpDuration: 0.2
