@@ -36,7 +36,7 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
     [SerializeField] private float connectionGap;
     [SerializeField] private float commitOffsetFromDoor = 0.75f;
     [SerializeField] private Vector2 commitTriggerSize = new(1.25f, 1.25f);
-    [SerializeField] private float playerEntryPushDistance = 1.6f;
+    [SerializeField] private float playerEntryPushDistance = 2.2f;
     [SerializeField] private float previousRoomDestroyDelay = 0.5f;
     [SerializeField] private float noRoomControllerNextBatchDelay = 1f;
     [SerializeField] private bool hideUnusedTemplates = true;
@@ -504,6 +504,10 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
 
         player.position = targetPosition;
         Physics2D.SyncTransforms();
+
+        // El teleport ya termino; recien ahora se reactivan las colisiones
+        // proyectadas del cuarto al que acaba de entrar el jugador.
+        ConfigureCollisionBlocks(currentRoom);
     }
 
     private void SetCurrentRoom(ProceduralRoomLayout room)
