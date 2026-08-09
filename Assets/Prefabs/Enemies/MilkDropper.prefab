@@ -14,9 +14,9 @@ GameObject:
   - component: {fileID: 500000}
   - component: {fileID: 600001}
   - component: {fileID: 600003}
-  - component: {fileID: 194636761788299344}
+  - component: {fileID: 6632485116214682958}
   m_Layer: 0
-  m_Name: BreadNoodle
+  m_Name: MilkDropper
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -36,6 +36,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7788299797194607730}
+  - {fileID: 3852667372518991844}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!58 &580000
@@ -45,7 +46,7 @@ CircleCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 100000}
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 3
   m_Density: 1
   m_Material: {fileID: 0}
@@ -108,7 +109,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0.6250001, y: 1.2500002}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 1}
@@ -118,7 +119,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 4.67, y: 4.67}
+  m_Size: {x: 3.4200003, y: 7.1700006}
   m_EdgeRadius: 0
 --- !u!50 &500000
 Rigidbody2D:
@@ -175,7 +176,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyDeathNotifier
   populationWeight: 0
---- !u!114 &194636761788299344
+--- !u!114 &6632485116214682958
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -184,34 +185,50 @@ MonoBehaviour:
   m_GameObject: {fileID: 100000}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8539b559bcb602c44bbdae2f8b02beea, type: 3}
+  m_Script: {fileID: 11500000, guid: dd36b7287552f544cb6b73c35f8b4074, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::BreadEnemy
+  m_EditorClassIdentifier: Assembly-CSharp::MilkDropperEnemy
+  damageHitbox: {fileID: 0}
   animator: {fileID: 0}
-  visualRenderer: {fileID: 0}
-  spriteFacesRight: 0
-  preJumpDuration: 0.2
-  movementBurstDuration: 0.65
-  postJumpDuration: 0.2
-  restBetweenJumps: 0.35
-  moveSpeed: 1.45
-  approachDistance: 4.2
-  retreatDistance: 2.2
-  strafeSpeed: 1.25
-  strafeSwitchInterval: 0.7
-  target: {fileID: 0}
-  ringPrefab: {fileID: 211320256566257580, guid: a091681b41c7be64882011cfbe63ff86, type: 3}
-  projectileOrigin: {fileID: 0}
-  attackRange: 7.5
-  stationaryChargeDuration: 1.25
-  minRingsPerAttack: 1
-  maxRingsPerAttack: 2
-  delayBetweenRings: 0.65
-  attackCooldown: 3.2
-  ringSpeed: 5
-  ringDamage: 10
-  ringLifetime: 20
-  ringWallBounces: 3
+  cheeseMinionPrefab: {fileID: 100000, guid: 7bc43bf62b20b9c429d62e0c4cb8449c, type: 3}
+  minInitialDroppers: 1
+  maxInitialDroppers: 2
+  dropOrigin: {fileID: 3852667372518991844}
+  minDropInterval: 8
+  maxDropInterval: 12
+  maxLivingSummons: 3
+  spawnRadius: 0.45
+--- !u!1 &324290560931158509
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3852667372518991844}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3852667372518991844
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 324290560931158509}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1.5625, y: -1.25, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 400000}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4414882099815170411
 GameObject:
   m_ObjectHideFlags: 0
@@ -255,7 +272,7 @@ Animator:
   m_GameObject: {fileID: 4414882099815170411}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 9396cd3a81d185f42841ae0f511cf79c, type: 2}
+  m_Controller: {fileID: 9100000, guid: 2f1693ccf9807b144bc55b7bf254f12a, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -316,7 +333,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 8
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -4128309923297256020, guid: ee911e74d467c0148b73cfe8dc14c03b, type: 3}
+  m_Sprite: {fileID: 6414126581136614343, guid: 4aa4f5174858948488a470a3f9bbe45f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

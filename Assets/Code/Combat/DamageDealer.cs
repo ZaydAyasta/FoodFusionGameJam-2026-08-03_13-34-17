@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class DamageDealer : MonoBehaviour
@@ -5,6 +6,8 @@ public class DamageDealer : MonoBehaviour
     [SerializeField] private CombatFaction faction;
     [SerializeField] private float damage = 1f;
     [SerializeField] private bool destroyOnDamage;
+
+    public event Action<GameObject> DamageApplied;
 
     public void Configure(CombatFaction ownerFaction, float damageAmount, bool destroyAfterHit)
     {
@@ -34,6 +37,7 @@ public class DamageDealer : MonoBehaviour
             return;
 
         damageable.TakeDamage(damage);
+        DamageApplied?.Invoke(target);
 
         if (destroyOnDamage)
             Destroy(gameObject);

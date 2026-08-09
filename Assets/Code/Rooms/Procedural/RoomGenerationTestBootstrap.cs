@@ -1147,10 +1147,33 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
         HideSpawnMarkers(spawnPoints);
 
         int enemyCount = GetActiveEnemySpawnerCount(spawnPoints.Length, promisedReward);
+        GameObject primaryPrefab = promisedReward != null ? promisedReward.EnemyPrefab : null;
+        MilkDropperEnemy dropperProfile = primaryPrefab != null
+            ? primaryPrefab.GetComponent<MilkDropperEnemy>()
+            : null;
+        int initialDropperCount = dropperProfile != null && dropperProfile.CheeseMinionPrefab != null
+            ? dropperProfile.RollInitialDropperCount(enemyCount)
+            : enemyCount;
+
+        List<int> spawnOrder = new();
+        for (int i = 0; i < enemyCount; i++)
+            spawnOrder.Add(i);
+        Shuffle(spawnOrder);
+
         List<EnemyDeathNotifier> enemies = new();
         for (int i = 0; i < enemyCount; i++)
         {
-            EnemyDeathNotifier enemy = CreateLinkedEnemy(room.transform, spawnPoints[i].position, i, promisedReward);
+            bool spawnDropper = dropperProfile == null || i < initialDropperCount;
+            GameObject encounterPrefab = spawnDropper
+                ? primaryPrefab
+                : dropperProfile.CheeseMinionPrefab;
+            int spawnIndex = spawnOrder[i];
+            EnemyDeathNotifier enemy = CreateLinkedEnemy(
+                room.transform,
+                spawnPoints[spawnIndex].position,
+                i,
+                promisedReward,
+                encounterPrefab);
             enemy.gameObject.SetActive(false);
             enemies.Add(enemy);
         }
@@ -1185,14 +1208,22 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
         return fallback != null ? fallback.PopulationWeight : 0;
     }
 
-    private EnemyDeathNotifier CreateLinkedEnemy(Transform parent, Vector3 position, int index, IngredientData promisedReward)
+    private EnemyDeathNotifier CreateLinkedEnemy(
+        Transform parent,
+        Vector3 position,
+        int index,
+        IngredientData promisedReward,
+        GameObject prefabOverride = null)
     {
-        GameObject linkedPrefab = promisedReward != null ? promisedReward.EnemyPrefab : null;
+        GameObject linkedPrefab = prefabOverride != null
+            ? prefabOverride
+            : promisedReward != null ? promisedReward.EnemyPrefab : null;
         GameObject enemyObject;
         if (linkedPrefab != null)
         {
             GameObject instance = Instantiate(linkedPrefab, position, linkedPrefab.transform.rotation, parent);
-            instance.name = $"{promisedReward.Id}_Enemy_{index}";
+            string enemyId = promisedReward != null ? promisedReward.Id : linkedPrefab.name;
+            instance.name = $"{enemyId}_Enemy_{index}";
             enemyObject = instance;
         }
         else
@@ -1203,7 +1234,9 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
         if (health == null)
             health = enemyObject.AddComponent<Health>();
 
-        health.Configure(riceEnemyHitsToKill, true, true);
+        bool usesRiceFallback = linkedPrefab == null;
+        float configuredHealth = usesRiceFallback ? riceEnemyHitsToKill : health.MaxHealth;
+        health.Configure(configuredHealth, true, true);
 
         FactionMember faction = enemyObject.GetComponent<FactionMember>();
         if (faction == null)
@@ -1252,26 +1285,43 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
 
     private void EnsureEnemyHitbox(GameObject enemyObject)
     {
-        BoxCollider2D hitbox = enemyObject.GetComponent<BoxCollider2D>();
-        if (hitbox == null)
-            hitbox = enemyObject.AddComponent<BoxCollider2D>();
+        MilkDropperEnemy milkDropper = enemyObject.GetComponent<MilkDropperEnemy>();
+        if (milkDropper != null)
+        {
+            milkDropper.ConfigureDamageHitbox();
+            return;
+        }
 
-        hitbox.isTrigger = false;
-        hitbox.offset = Vector2.zero;
+        BoxCollider2D hitbox = enemyObject.GetComponent<BoxCollider2D>();
         RiceEnemy riceEnemy = enemyObject.GetComponent<RiceEnemy>();
         if (riceEnemy != null)
         {
             riceEnemy.FitHitboxToSpriteSquare();
+            CircleCollider2D riceCircle = enemyObject.GetComponent<CircleCollider2D>();
+            if (riceCircle != null)
+                riceCircle.enabled = false;
         }
         else
         {
-            hitbox.offset = Vector2.zero;
-            hitbox.size = fallbackRiceEnemyHitboxSize;
-        }
+            bool hasSolidCollider = false;
+            Collider2D[] colliders = enemyObject.GetComponents<Collider2D>();
+            foreach (Collider2D collider in colliders)
+            {
+                if (collider != null && collider.enabled && !collider.isTrigger)
+                {
+                    hasSolidCollider = true;
+                    break;
+                }
+            }
 
-        CircleCollider2D circle = enemyObject.GetComponent<CircleCollider2D>();
-        if (circle != null)
-            circle.enabled = false;
+            if (!hasSolidCollider)
+            {
+                hitbox = enemyObject.AddComponent<BoxCollider2D>();
+                hitbox.isTrigger = false;
+                hitbox.offset = Vector2.zero;
+                hitbox.size = fallbackRiceEnemyHitboxSize;
+            }
+        }
     }
 
     private void ConfigureRiceEnemyForCurrentRoom(RiceEnemy riceEnemy, int index)
