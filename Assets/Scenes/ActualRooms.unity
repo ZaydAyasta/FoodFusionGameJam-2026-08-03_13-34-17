@@ -2402,9 +2402,11 @@ MonoBehaviour:
   riceEnemyScale: {x: 0.8, y: 0.8, z: 0.8}
   horizontalDoorBlockerSize: {x: 2, y: 0.55}
   verticalDoorBlockerSize: {x: 0.55, y: 2}
-  rewardPool:
-  - {fileID: 11400000, guid: 82d95301970fef745aecf1da7f49d735, type: 2}
-  - {fileID: 11400000, guid: d5e6aa167b591b94094f8bb30ee2e86b, type: 2}
+  rewardPool: []
+  rewardPreviewAlpha: 0.55
+  rewardPreviewOffset: {x: 0, y: 0.9, z: -0.25}
+  rewardPreviewEulerAngles: {x: -40, y: 0, z: 0}
+  rewardPreviewWorldSize: 0.75
   trapDamage: 10
   trapDamageInterval: 0.5
   collisionVisualZOffset: -0.5
@@ -7450,7 +7452,7 @@ Transform:
   m_GameObject: {fileID: 429289509}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: 0.7071064, w: 0.7071072}
-  m_LocalPosition: {x: 33.68, y: -5.15, z: 0}
+  m_LocalPosition: {x: 33.68, y: -4.9, z: 0}
   m_LocalScale: {x: 1, y: 3.4875002, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -21413,7 +21415,7 @@ Transform:
   m_GameObject: {fileID: 1224208730}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -21.4211, y: -10.1395, z: 0}
+  m_LocalPosition: {x: -21.4211, y: -10.441, z: 0}
   m_LocalScale: {x: 18.095922, y: 0.61491895, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

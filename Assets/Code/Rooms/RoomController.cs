@@ -8,7 +8,6 @@ public class RoomController : MonoBehaviour
     [SerializeField] private DoorController[] doors;
     [SerializeField] private EnemyDeathNotifier[] enemies;
     [SerializeField] private bool activateEnemiesOnEntry = true;
-    [SerializeField] private float enemyWakeUpDelay = 1.3f;
     [Header("Rewards")]
     [SerializeField] private Transform rewardSpawnPoint;
     [SerializeField] private RewardChoiceController rewardChoicePrefab;
@@ -70,10 +69,10 @@ public class RoomController : MonoBehaviour
         if (faction == null || faction.Faction != CombatFaction.Player)
             return;
 
-        BeginCombat(playerInput.transform);
+        BeginCombat(playerInput);
     }
 
-    private void BeginCombat(Transform player)
+    private void BeginCombat(CharacterInput playerInput)
     {
         entered = true;
         State = RoomState.Combat;
@@ -104,7 +103,7 @@ public class RoomController : MonoBehaviour
         if (enemyWakeUpRoutine != null)
             StopCoroutine(enemyWakeUpRoutine);
 
-        enemyWakeUpRoutine = StartCoroutine(WakeEnemiesAfterDelay(player));
+        enemyWakeUpRoutine = StartCoroutine(WakeEnemiesAfterInput(playerInput));
     }
 
     public void ConfigureProcedural(
@@ -150,18 +149,24 @@ public class RoomController : MonoBehaviour
             CompleteCombat();
     }
 
-    private IEnumerator WakeEnemiesAfterDelay(Transform player)
+    private IEnumerator WakeEnemiesAfterInput(CharacterInput playerInput)
     {
-        float wakeAt = Time.time + Mathf.Max(0f, enemyWakeUpDelay);
-        while (Time.time < wakeAt)
+        // CharacterInput gates the control that completed the teleport. This
+        // waits for the first new press, including releasing and pressing the
+        // same control again.
+        while (playerInput != null && !playerInput.GameplayInputPressedThisFrame)
         {
-            EnemyDeathNotifier[] snapshot = new EnemyDeathNotifier[aliveEnemies.Count];
-            aliveEnemies.CopyTo(snapshot);
-            foreach (EnemyDeathNotifier enemy in snapshot)
-                StopEnemyMotion(enemy);
-
+            StopAllEnemyMotion();
             yield return null;
         }
+
+        if (playerInput == null)
+        {
+            enemyWakeUpRoutine = null;
+            yield break;
+        }
+
+        Transform player = playerInput.transform;
 
         EnemyDeathNotifier[] enemiesToWake = new EnemyDeathNotifier[aliveEnemies.Count];
         aliveEnemies.CopyTo(enemiesToWake);
@@ -188,6 +193,14 @@ public class RoomController : MonoBehaviour
         }
 
         enemyWakeUpRoutine = null;
+    }
+
+    private void StopAllEnemyMotion()
+    {
+        EnemyDeathNotifier[] snapshot = new EnemyDeathNotifier[aliveEnemies.Count];
+        aliveEnemies.CopyTo(snapshot);
+        foreach (EnemyDeathNotifier enemy in snapshot)
+            StopEnemyMotion(enemy);
     }
 
     private static void StopEnemyMotion(EnemyDeathNotifier enemy)

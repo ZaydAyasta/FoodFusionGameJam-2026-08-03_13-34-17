@@ -579,6 +579,10 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
             playerBody.position = targetPosition;
         }
 
+        CharacterInput characterInput = player.GetComponent<CharacterInput>();
+        if (characterInput != null)
+            characterInput.BeginRoomEntryInputGate();
+
         player.position = targetPosition;
         Physics2D.SyncTransforms();
 
@@ -1120,7 +1124,7 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
 
         HideSpawnMarkers(spawnPoints);
 
-        int enemyCount = GetActiveEnemySpawnerCount(spawnPoints.Length);
+        int enemyCount = GetActiveEnemySpawnerCount(spawnPoints.Length, promisedReward);
         List<EnemyDeathNotifier> enemies = new();
         for (int i = 0; i < enemyCount; i++)
         {
@@ -1132,13 +1136,31 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
         return enemies.ToArray();
     }
 
-    private int GetActiveEnemySpawnerCount(int totalSpawnerCount)
+    private int GetActiveEnemySpawnerCount(int totalSpawnerCount, IngredientData promisedReward)
     {
         if (totalSpawnerCount <= 0)
             return 0;
 
-        int maxEnemiesForCurrentRoom = Mathf.Max(1, currentRoomNumber + 1);
-        return Mathf.Clamp(maxEnemiesForCurrentRoom, 1, totalSpawnerCount);
+        int normalPopulation = Mathf.Max(1, currentRoomNumber + 1);
+        int populationWeight = GetEnemyPopulationWeight(promisedReward);
+        int weightedPopulation = normalPopulation + populationWeight;
+        return Mathf.Clamp(weightedPopulation, 1, totalSpawnerCount);
+    }
+
+    private int GetEnemyPopulationWeight(IngredientData promisedReward)
+    {
+        GameObject enemyPrefab = promisedReward != null ? promisedReward.EnemyPrefab : null;
+        if (enemyPrefab != null)
+        {
+            EnemyDeathNotifier notifier = enemyPrefab.GetComponent<EnemyDeathNotifier>();
+            if (notifier == null)
+                notifier = enemyPrefab.GetComponentInChildren<EnemyDeathNotifier>(true);
+
+            return notifier != null ? notifier.PopulationWeight : 0;
+        }
+
+        EnemyDeathNotifier fallback = GetRiceEnemyPrefab();
+        return fallback != null ? fallback.PopulationWeight : 0;
     }
 
     private EnemyDeathNotifier CreateLinkedEnemy(Transform parent, Vector3 position, int index, IngredientData promisedReward)

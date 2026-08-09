@@ -109,7 +109,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0.000000059604645}
+  m_Offset: {x: 0.20688534, y: 0.11431736}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 1}
@@ -119,7 +119,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 4.67, y: 2.17}
+  m_Size: {x: 5.0837708, y: 3.1809726}
   m_EdgeRadius: 0
 --- !u!50 &500000
 Rigidbody2D:
@@ -160,7 +160,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69c7998c110d22748837cd5a5b531bc1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Health
-  maxHealth: 4
+  maxHealth: 7
   invulnerabilityDuration: 0
   destroyOnDeath: 1
 --- !u!114 &600002
@@ -188,6 +188,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7d1fc15eef246a4bbd934620753d3e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyDeathNotifier
+  populationWeight: -1
 --- !u!114 &5630615156355426785
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -204,8 +205,8 @@ MonoBehaviour:
   preJumpDuration: 0.2
   movementBurstDuration: 0.65
   postJumpDuration: 0.2
-  restBetweenJumps: 0.35
-  moveSpeed: 1.65
+  restBetweenJumps: 0.25
+  moveSpeed: 1.77
   preferredDistance: 4
   retreatDistance: 2.2
   target: {fileID: 0}

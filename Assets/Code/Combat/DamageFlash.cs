@@ -8,6 +8,13 @@ public class DamageFlash : MonoBehaviour
     [SerializeField, Range(0f, 1f)] private float flashStrength = 0.45f;
 
     private Coroutine flashRoutine;
+    private SpriteRenderer[] renderers;
+    private Color[] baseColors;
+
+    private void Awake()
+    {
+        CacheBaseColors();
+    }
 
     public void Flash()
     {
@@ -15,33 +22,69 @@ public class DamageFlash : MonoBehaviour
             return;
 
         if (flashRoutine != null)
+        {
             StopCoroutine(flashRoutine);
+            flashRoutine = null;
+        }
+
+        // A new hit may arrive while the previous flash is still active.
+        // Always restore the real base color before applying the next flash,
+        // otherwise the red tint accumulates on every overlapping hit.
+        RestoreBaseColors();
 
         flashRoutine = StartCoroutine(FlashRoutine());
     }
 
     private IEnumerator FlashRoutine()
     {
-        SpriteRenderer[] renderers = GetComponentsInChildren<SpriteRenderer>(true);
-        Color[] originalColors = new Color[renderers.Length];
+        if (renderers == null || baseColors == null)
+            CacheBaseColors();
 
         for (int i = 0; i < renderers.Length; i++)
         {
             if (renderers[i] == null)
                 continue;
 
-            originalColors[i] = renderers[i].color;
-            renderers[i].color = Color.Lerp(originalColors[i], flashColor, flashStrength);
+            renderers[i].color = Color.Lerp(baseColors[i], flashColor, flashStrength);
         }
 
         yield return new WaitForSeconds(flashDuration);
+        RestoreBaseColors();
+        flashRoutine = null;
+    }
 
+    private void CacheBaseColors()
+    {
+        renderers = GetComponentsInChildren<SpriteRenderer>(true);
+        baseColors = new Color[renderers.Length];
         for (int i = 0; i < renderers.Length; i++)
         {
             if (renderers[i] != null)
-                renderers[i].color = originalColors[i];
+                baseColors[i] = renderers[i].color;
+        }
+    }
+
+    private void RestoreBaseColors()
+    {
+        if (renderers == null || baseColors == null)
+            return;
+
+        int count = Mathf.Min(renderers.Length, baseColors.Length);
+        for (int i = 0; i < count; i++)
+        {
+            if (renderers[i] != null)
+                renderers[i].color = baseColors[i];
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (flashRoutine != null)
+        {
+            StopCoroutine(flashRoutine);
+            flashRoutine = null;
         }
 
-        flashRoutine = null;
+        RestoreBaseColors();
     }
 }

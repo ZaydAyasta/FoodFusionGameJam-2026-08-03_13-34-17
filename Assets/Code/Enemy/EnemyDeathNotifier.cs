@@ -4,10 +4,15 @@ using UnityEngine;
 [RequireComponent(typeof(Health))]
 public class EnemyDeathNotifier : MonoBehaviour
 {
+    [Header("Room Population")]
+    [Tooltip("0 = normal room population. Positive values add enemies because this type is easier. Negative values remove enemies because this type is harder.")]
+    [SerializeField, Range(-8, 8)] private int populationWeight;
+
     private Health health;
     private bool notified;
 
     public event Action<EnemyDeathNotifier> Died;
+    public int PopulationWeight => populationWeight;
 
     private void Awake()
     {
