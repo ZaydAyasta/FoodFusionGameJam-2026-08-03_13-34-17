@@ -49,6 +49,9 @@ public class IngredientInventoryHud : MonoBehaviour
             inventory.InventoryChanged -= HandleInventoryChanged;
 
         inventory = newInventory;
+        if (inventory != null)
+            inventory.SetAsActivePlayerInventory();
+
         currentIndex = 0;
         Subscribe();
         Refresh();

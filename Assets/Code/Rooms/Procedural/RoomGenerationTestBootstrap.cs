@@ -1638,6 +1638,12 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
             inventoryHud = new GameObject("IngredientInventoryHUD").AddComponent<IngredientInventoryHud>();
 
         inventoryHud.Initialize(inventory);
+
+        GameMenuHud menuHud = FindFirstObjectByType<GameMenuHud>();
+        if (menuHud == null)
+            menuHud = new GameObject("GameMenuHUD").AddComponent<GameMenuHud>();
+
+        menuHud.Initialize(inventory);
     }
 
     private Sprite GetFallbackSprite()

@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class IngredientInventory : MonoBehaviour
 {
+    public static IngredientInventory ActivePlayerInventory { get; private set; }
+
     public readonly struct IngredientStack
     {
         public IngredientStack(IngredientData ingredient, int count)
@@ -21,6 +23,23 @@ public class IngredientInventory : MonoBehaviour
 
     public event Action InventoryChanged;
 
+    private void OnEnable()
+    {
+        if (ActivePlayerInventory == null)
+            SetAsActivePlayerInventory();
+    }
+
+    private void OnDestroy()
+    {
+        if (ActivePlayerInventory == this)
+            ActivePlayerInventory = null;
+    }
+
+    public void SetAsActivePlayerInventory()
+    {
+        ActivePlayerInventory = this;
+    }
+
     public bool HasIngredient(IngredientData ingredient)
     {
         return GetIngredientIndex(ingredient) >= 0;
@@ -30,6 +49,8 @@ public class IngredientInventory : MonoBehaviour
     {
         if (ingredient == null)
             return;
+
+        SetAsActivePlayerInventory();
 
         int index = GetIngredientIndex(ingredient);
         if (index >= 0)
