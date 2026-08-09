@@ -60,8 +60,9 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
     [SerializeField] private float trapDamage = 10f;
     [SerializeField] private float trapDamageInterval = 0.5f;
 
-    [Header("2.5D Collision")]
-    [SerializeField] private Vector2 wallCollisionOffset = new(0f, 0.75f);
+    [Header("Collision Perspective")]
+    [Range(-2f, 2f)]
+    [SerializeField] private float collisionVisualZOffset = -0.5f;
 
     [Header("Door Visuals")]
     [SerializeField] private Sprite doorSprite;
@@ -268,11 +269,24 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
 
     private SpriteRenderer FindDoorVisualPrototype(string objectName)
     {
-        GameObject prototypeObject = GameObject.Find(objectName);
-        if (prototypeObject == null)
+        if (currentRoom == null)
             return null;
 
-        return prototypeObject.GetComponent<SpriteRenderer>();
+        SpriteRenderer[] renderers =
+            currentRoom.GetComponentsInChildren<SpriteRenderer>(true);
+
+        foreach (SpriteRenderer renderer in renderers)
+        {
+            if (renderer != null &&
+                renderer.name.Equals(
+                    objectName,
+                    System.StringComparison.OrdinalIgnoreCase))
+            {
+                return renderer;
+            }
+        }
+
+        return null;
     }
 
     private void GenerateCandidateBatch()
@@ -412,14 +426,7 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
         EnsureDoorVisuals(room);
         EnsureCameraFollowsPlayer();
         room.SetKitchenVisible(IsKitchenRoom(currentRoomNumber));
-
-        if (cinemachineCamera != null && room.CameraOrthographicSize > 0f)
-        {
-            LensSettings lens = cinemachineCamera.Lens;
-            lens.ModeOverride = LensSettings.OverrideModes.Orthographic;
-            lens.OrthographicSize = GetOrthographicSizeForRoom(room);
-            cinemachineCamera.Lens = lens;
-        }
+        ConfigureCollisionBlocks(room);
 
         Collider2D boundingShape = GetConfinerShapeForRoom(room);
         if (confiner != null && boundingShape != null)
@@ -443,7 +450,6 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
         DoorController[] roomDoors = CreateDoorBlockers(room);
         EnemyDeathNotifier[] roomEnemies = CreateRoomEnemies(room);
         ConfigureTrapZones(room);
-        ConfigureCollisionBlocks(room);
         RoomController controller = room.GetComponent<RoomController>();
         if (controller == null)
             controller = room.gameObject.AddComponent<RoomController>();
@@ -648,23 +654,56 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
 
     private void ConfigureCollisionBlocks(ProceduralRoomLayout room)
     {
-        Transform collisionsRoot = FindChildByNameContains(room.transform, "Collisions");
+        Transform collisionsRoot =
+            FindChildByNameContains(room.transform, "Collisions");
+
         if (collisionsRoot == null)
             return;
 
-        Renderer[] collisionRenderers = collisionsRoot.GetComponentsInChildren<Renderer>(true);
+        Renderer[] collisionRenderers =
+            collisionsRoot.GetComponentsInChildren<Renderer>(true);
+
         foreach (Renderer collisionRenderer in collisionRenderers)
         {
             if (collisionRenderer == null)
                 continue;
 
-            BoxCollider2D collision = collisionRenderer.gameObject.GetComponent<BoxCollider2D>();
-            if (collision == null)
-                collision = collisionRenderer.gameObject.AddComponent<BoxCollider2D>();
+            BoxCollider2D collision =
+                collisionRenderer.GetComponent<BoxCollider2D>();
 
-            ConfigureBoxColliderFromRenderer(collision, collisionRenderer, wallCollisionOffset);
+            if (collision == null)
+                collision =
+                    collisionRenderer.gameObject.AddComponent<BoxCollider2D>();
+
+            ConfigureBoxColliderFromRenderer(
+                collision,
+                collisionRenderer
+            );
+
             collision.isTrigger = false;
+            collision.enabled = true;
+
+            PolygonCollider2D polygon =
+                collisionRenderer.GetComponent<PolygonCollider2D>();
+
+            if (polygon != null)
+                polygon.enabled = false;
         }
+
+        CameraProjectedColliderGroup projected =
+            collisionsRoot.GetComponent<CameraProjectedColliderGroup>();
+
+        if (projected == null)
+        {
+            projected =
+                collisionsRoot.gameObject
+                    .AddComponent<CameraProjectedColliderGroup>();
+        }
+
+        projected.Initialize(
+            cameraTarget,
+            collisionVisualZOffset
+        );
     }
 
     private static void ConfigureBoxColliderFromRenderer(BoxCollider2D collider, Renderer sourceRenderer)
