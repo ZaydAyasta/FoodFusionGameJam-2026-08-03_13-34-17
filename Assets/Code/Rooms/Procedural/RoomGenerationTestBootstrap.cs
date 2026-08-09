@@ -1426,14 +1426,21 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
 
         faction.SetFaction(CombatFaction.Player);
 
-        if (player.GetComponent<IngredientInventory>() == null)
-            player.gameObject.AddComponent<IngredientInventory>();
+        IngredientInventory inventory = player.GetComponent<IngredientInventory>();
+        if (inventory == null)
+            inventory = player.gameObject.AddComponent<IngredientInventory>();
 
         PlayerHealthHud hud = FindFirstObjectByType<PlayerHealthHud>();
         if (hud == null)
             hud = new GameObject("PlayerHealthHUD").AddComponent<PlayerHealthHud>();
 
         hud.Initialize(health);
+
+        IngredientInventoryHud inventoryHud = FindFirstObjectByType<IngredientInventoryHud>();
+        if (inventoryHud == null)
+            inventoryHud = new GameObject("IngredientInventoryHUD").AddComponent<IngredientInventoryHud>();
+
+        inventoryHud.Initialize(inventory);
     }
 
     private Sprite GetFallbackSprite()

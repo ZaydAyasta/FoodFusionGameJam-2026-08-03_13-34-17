@@ -69,7 +69,10 @@ public class IngredientReward : MonoBehaviour
 
         claimed = true;
         inventory.AddIngredient(ingredient);
-        owner?.Claim(this);
+        if (owner != null)
+            owner.Claim(this);
+        else
+            Destroy(gameObject);
     }
 
     private void RefreshVisual()
