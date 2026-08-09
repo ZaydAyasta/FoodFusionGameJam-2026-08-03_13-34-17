@@ -2392,7 +2392,7 @@ MonoBehaviour:
   addFallbackPlayerCollider: 1
   firstKitchenRoomNumber: 4
   kitchenIntervalRooms: 4
-  generateCombatInFirstRoom: 1
+  generateCombatInFirstRoom: 0
   playerMaxHealth: 100
   rangedEnemyShotDamage: 8
   fallbackRiceEnemyHitboxSize: {x: 1.15, y: 1.15}

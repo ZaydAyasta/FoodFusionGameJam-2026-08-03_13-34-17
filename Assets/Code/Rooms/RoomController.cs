@@ -12,7 +12,7 @@ public class RoomController : MonoBehaviour
     [Header("Rewards")]
     [SerializeField] private Transform rewardSpawnPoint;
     [SerializeField] private RewardChoiceController rewardChoicePrefab;
-    [SerializeField] private IngredientData[] possibleRewards;
+    [SerializeField] private IngredientData promisedReward;
 
     private readonly HashSet<EnemyDeathNotifier> aliveEnemies = new();
     private bool entered;
@@ -111,12 +111,12 @@ public class RoomController : MonoBehaviour
         DoorController[] roomDoors,
         EnemyDeathNotifier[] roomEnemies,
         Transform roomRewardSpawnPoint,
-        IngredientData[] rewardPool)
+        IngredientData roomPromisedReward)
     {
         doors = roomDoors ?? System.Array.Empty<DoorController>();
         enemies = roomEnemies ?? System.Array.Empty<EnemyDeathNotifier>();
         rewardSpawnPoint = roomRewardSpawnPoint;
-        possibleRewards = rewardPool ?? System.Array.Empty<IngredientData>();
+        promisedReward = roomPromisedReward;
         entered = false;
         rewardSpawned = false;
         rewardClaimed = false;
@@ -240,7 +240,7 @@ public class RoomController : MonoBehaviour
 
     private bool ShouldSpawnReward()
     {
-        return hadEnemiesInCombat && !rewardSpawned && !rewardClaimed && possibleRewards != null && possibleRewards.Length >= 1;
+        return hadEnemiesInCombat && !rewardSpawned && !rewardClaimed && promisedReward != null;
     }
 
     private void SpawnRewardChoice()
@@ -250,27 +250,11 @@ public class RoomController : MonoBehaviour
 
         rewardSpawned = true;
         Transform spawnPoint = rewardSpawnPoint != null ? rewardSpawnPoint : transform;
-        IngredientData reward = possibleRewards[0];
-
-        if (possibleRewards.Length > 1)
-            reward = possibleRewards[Random.Range(0, possibleRewards.Length)];
-
         activeRewardChoice = rewardChoicePrefab != null
             ? Instantiate(rewardChoicePrefab, spawnPoint.position, Quaternion.identity, transform)
             : CreateFallbackRewardChoice(spawnPoint.position);
 
-        activeRewardChoice.Initialize(this, reward, null);
-    }
-
-    private void PickTwoRewards(out IngredientData first, out IngredientData second)
-    {
-        int firstIndex = Random.Range(0, possibleRewards.Length);
-        int secondIndex = Random.Range(0, possibleRewards.Length - 1);
-        if (secondIndex >= firstIndex)
-            secondIndex++;
-
-        first = possibleRewards[firstIndex];
-        second = possibleRewards[secondIndex];
+        activeRewardChoice.Initialize(this, promisedReward, null);
     }
 
     private RewardChoiceController CreateFallbackRewardChoice(Vector3 position)

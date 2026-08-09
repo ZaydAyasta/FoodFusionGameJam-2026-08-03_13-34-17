@@ -45,7 +45,7 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
     [SerializeField] private int kitchenIntervalRooms = 4;
 
     [Header("Combat")]
-    [SerializeField] private bool generateCombatInFirstRoom = true;
+    [SerializeField] private bool generateCombatInFirstRoom;
     [SerializeField] private float playerMaxHealth = 100f;
     [SerializeField] private float rangedEnemyShotDamage = 8f;
     [SerializeField] private Vector2 fallbackRiceEnemyHitboxSize = new(1.15f, 1.15f);
@@ -56,6 +56,12 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
     [SerializeField] private Vector2 horizontalDoorBlockerSize = new(2f, 0.55f);
     [SerializeField] private Vector2 verticalDoorBlockerSize = new(0.55f, 2f);
     [SerializeField] private IngredientData[] rewardPool;
+
+    [Header("Door Reward Preview")]
+    [SerializeField, Range(0.05f, 1f)] private float rewardPreviewAlpha = 0.55f;
+    [SerializeField] private Vector3 rewardPreviewOffset = new(0f, 0.9f, -0.25f);
+    [SerializeField] private Vector3 rewardPreviewEulerAngles = new(-40f, 0f, 0f);
+    [SerializeField, Min(0.05f)] private float rewardPreviewWorldSize = 0.75f;
 
     [Header("Hazards")]
     [SerializeField] private float trapDamage = 10f;
@@ -171,7 +177,7 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
         if (activeRoomController != null)
         {
             RoomState state = activeRoomController.State;
-            if (state != RoomState.Completed && state != RoomState.RewardAvailable && state != RoomState.RewardClaimed)
+            if (state != RoomState.Completed && state != RoomState.RewardClaimed)
                 return;
         }
         else if (Time.time < nextBatchAt)
@@ -380,12 +386,14 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
         Shuffle(directions);
 
         int count = SelectCandidateCount(directions.Count);
+        List<IngredientData> rewards = PickDistinctRewards(count);
         List<RoomDirection> activeExitDirections = new();
         for (int i = 0; i < count; i++)
         {
             RoomDirection exitDirection = directions[i];
-            string theme = placeholderThemes[i % placeholderThemes.Length];
-            if (CreateCandidate(selectedTemplate, exitDirection, theme, $"Candidate_{exitDirection}_{selectedTemplate.name}") != null)
+            IngredientData reward = i < rewards.Count ? rewards[i] : null;
+            string theme = reward != null ? reward.DisplayName : placeholderThemes[i % placeholderThemes.Length];
+            if (CreateCandidate(selectedTemplate, exitDirection, theme, reward, $"Candidate_{exitDirection}_{selectedTemplate.name}") != null)
                 activeExitDirections.Add(exitDirection);
         }
 
@@ -430,10 +438,60 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
         };
     }
 
+    private List<IngredientData> PickDistinctRewards(int count)
+    {
+        IngredientData[] pool = GetRewardPool();
+        List<IngredientData> available = new();
+        foreach (IngredientData ingredient in pool)
+        {
+            if (ingredient != null && ingredient.Icon != null && !available.Contains(ingredient))
+                available.Add(ingredient);
+        }
+
+        Shuffle(available);
+        if (available.Count > count)
+            available.RemoveRange(count, available.Count - count);
+
+        return available;
+    }
+
+    private void CreateRewardPreview(Transform door, RoomDirection direction, IngredientData reward)
+    {
+        if (door == null || reward == null || reward.Icon == null || currentRoom == null)
+            return;
+
+        GameObject previewObject = new($"DoorRewardPreview_{direction}_{reward.Id}");
+        previewObject.transform.SetParent(currentRoom.transform, true);
+        previewObject.transform.position = door.position + rewardPreviewOffset;
+        previewObject.transform.rotation = Quaternion.Euler(rewardPreviewEulerAngles);
+
+        SpriteRenderer preview = previewObject.AddComponent<SpriteRenderer>();
+        preview.sprite = reward.Icon;
+        preview.color = new Color(1f, 1f, 1f, rewardPreviewAlpha);
+        preview.sortingLayerName = doorVisualSortingLayer;
+        preview.sortingOrder = doorVisualSortingOrder + 1;
+        NormalizeRewardPreviewSize(preview);
+    }
+
+    private void NormalizeRewardPreviewSize(SpriteRenderer preview)
+    {
+        if (preview == null || preview.sprite == null)
+            return;
+
+        Vector2 spriteSize = preview.sprite.bounds.size;
+        float largestSide = Mathf.Max(spriteSize.x, spriteSize.y);
+        if (largestSide <= Mathf.Epsilon)
+            return;
+
+        float uniformScale = rewardPreviewWorldSize / largestSide;
+        SetWorldScale(preview.transform, new Vector3(uniformScale, uniformScale, uniformScale));
+    }
+
     private ProceduralRoomLayout CreateCandidate(
         ProceduralRoomLayout candidateTemplate,
         RoomDirection exitDirection,
         string theme,
+        IngredientData promisedReward,
         string instanceName)
     {
         Transform sourceDoor = currentRoom.GetDoor(exitDirection);
@@ -463,9 +521,10 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
 
         ProceduralRoomCommitTrigger trigger = CreateCommitTrigger(sourceDoor, exitDirection);
         ProceduralRoomCandidate metadata = candidate.gameObject.AddComponent<ProceduralRoomCandidate>();
-        metadata.Initialize(theme, exitDirection, entryDirection, candidate, trigger);
+        metadata.Initialize(theme, exitDirection, entryDirection, candidate, trigger, promisedReward);
         trigger.Initialize(this, metadata);
         candidates.Add(metadata);
+        CreateRewardPreview(sourceDoor, exitDirection, promisedReward);
 
         return candidate;
     }
@@ -486,7 +545,7 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
         EnsureDoorVisuals(currentRoom);
         currentRoom.ShowOnlyDoors(new[] { selectedCandidate.EntryDirection });
         MovePlayerInsideCommittedRoom(selectedCandidate, player);
-        PrepareProceduralRoomCombat(currentRoom);
+        PrepareProceduralRoomCombat(currentRoom, selectedCandidate.PromisedReward);
         SetCurrentRoom(currentRoom);
 
         if (previousRoom != null && previousRoom != currentRoom)
@@ -553,7 +612,7 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
         }
     }
 
-    private void PrepareProceduralRoomCombat(ProceduralRoomLayout room)
+    private void PrepareProceduralRoomCombat(ProceduralRoomLayout room, IngredientData promisedReward = null)
     {
         if (room == null)
             return;
@@ -564,13 +623,13 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
             return;
 
         DoorController[] roomDoors = CreateDoorBlockers(room);
-        EnemyDeathNotifier[] roomEnemies = CreateRoomEnemies(room);
+        EnemyDeathNotifier[] roomEnemies = CreateRoomEnemies(room, promisedReward);
         ConfigureTrapZones(room);
         RoomController controller = room.GetComponent<RoomController>();
         if (controller == null)
             controller = room.gameObject.AddComponent<RoomController>();
 
-        controller.ConfigureProcedural(roomDoors, roomEnemies, room.RewardSpawnPoint, GetRewardPool());
+        controller.ConfigureProcedural(roomDoors, roomEnemies, room.RewardSpawnPoint, promisedReward);
         activeRoomController = controller;
     }
 
@@ -1053,7 +1112,7 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
         return null;
     }
 
-    private EnemyDeathNotifier[] CreateRoomEnemies(ProceduralRoomLayout room)
+    private EnemyDeathNotifier[] CreateRoomEnemies(ProceduralRoomLayout room, IngredientData promisedReward)
     {
         Transform[] spawnPoints = room.EnemySpawnPoints;
         if (spawnPoints == null || spawnPoints.Length == 0)
@@ -1065,7 +1124,7 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
         List<EnemyDeathNotifier> enemies = new();
         for (int i = 0; i < enemyCount; i++)
         {
-            EnemyDeathNotifier enemy = CreateRangedEnemy(room.transform, spawnPoints[i].position, i);
+            EnemyDeathNotifier enemy = CreateLinkedEnemy(room.transform, spawnPoints[i].position, i, promisedReward);
             enemy.gameObject.SetActive(false);
             enemies.Add(enemy);
         }
@@ -1082,9 +1141,20 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
         return Mathf.Clamp(maxEnemiesForCurrentRoom, 1, totalSpawnerCount);
     }
 
-    private EnemyDeathNotifier CreateRangedEnemy(Transform parent, Vector3 position, int index)
+    private EnemyDeathNotifier CreateLinkedEnemy(Transform parent, Vector3 position, int index, IngredientData promisedReward)
     {
-        GameObject enemyObject = CreateRiceEnemyObject(parent, position, index);
+        EnemyDeathNotifier linkedPrefab = promisedReward != null ? promisedReward.EnemyPrefab : null;
+        GameObject enemyObject;
+        if (linkedPrefab != null)
+        {
+            EnemyDeathNotifier instance = Instantiate(linkedPrefab, position, linkedPrefab.transform.rotation, parent);
+            instance.name = $"{promisedReward.Id}_Enemy_{index}";
+            enemyObject = instance.gameObject;
+        }
+        else
+        {
+            enemyObject = CreateRiceEnemyObject(parent, position, index);
+        }
         Health health = enemyObject.GetComponent<Health>();
         if (health == null)
             health = enemyObject.AddComponent<Health>();
@@ -1099,11 +1169,11 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
         EnsureEnemyHitbox(enemyObject);
 
         RiceEnemy riceEnemy = enemyObject.GetComponent<RiceEnemy>();
-        if (riceEnemy == null)
-            riceEnemy = enemyObject.AddComponent<RiceEnemy>();
-
-        riceEnemy.FitHitboxToSpriteSquare();
-        ConfigureRiceEnemyForCurrentRoom(riceEnemy, index);
+        if (riceEnemy != null)
+        {
+            riceEnemy.FitHitboxToSpriteSquare();
+            ConfigureRiceEnemyForCurrentRoom(riceEnemy, index);
+        }
 
         EnemyDeathNotifier notifier = enemyObject.GetComponent<EnemyDeathNotifier>();
         if (notifier == null)
@@ -1478,6 +1548,16 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
 
     private void ClearGeneratedCandidates()
     {
+        if (currentRoom != null)
+        {
+            Transform[] roomChildren = currentRoom.GetComponentsInChildren<Transform>(true);
+            foreach (Transform child in roomChildren)
+            {
+                if (child != null && child.name.StartsWith("DoorRewardPreview_", System.StringComparison.Ordinal))
+                    Destroy(child.gameObject);
+            }
+        }
+
         candidates.Clear();
         ProceduralRoomCandidate[] oldCandidates = FindObjectsByType<ProceduralRoomCandidate>(FindObjectsSortMode.None);
         foreach (ProceduralRoomCandidate oldCandidate in oldCandidates)
