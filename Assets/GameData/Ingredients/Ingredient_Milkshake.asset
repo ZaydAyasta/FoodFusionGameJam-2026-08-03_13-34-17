@@ -16,5 +16,5 @@ MonoBehaviour:
   displayName: Milkshake
   icon: {fileID: -7231736666927521567, guid: e1af086726c6ee7489c44c6f97e88ae7, type: 3}
   description: Aumenta la velocidad de movimiento del jugador.
-  cuisine: 2
+  cuisine: 6
   linkedEnemyPrefab: {fileID: 0}

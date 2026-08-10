@@ -18,4 +18,5 @@ public class IngredientData : ScriptableObject
     public string Description => description;
     public CuisineType Cuisine => cuisine;
     public GameObject EnemyPrefab => linkedEnemyPrefab;
+    public bool CanAppearAsRoomReward => cuisine != CuisineType.Dish;
 }

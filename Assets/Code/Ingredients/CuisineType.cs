@@ -5,5 +5,6 @@ public enum CuisineType
     Dairy,
     Fish,
     Vegetable,
-    Bakery
+    Bakery,
+    Dish
 }

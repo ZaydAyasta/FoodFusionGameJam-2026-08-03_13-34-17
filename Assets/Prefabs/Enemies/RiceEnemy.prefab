@@ -160,6 +160,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae125da2f6d7aab4e89a2ccd701c9549, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RiceEnemy
+  animator: {fileID: 0}
+  preJumpDuration: 0.2
+  movementBurstDuration: 0.65
+  postJumpDuration: 0.2
+  restBetweenJumps: 0.35
   target: {fileID: 0}
   approachDistance: 3.2
   retreatDistance: 2.2
@@ -173,7 +178,7 @@ MonoBehaviour:
   maxShootCooldown: 2.3
   projectilePrefab: {fileID: 600000, guid: 237aad828ba1434b80d24c2038c340b2, type: 3}
   projectileSpeed: 7
-  projectileDamage: 8
+  projectileDamage: 5
   projectileLifetime: 2.1
   followUpDelay: 0.2
   predictTargetMovement: 0
@@ -218,6 +223,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7d1fc15eef246a4bbd934620753d3e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyDeathNotifier
+  populationWeight: 0
 --- !u!1 &4414882099815170411
 GameObject:
   m_ObjectHideFlags: 0

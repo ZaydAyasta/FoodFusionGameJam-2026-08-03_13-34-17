@@ -16,5 +16,5 @@ MonoBehaviour:
   displayName: Sandwitch
   icon: {fileID: 8984754096541894249, guid: 4045555a741c08d459b9bc99e2352313, type: 3}
   description: Reduce el tiempo entre disparos del jugador.
-  cuisine: 5
+  cuisine: 6
   linkedEnemyPrefab: {fileID: 0}

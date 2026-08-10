@@ -16,5 +16,5 @@ MonoBehaviour:
   displayName: Bolognese
   icon: {fileID: 1118559602085323590, guid: 2753bd48c862ef640a468dbe4b813f9c, type: 3}
   description: Aumenta el dano de los disparos del jugador en 1.
-  cuisine: 1
+  cuisine: 6
   linkedEnemyPrefab: {fileID: 0}

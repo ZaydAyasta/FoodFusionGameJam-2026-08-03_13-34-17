@@ -444,7 +444,10 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
         List<IngredientData> available = new();
         foreach (IngredientData ingredient in pool)
         {
-            if (ingredient != null && ingredient.Icon != null && !available.Contains(ingredient))
+            if (ingredient != null
+                && ingredient.CanAppearAsRoomReward
+                && ingredient.Icon != null
+                && !available.Contains(ingredient))
                 available.Add(ingredient);
         }
 
@@ -1419,7 +1422,7 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
         {
             string path = AssetDatabase.GUIDToAssetPath(guid);
             IngredientData ingredient = AssetDatabase.LoadAssetAtPath<IngredientData>(path);
-            if (ingredient == null)
+            if (ingredient == null || !ingredient.CanAppearAsRoomReward)
                 continue;
 
             ingredients.Add(ingredient);

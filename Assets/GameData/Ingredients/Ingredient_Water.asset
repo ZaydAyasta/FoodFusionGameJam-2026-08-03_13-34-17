@@ -16,5 +16,5 @@ MonoBehaviour:
   displayName: Agua
   icon: {fileID: -8623618863599700181, guid: 0961f7df550dfc7429be7349fdf3acf7, type: 3}
   description: Cura 20 de vida al jugador.
-  cuisine: 2
+  cuisine: 6
   linkedEnemyPrefab: {fileID: 0}
