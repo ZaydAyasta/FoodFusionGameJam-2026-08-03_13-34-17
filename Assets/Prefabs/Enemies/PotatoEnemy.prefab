@@ -12,12 +12,12 @@ GameObject:
   - component: {fileID: 580000}
   - component: {fileID: 610000}
   - component: {fileID: 500000}
+  - component: {fileID: 600000}
   - component: {fileID: 600001}
   - component: {fileID: 600002}
   - component: {fileID: 600003}
-  - component: {fileID: 5630615156355426785}
   m_Layer: 0
-  m_Name: MeashyEnemy
+  m_Name: PotatoEnemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -109,7 +109,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.20688534, y: 0.11431736}
+  m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 1}
@@ -119,7 +119,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 5.0837708, y: 3.1809726}
+  m_Size: {x: 4.67, y: 4.67}
   m_EdgeRadius: 0
 --- !u!50 &500000
 Rigidbody2D:
@@ -148,6 +148,36 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
+--- !u!114 &600000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae125da2f6d7aab4e89a2ccd701c9549, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RiceEnemy
+  target: {fileID: 0}
+  approachDistance: 3.2
+  retreatDistance: 2.2
+  moveSpeed: 1.45
+  strafeSpeed: 1.55
+  minStrafeSwitchInterval: 0.45
+  maxStrafeSwitchInterval: 0.85
+  preShotApproachDuration: 0.25
+  preShotApproachSpeed: 2.1
+  minShootCooldown: 1
+  maxShootCooldown: 2.3
+  projectilePrefab: {fileID: 600000, guid: 237aad828ba1434b80d24c2038c340b2, type: 3}
+  projectileSpeed: 7
+  projectileDamage: 8
+  projectileLifetime: 2.1
+  followUpDelay: 0.2
+  predictTargetMovement: 0
+  predictionStrength: 0.65
 --- !u!114 &600001
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -160,7 +190,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69c7998c110d22748837cd5a5b531bc1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Health
-  maxHealth: 5
+  maxHealth: 4
   invulnerabilityDuration: 0
   destroyOnDeath: 1
 --- !u!114 &600002
@@ -188,48 +218,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7d1fc15eef246a4bbd934620753d3e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyDeathNotifier
-  populationWeight: -3
---- !u!114 &5630615156355426785
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 100000}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ad80417f5bcaf1e4c90db5122b70dfdf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MeashyEnemy
-  animator: {fileID: 0}
-  visualRenderer: {fileID: 0}
-  spriteFacesRight: 0
-  preJumpDuration: 0.2
-  movementBurstDuration: 0.65
-  postJumpDuration: 0.2
-  restBetweenJumps: 0.25
-  moveSpeed: 1.77
-  preferredDistance: 4
-  retreatDistance: 2.2
-  target: {fileID: 0}
-  spikeProjectilePrefab: {fileID: 600000, guid: 9d5e2db0980430644900056d61be6f2f, type: 3}
-  projectileOrigin: {fileID: 400000}
-  spikeCount: 3
-  spikeSpreadDegrees: 18
-  spikeRange: 7
-  spikeSpeed: 8
-  spikeDamage: 6
-  spikeLifetime: 2
-  spikeCooldown: 2.1
-  spikeWindup: 0.35
-  meatballPrefab: {fileID: -365503777729257778, guid: 253260d7dbfcd1247a70c10f8ec6862c, type: 3}
-  meatballMinDistance: 7
-  meatballCooldown: 8
-  meatballFlightDuration: 1.25
-  meatballArcHeight: 2.3
-  meatballDamage: 14
-  meatballExplosionRadius: 1.35
-  meatballWindup: 0.55
 --- !u!1 &4414882099815170411
 GameObject:
   m_ObjectHideFlags: 0
@@ -258,8 +246,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0.3420201, y: 0, z: 0, w: 0.9396927}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.67, y: 0.67, z: 0.67}
-  m_ConstrainProportionsScale: 1
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 400000}
   m_LocalEulerAnglesHint: {x: -40, y: 0, z: 0}
@@ -273,7 +261,7 @@ Animator:
   m_GameObject: {fileID: 4414882099815170411}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: b55cb4981621be848b7d79ad0b15e230, type: 2}
+  m_Controller: {fileID: 9100000, guid: 8c994c378186d72479cfff42813ec674, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -334,7 +322,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 8
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -9034648750322456423, guid: 8a2d521caf98d7e4792c9730db26f318, type: 3}
+  m_Sprite: {fileID: 6431102928072173966, guid: a48da51fa8d580c4787c3a6165563e8b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

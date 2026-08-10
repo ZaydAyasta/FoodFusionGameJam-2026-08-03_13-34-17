@@ -88,6 +88,7 @@ public class RoomController : MonoBehaviour
 
             enemy.gameObject.SetActive(true);
             IgnorePhysicalCollisionsWithPlayer(enemy, activePlayer);
+            IgnorePhysicalCollisionsWithAliveEnemies(enemy);
             enemy.Arm();
             enemy.Died -= HandleEnemyDied;
             enemy.Died += HandleEnemyDied;
@@ -160,6 +161,7 @@ public class RoomController : MonoBehaviour
 
         enemy.gameObject.SetActive(true);
         IgnorePhysicalCollisionsWithPlayer(enemy, activePlayer);
+        IgnorePhysicalCollisionsWithAliveEnemies(enemy);
         enemy.Arm();
         enemy.Died -= HandleEnemyDied;
         enemy.Died += HandleEnemyDied;
@@ -323,6 +325,39 @@ public class RoomController : MonoBehaviour
                     continue;
 
                 Physics2D.IgnoreCollision(enemyCollider, playerCollider, true);
+            }
+        }
+    }
+
+    private void IgnorePhysicalCollisionsWithAliveEnemies(EnemyDeathNotifier enemy)
+    {
+        if (enemy == null)
+            return;
+
+        foreach (EnemyDeathNotifier otherEnemy in aliveEnemies)
+        {
+            if (otherEnemy == null || otherEnemy == enemy)
+                continue;
+
+            IgnoreSolidColliderPairs(enemy, otherEnemy);
+        }
+    }
+
+    private static void IgnoreSolidColliderPairs(EnemyDeathNotifier first, EnemyDeathNotifier second)
+    {
+        Collider2D[] firstColliders = first.GetComponentsInChildren<Collider2D>(true);
+        Collider2D[] secondColliders = second.GetComponentsInChildren<Collider2D>(true);
+        foreach (Collider2D firstCollider in firstColliders)
+        {
+            if (firstCollider == null || firstCollider.isTrigger)
+                continue;
+
+            foreach (Collider2D secondCollider in secondColliders)
+            {
+                if (secondCollider == null || secondCollider.isTrigger)
+                    continue;
+
+                Physics2D.IgnoreCollision(firstCollider, secondCollider, true);
             }
         }
     }

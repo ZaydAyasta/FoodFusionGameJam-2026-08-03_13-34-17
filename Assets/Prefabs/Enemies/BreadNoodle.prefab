@@ -159,7 +159,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69c7998c110d22748837cd5a5b531bc1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Health
-  maxHealth: 4
+  maxHealth: 5
   invulnerabilityDuration: 0
   destroyOnDeath: 1
 --- !u!114 &600003
@@ -202,7 +202,7 @@ MonoBehaviour:
   target: {fileID: 0}
   ringPrefab: {fileID: 211320256566257580, guid: a091681b41c7be64882011cfbe63ff86, type: 3}
   projectileOrigin: {fileID: 0}
-  attackRange: 7.5
+  attackRange: 8.88
   stationaryChargeDuration: 1.25
   minRingsPerAttack: 1
   maxRingsPerAttack: 2
