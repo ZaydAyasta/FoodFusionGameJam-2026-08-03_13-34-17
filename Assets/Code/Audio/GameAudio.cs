@@ -11,6 +11,9 @@ public class GameAudio : MonoBehaviour
     private const float ShopMusicVolume = 0.7f;
     private const float MusicFadeDuration = 1f;
     private const float KitchenSilenceDuration = 0.25f;
+    private const float LowHealthMinimumPitch = 1.1f;
+    private const float LowHealthMaximumPitch = 1.26f;
+    private const float MusicPitchChangeSpeed = 0.65f;
 
     private static GameAudio instance;
 
@@ -30,6 +33,7 @@ public class GameAudio : MonoBehaviour
     private int nextCombatIndex;
     private MusicMode currentMusicMode;
     private Coroutine musicTransitionRoutine;
+    private float targetMusicPitch = 1f;
 
     private enum MusicMode
     {
@@ -67,6 +71,8 @@ public class GameAudio : MonoBehaviour
 
     private void Update()
     {
+        UpdateMusicPitch();
+
         if (currentMusicMode != MusicMode.Combat || musicSource == null || musicSource.isPlaying)
             return;
 
@@ -149,7 +155,7 @@ public class GameAudio : MonoBehaviour
         AudioClip clip = audio.woodwalkClips[audio.nextFootstepIndex % audio.woodwalkClips.Length];
         audio.nextFootstepIndex++;
         audio.nextFootstepAt = Time.time + FootstepInterval;
-        audio.PlaySfx(clip, 0.9f);
+        audio.PlaySfx(clip, 1.15f);
     }
 
     public static void PlayShoot()
@@ -159,7 +165,7 @@ public class GameAudio : MonoBehaviour
 
         GameAudio audio = Instance;
         audio.EnsureReady();
-        audio.PlaySfx(audio.shootClip, 0.85f);
+        audio.PlaySfx(audio.shootClip, 1.15f);
     }
 
     public static void PlayDash()
@@ -197,6 +203,38 @@ public class GameAudio : MonoBehaviour
         GameAudio audio = Instance;
         audio.EnsureReady();
         audio.PlaySfx(audio.itemPickupClip, 1f);
+    }
+
+    public static void StopAllAudio()
+    {
+        GameAudio audio = Instance;
+        audio.EnsureReady();
+        audio.StopMusicTransition();
+        audio.musicSource.Stop();
+        audio.StopShopMusic();
+        audio.sfxSource.Stop();
+        audio.currentMusicMode = MusicMode.None;
+        audio.targetMusicPitch = 1f;
+    }
+
+    public static void SetLowHealthMusicIntensity(float intensity)
+    {
+        GameAudio audio = Instance;
+        audio.EnsureReady();
+        float normalizedIntensity = Mathf.Clamp01(intensity);
+        float pitch = normalizedIntensity <= 0f
+            ? 1f
+            : Mathf.Lerp(LowHealthMinimumPitch, LowHealthMaximumPitch, Mathf.SmoothStep(0f, 1f, normalizedIntensity));
+        audio.targetMusicPitch = pitch;
+    }
+
+    private void UpdateMusicPitch()
+    {
+        float step = MusicPitchChangeSpeed * Time.unscaledDeltaTime;
+        if (musicSource != null)
+            musicSource.pitch = Mathf.MoveTowards(musicSource.pitch, targetMusicPitch, step);
+        if (shopMusicSource != null)
+            shopMusicSource.pitch = Mathf.MoveTowards(shopMusicSource.pitch, targetMusicPitch, step);
     }
 
     private void EnsureReady()

@@ -49,6 +49,7 @@ public class EnemyDeathNotifier : MonoBehaviour
             return;
 
         notified = true;
+        EnemyDeathEffect.Spawn(this);
         Died?.Invoke(this);
     }
 }

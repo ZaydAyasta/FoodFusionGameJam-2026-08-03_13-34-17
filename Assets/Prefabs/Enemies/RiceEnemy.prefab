@@ -198,6 +198,7 @@ MonoBehaviour:
   maxHealth: 4
   invulnerabilityDuration: 0
   destroyOnDeath: 1
+  damageReduction: 0
 --- !u!114 &600002
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -251,8 +252,8 @@ Transform:
   m_GameObject: {fileID: 4414882099815170411}
   serializedVersion: 2
   m_LocalRotation: {x: -0.3420201, y: 0, z: 0, w: 0.9396927}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0, y: 0.000000010130457, z: -0.0000000050652287}
+  m_LocalScale: {x: 0.85219723, y: 0.85219723, z: 0.85219723}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 400000}

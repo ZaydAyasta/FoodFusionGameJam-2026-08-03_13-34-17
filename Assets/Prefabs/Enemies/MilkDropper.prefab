@@ -160,9 +160,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69c7998c110d22748837cd5a5b531bc1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Health
-  maxHealth: 10
+  maxHealth: 15
   invulnerabilityDuration: 0
   destroyOnDeath: 1
+  damageReduction: 0
 --- !u!114 &600003
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -195,9 +196,9 @@ MonoBehaviour:
   minInitialDroppers: 1
   maxInitialDroppers: 2
   dropOrigin: {fileID: 3852667372518991844}
-  minDropInterval: 8
-  maxDropInterval: 12
-  maxLivingSummons: 3
+  minDropInterval: 5
+  maxDropInterval: 8
+  maxLivingSummons: 4
   spawnRadius: 0.45
 --- !u!1 &324290560931158509
 GameObject:

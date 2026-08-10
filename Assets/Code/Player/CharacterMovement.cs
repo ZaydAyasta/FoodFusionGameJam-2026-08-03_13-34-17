@@ -10,6 +10,7 @@ public class CharacterMovement : MonoBehaviour
     private CharacterInput input;
     private Rigidbody2D rb;
     private PlayerDash dash;
+    private int slipperyAreaCount;
 
     private int lastDirection = 1; // Down por defecto
 
@@ -19,6 +20,16 @@ public class CharacterMovement : MonoBehaviour
             return;
 
         speed += amount;
+    }
+
+    public void EnterSlipperyArea()
+    {
+        slipperyAreaCount++;
+    }
+
+    public void ExitSlipperyArea()
+    {
+        slipperyAreaCount = Mathf.Max(0, slipperyAreaCount - 1);
     }
 
     private void Awake()
@@ -58,6 +69,16 @@ public class CharacterMovement : MonoBehaviour
             return;
 
         Vector2 move = input.MoveInput;
+
+        if (slipperyAreaCount > 0)
+        {
+            Vector2 desiredVelocity = move.sqrMagnitude > 1f
+                ? move.normalized * speed
+                : move * speed;
+            float steering = move.sqrMagnitude > 0.01f ? 0.085f : 0.018f;
+            rb.linearVelocity = Vector2.Lerp(rb.linearVelocity, desiredVelocity, steering);
+            return;
+        }
 
         rb.linearVelocity =
             move.sqrMagnitude > 1f

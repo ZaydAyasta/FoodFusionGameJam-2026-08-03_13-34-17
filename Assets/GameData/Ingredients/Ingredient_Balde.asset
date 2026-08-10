@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Ingredient_Balde
   m_EditorClassIdentifier: Assembly-CSharp::IngredientData
   id: balde
-  displayName: Balde
+  displayName: Agua
   icon: {fileID: 684662868626745647, guid: 12a8cb03593ca424a9f5a67ed8bd225c, type: 3}
   description: Ingredient reward.
   cuisine: 0

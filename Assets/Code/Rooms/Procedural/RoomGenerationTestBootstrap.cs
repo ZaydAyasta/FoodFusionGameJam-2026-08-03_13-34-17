@@ -122,6 +122,7 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
     private float nextBatchAt = -1f;
     private bool waitingForRoomCompletion;
     private int currentRoomNumber = 1;
+    public int CurrentRoomNumber => currentRoomNumber;
     private int lastGeneratedExitCount;
 
     private void Start()

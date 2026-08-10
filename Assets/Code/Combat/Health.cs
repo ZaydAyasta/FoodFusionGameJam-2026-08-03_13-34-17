@@ -17,6 +17,7 @@ public class Health : MonoBehaviour, IDamageable
     public float CurrentHealth { get; private set; }
     public bool IsDead => dead;
     public float DamageReduction => damageReduction;
+    public GameObject LastDamageSource { get; private set; }
 
     public event Action<float, float> HealthChanged;
     public event Action Died;
@@ -34,11 +35,17 @@ public class Health : MonoBehaviour, IDamageable
 
     public void TakeDamage(float amount)
     {
+        TakeDamage(amount, null);
+    }
+
+    public void TakeDamage(float amount, GameObject source)
+    {
         if (dead || amount <= 0f || Time.time < invulnerableUntil ||
             (playerDash != null && playerDash.IsDashing))
             return;
 
         float receivedDamage = amount * (1f - damageReduction);
+        LastDamageSource = source;
         CurrentHealth = Mathf.Max(0f, CurrentHealth - receivedDamage);
         damageFlash?.Flash();
 
@@ -102,6 +109,7 @@ public class Health : MonoBehaviour, IDamageable
     public void ResetHealth()
     {
         dead = false;
+        LastDamageSource = null;
         invulnerableUntil = 0f;
         CurrentHealth = maxHealth;
         HealthChanged?.Invoke(CurrentHealth, maxHealth);

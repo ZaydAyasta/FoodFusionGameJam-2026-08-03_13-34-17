@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -11,19 +12,32 @@ using UnityEditor;
 
 public class GameMenuHud : MonoBehaviour
 {
+    private const string HighestRoomPlayerPrefsKey = "FoodFusion.HighestRoom";
     [SerializeField] private IngredientInventory inventory;
 
     private static GameMenuHud instance;
+    private static bool startGameAfterReload;
+    private static bool showTitleAfterReload;
 
     private Canvas canvas;
     private GameObject mainMenuRoot;
     private GameObject inventoryRoot;
     private GameObject gameOverRoot;
+    private GameObject introRoot;
+    private Image introBackdrop;
+    private Image introFlash;
+    private Text[] introWords;
+    private Text reachedRoomText;
+    private Text highestRoomText;
+    private Coroutine introRoutine;
+    private Coroutine gameOverFadeRoutine;
+    private CanvasGroup gameOverCanvasGroup;
     private Transform inventoryListRoot;
     private bool initialized;
     private bool mainMenuOpen;
     private bool inventoryOpen;
     private bool gameOverOpen;
+    private bool introPlayed;
 
     private void Awake()
     {
@@ -78,7 +92,21 @@ public class GameMenuHud : MonoBehaviour
         if (!initialized)
         {
             initialized = true;
-            ShowMainMenu();
+            if (startGameAfterReload)
+            {
+                startGameAfterReload = false;
+                StartGame();
+            }
+            else
+            {
+                if (showTitleAfterReload)
+                {
+                    showTitleAfterReload = false;
+                    introPlayed = true;
+                }
+
+                ShowMainMenu();
+            }
         }
     }
 
@@ -104,6 +132,68 @@ public class GameMenuHud : MonoBehaviour
         inventoryRoot.SetActive(false);
         gameOverRoot.SetActive(false);
         GameAudio.PlayMainTheme();
+
+        if (!introPlayed)
+        {
+            introPlayed = true;
+            introRoot.SetActive(true);
+            if (introRoutine != null)
+                StopCoroutine(introRoutine);
+            introRoutine = StartCoroutine(PlayMenuIntro());
+        }
+        else
+        {
+            introRoot.SetActive(false);
+        }
+    }
+
+    private IEnumerator PlayMenuIntro()
+    {
+        SetGraphicAlpha(introBackdrop, 1f);
+        SetGraphicAlpha(introFlash, 0f);
+        foreach (Text word in introWords)
+            SetGraphicAlpha(word, 0f);
+
+        yield return new WaitForSecondsRealtime(0.35f);
+        foreach (Text word in introWords)
+        {
+            yield return FadeGraphic(word, 0f, 1f, 0.5f);
+            yield return new WaitForSecondsRealtime(0.42f);
+        }
+
+        yield return new WaitForSecondsRealtime(0.7f);
+        yield return FadeGraphic(introFlash, 0f, 1f, 0.045f);
+        yield return new WaitForSecondsRealtime(0.18f);
+
+        SetGraphicAlpha(introBackdrop, 0f);
+        foreach (Text word in introWords)
+            SetGraphicAlpha(word, 0f);
+
+        yield return FadeGraphic(introFlash, 1f, 0f, 0.58f);
+        introRoot.SetActive(false);
+        introRoutine = null;
+    }
+
+    private static IEnumerator FadeGraphic(Graphic graphic, float from, float to, float duration)
+    {
+        float elapsed = 0f;
+        float safeDuration = Mathf.Max(0.01f, duration);
+        while (elapsed < safeDuration)
+        {
+            elapsed += Time.unscaledDeltaTime;
+            SetGraphicAlpha(graphic, Mathf.Lerp(from, to, Mathf.Clamp01(elapsed / safeDuration)));
+            yield return null;
+        }
+        SetGraphicAlpha(graphic, to);
+    }
+
+    private static void SetGraphicAlpha(Graphic graphic, float alpha)
+    {
+        if (graphic == null)
+            return;
+        Color color = graphic.color;
+        color.a = Mathf.Clamp01(alpha);
+        graphic.color = color;
     }
 
     private void StartGame()
@@ -127,12 +217,63 @@ public class GameMenuHud : MonoBehaviour
         mainMenuRoot.SetActive(false);
         inventoryRoot.SetActive(false);
         gameOverRoot.SetActive(true);
+        RefreshGameOverStats();
         GameAudio.PlayAmericanShopMusic();
+
+        if (gameOverFadeRoutine != null)
+            StopCoroutine(gameOverFadeRoutine);
+        gameOverFadeRoutine = StartCoroutine(FadeInGameOver());
+    }
+
+    private IEnumerator FadeInGameOver()
+    {
+        const float duration = 0.72f;
+        gameOverCanvasGroup.alpha = 0f;
+        gameOverCanvasGroup.interactable = false;
+        gameOverCanvasGroup.blocksRaycasts = false;
+
+        float elapsed = 0f;
+        while (elapsed < duration)
+        {
+            elapsed += Time.unscaledDeltaTime;
+            float normalized = Mathf.Clamp01(elapsed / duration);
+            gameOverCanvasGroup.alpha = Mathf.SmoothStep(0f, 1f, normalized);
+            yield return null;
+        }
+
+        gameOverCanvasGroup.alpha = 1f;
+        gameOverCanvasGroup.interactable = true;
+        gameOverCanvasGroup.blocksRaycasts = true;
+        gameOverFadeRoutine = null;
+    }
+
+    private void RefreshGameOverStats()
+    {
+        RoomGenerationTestBootstrap generator = FindAnyObjectByType<RoomGenerationTestBootstrap>();
+        int reachedRoom = generator != null ? Mathf.Max(1, generator.CurrentRoomNumber) : 1;
+        int highestRoom = Mathf.Max(reachedRoom, PlayerPrefs.GetInt(HighestRoomPlayerPrefsKey, 1));
+        PlayerPrefs.SetInt(HighestRoomPlayerPrefsKey, highestRoom);
+        PlayerPrefs.Save();
+
+        if (reachedRoomText != null)
+            reachedRoomText.text = $"CUARTO ALCANZADO: {reachedRoom}";
+        if (highestRoomText != null)
+            highestRoomText.text = $"MÁS ALTO: {highestRoom}";
     }
 
     private void RetryGame()
     {
         Time.timeScale = 1f;
+        startGameAfterReload = true;
+        showTitleAfterReload = false;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    private void ReturnToTitleFromGameOver()
+    {
+        Time.timeScale = 1f;
+        startGameAfterReload = false;
+        showTitleAfterReload = true;
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
@@ -191,10 +332,51 @@ public class GameMenuHud : MonoBehaviour
         mainMenuRoot = BuildMainMenu();
         inventoryRoot = BuildInventoryMenu();
         gameOverRoot = BuildGameOverMenu();
+        introRoot = BuildMenuIntro();
 
         mainMenuRoot.SetActive(false);
         inventoryRoot.SetActive(false);
         gameOverRoot.SetActive(false);
+        introRoot.SetActive(false);
+    }
+
+    private GameObject BuildMenuIntro()
+    {
+        GameObject root = CreateRoot("MenuIntro");
+
+        introBackdrop = root.AddComponent<Image>();
+        introBackdrop.color = Color.black;
+
+        introWords = new Text[3];
+        string[] words = { "COOK", "SURVIVE", "UNITE" };
+        float[] verticalPositions = { 115f, 0f, -115f };
+        for (int i = 0; i < words.Length; i++)
+        {
+            Text word = CreateText(words[i] + "Text", root.transform, words[i], 78, TextAnchor.MiddleCenter);
+            RectTransform rect = word.GetComponent<RectTransform>();
+            rect.anchorMin = new Vector2(0.5f, 0.5f);
+            rect.anchorMax = new Vector2(0.5f, 0.5f);
+            rect.pivot = new Vector2(0.5f, 0.5f);
+            rect.sizeDelta = new Vector2(900f, 105f);
+            rect.anchoredPosition = new Vector2(0f, verticalPositions[i]);
+            word.color = Color.white;
+            word.resizeTextForBestFit = true;
+            word.resizeTextMinSize = 42;
+            word.resizeTextMaxSize = 78;
+            introWords[i] = word;
+        }
+
+        GameObject flashObject = new("MenuRevealFlash");
+        flashObject.transform.SetParent(root.transform, false);
+        RectTransform flashRect = flashObject.AddComponent<RectTransform>();
+        flashRect.anchorMin = Vector2.zero;
+        flashRect.anchorMax = Vector2.one;
+        flashRect.offsetMin = Vector2.zero;
+        flashRect.offsetMax = Vector2.zero;
+        introFlash = flashObject.AddComponent<Image>();
+        introFlash.color = new Color(1f, 1f, 1f, 0f);
+
+        return root;
     }
 
     private GameObject BuildMainMenu()
@@ -226,25 +408,54 @@ public class GameMenuHud : MonoBehaviour
     private GameObject BuildGameOverMenu()
     {
         GameObject root = CreateRoot("GameOverMenu");
-        Image backdrop = root.AddComponent<Image>();
+        gameOverCanvasGroup = root.AddComponent<CanvasGroup>();
+        Image blackBackground = root.AddComponent<Image>();
+        blackBackground.color = Color.black;
+
+        GameObject backdropObject = new("GameOverBackdrop");
+        backdropObject.transform.SetParent(root.transform, false);
+        RectTransform backdropRect = backdropObject.AddComponent<RectTransform>();
+        backdropRect.anchorMin = Vector2.zero;
+        backdropRect.anchorMax = Vector2.one;
+        backdropRect.offsetMin = new Vector2(0f, 68f);
+        backdropRect.offsetMax = new Vector2(0f, 68f);
+        Image backdrop = backdropObject.AddComponent<Image>();
         backdrop.sprite = LoadSpriteByName("END");
         backdrop.color = Color.white;
 
-        Button retryButton = CreateMenuButton("RetryButton", root.transform, "REINTENTAR", new Vector2(340f, 82f), new Color(0.15f, 1f, 0.18f, 1f));
+        reachedRoomText = CreateText("ReachedRoomText", root.transform, "CUARTO ALCANZADO: 1", 30, TextAnchor.MiddleCenter);
+        RectTransform reachedRect = reachedRoomText.GetComponent<RectTransform>();
+        reachedRect.anchorMin = new Vector2(0.5f, 0f);
+        reachedRect.anchorMax = new Vector2(0.5f, 0f);
+        reachedRect.pivot = new Vector2(1f, 0f);
+        reachedRect.sizeDelta = new Vector2(430f, 55f);
+        reachedRect.anchoredPosition = new Vector2(-18f, 154f);
+        reachedRoomText.color = Color.white;
+
+        highestRoomText = CreateText("HighestRoomText", root.transform, "MÁS ALTO: 1", 30, TextAnchor.MiddleCenter);
+        RectTransform highestRect = highestRoomText.GetComponent<RectTransform>();
+        highestRect.anchorMin = new Vector2(0.5f, 0f);
+        highestRect.anchorMax = new Vector2(0.5f, 0f);
+        highestRect.pivot = new Vector2(0f, 0f);
+        highestRect.sizeDelta = new Vector2(340f, 55f);
+        highestRect.anchoredPosition = new Vector2(18f, 154f);
+        highestRoomText.color = Color.white;
+
+        Button retryButton = CreateMenuButton("RetryButton", root.transform, "¡NO TE RINDAS!", new Vector2(350f, 76f), new Color(0.22f, 0.92f, 0.3f, 1f));
         RectTransform retryRect = retryButton.GetComponent<RectTransform>();
         retryRect.anchorMin = new Vector2(0.5f, 0f);
         retryRect.anchorMax = new Vector2(0.5f, 0f);
         retryRect.pivot = new Vector2(0.5f, 0f);
-        retryRect.anchoredPosition = new Vector2(0f, 52f);
+        retryRect.anchoredPosition = new Vector2(-190f, 52f);
         retryButton.onClick.AddListener(RetryGame);
 
-        Button exitButton = CreateMenuButton("GameOverExitButton", root.transform, "SALIR", new Vector2(260f, 76f), new Color(1f, 0.08f, 0.06f, 1f));
+        Button exitButton = CreateMenuButton("GameOverExitButton", root.transform, "VOLVER AL TÍTULO", new Vector2(350f, 76f), new Color(0.86f, 0.84f, 0.78f, 1f));
         RectTransform exitRect = exitButton.GetComponent<RectTransform>();
-        exitRect.anchorMin = new Vector2(1f, 0f);
-        exitRect.anchorMax = new Vector2(1f, 0f);
-        exitRect.pivot = new Vector2(1f, 0f);
-        exitRect.anchoredPosition = new Vector2(-48f, 52f);
-        exitButton.onClick.AddListener(ExitGame);
+        exitRect.anchorMin = new Vector2(0.5f, 0f);
+        exitRect.anchorMax = new Vector2(0.5f, 0f);
+        exitRect.pivot = new Vector2(0.5f, 0f);
+        exitRect.anchoredPosition = new Vector2(190f, 52f);
+        exitButton.onClick.AddListener(ReturnToTitleFromGameOver);
 
         return root;
     }

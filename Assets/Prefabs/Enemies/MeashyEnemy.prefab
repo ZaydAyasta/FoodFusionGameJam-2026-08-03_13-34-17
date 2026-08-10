@@ -160,7 +160,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69c7998c110d22748837cd5a5b531bc1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Health
-  maxHealth: 3
+  maxHealth: 4
   invulnerabilityDuration: 0
   destroyOnDeath: 1
   damageReduction: 0
@@ -189,7 +189,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7d1fc15eef246a4bbd934620753d3e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyDeathNotifier
-  populationWeight: -5
+  populationWeight: -3
 --- !u!114 &5630615156355426785
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -231,6 +231,10 @@ MonoBehaviour:
   meatballDamage: 14
   meatballExplosionRadius: 1.35
   meatballWindup: 0.55
+  meatballPredictionStrength: 0.8
+  meatballMaximumLeadDistance: 3.2
+  meatballImprecisionRadius: 1.15
+  meatballCooldownVariation: 0.18
 --- !u!1 &4414882099815170411
 GameObject:
   m_ObjectHideFlags: 0

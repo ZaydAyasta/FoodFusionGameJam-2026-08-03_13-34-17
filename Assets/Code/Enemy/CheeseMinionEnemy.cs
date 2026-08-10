@@ -62,12 +62,31 @@ public class CheeseMinionEnemy : MonoBehaviour
 
         GameObject contactZone = new("ContactDamageTrigger");
         contactZone.transform.SetParent(transform, false);
-        CircleCollider2D contactCollider = contactZone.AddComponent<CircleCollider2D>();
-        contactCollider.isTrigger = true;
-        contactCollider.radius = contactRadius;
+        ConfigureContactCollider(contactZone);
         contactDamageDealer = contactZone.AddComponent<DamageDealer>();
         contactDamageDealer.Configure(CombatFaction.Enemy, contactDamage, false);
         contactDamageDealer.DamageApplied += HandleContactDamageApplied;
+    }
+
+    private void ConfigureContactCollider(GameObject contactZone)
+    {
+        BoxCollider2D bodyBox = GetComponent<BoxCollider2D>();
+        if (bodyBox != null && bodyBox.enabled)
+        {
+            BoxCollider2D contactBox = contactZone.AddComponent<BoxCollider2D>();
+            contactBox.isTrigger = true;
+            contactBox.offset = bodyBox.offset;
+            contactBox.size = new Vector2(bodyBox.size.x * 0.34f, bodyBox.size.y * 0.56f);
+            return;
+        }
+
+        CircleCollider2D bodyCircle = GetComponent<CircleCollider2D>();
+        CircleCollider2D contactCircle = contactZone.AddComponent<CircleCollider2D>();
+        contactCircle.isTrigger = true;
+        contactCircle.offset = bodyCircle != null ? bodyCircle.offset : Vector2.zero;
+        contactCircle.radius = bodyCircle != null && bodyCircle.enabled
+            ? bodyCircle.radius * 0.52f
+            : Mathf.Max(0.2f, contactRadius * 0.55f);
     }
 
     private void OnEnable()
@@ -101,10 +120,19 @@ public class CheeseMinionEnemy : MonoBehaviour
 
         if (state == State.Recovering)
         {
-            rb.linearVelocity = Vector2.zero;
-            SetAnimatorBool(IsMovingParameter, false);
+            Vector2 awayFromTarget = target != null
+                ? rb.position - (Vector2)target.position
+                : Vector2.zero;
+            rb.linearVelocity = awayFromTarget.sqrMagnitude > 0.001f
+                ? awayFromTarget.normalized * (chaseSpeed * 0.7f)
+                : Vector2.right * (chaseSpeed * 0.7f);
+            SetAnimatorBool(IsMovingParameter, true);
             if (Time.time >= recoveryEndsAt)
-                SetState(State.Searching);
+            {
+                if (contactDamageDealer != null)
+                    contactDamageDealer.enabled = true;
+                SetState(target != null ? State.Chasing : State.Searching);
+            }
             return;
         }
 
@@ -170,10 +198,10 @@ public class CheeseMinionEnemy : MonoBehaviour
             return;
 
         recoveryEndsAt = Time.time + Mathf.Max(0f, postHitRecoveryDuration);
-        if (rb != null)
-            rb.linearVelocity = Vector2.zero;
+        if (contactDamageDealer != null)
+            contactDamageDealer.enabled = false;
         SetState(State.Recovering);
-        SetAnimatorBool(IsMovingParameter, false);
+        SetAnimatorBool(IsMovingParameter, true);
     }
 
     private void Wander()

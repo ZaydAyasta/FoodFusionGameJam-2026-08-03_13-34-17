@@ -23,11 +23,11 @@ public class WaterTrailEmitter : MonoBehaviour
         int patchLimit)
     {
         wetSprite = sprite;
-        spacing = Mathf.Max(0.1f, trailSpacing);
-        patchSize = Mathf.Max(0.05f, wetPatchSize);
-        patchLifetime = Mathf.Max(0.1f, wetPatchLifetime);
-        patchAlpha = Mathf.Clamp01(alpha);
-        maxPatches = Mathf.Max(1, patchLimit);
+        spacing = Mathf.Max(0.1f, trailSpacing) * 3.2f;
+        patchSize = Mathf.Max(0.05f, wetPatchSize) * 3.85f;
+        patchLifetime = Mathf.Max(0.1f, wetPatchLifetime) * 2.2f;
+        patchAlpha = Mathf.Clamp01(alpha * 0.78f);
+        maxPatches = Mathf.Max(1, Mathf.CeilToInt(patchLimit * 1.8f));
         lastPatchPosition = transform.position;
 
         SpriteRenderer sourceRenderer = GetComponentInChildren<SpriteRenderer>(true);

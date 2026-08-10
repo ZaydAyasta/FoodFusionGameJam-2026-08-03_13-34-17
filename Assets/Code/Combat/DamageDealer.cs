@@ -36,10 +36,24 @@ public class DamageDealer : MonoBehaviour
         if (damageable == null)
             return;
 
-        damageable.TakeDamage(damage);
+        if (damageable is Health health)
+            health.TakeDamage(damage, gameObject);
+        else
+            damageable.TakeDamage(damage);
         DamageApplied?.Invoke(target);
 
-        if (destroyOnDamage)
+        bool preserveLethalHit = damageable is Health damagedHealth && damagedHealth.IsDead;
+        if (destroyOnDamage && !preserveLethalHit)
             Destroy(gameObject);
+        else if (preserveLethalHit)
+        {
+            Collider2D hitCollider = GetComponent<Collider2D>();
+            if (hitCollider != null)
+                hitCollider.enabled = false;
+
+            Rigidbody2D hitBody = GetComponentInParent<Rigidbody2D>();
+            if (hitBody != null)
+                hitBody.linearVelocity = Vector2.zero;
+        }
     }
 }

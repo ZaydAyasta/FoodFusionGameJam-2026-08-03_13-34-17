@@ -3,13 +3,28 @@ using UnityEngine.UI;
 
 public class PlayerHealthHud : MonoBehaviour
 {
+    private const float LowHealthThreshold = 0.35f;
+
     [SerializeField] private Health playerHealth;
     [SerializeField] private Image fillImage;
     [SerializeField] private Text healthText;
 
+    private Image lowHealthVignette;
+    private Color normalFillColor;
+    private Color normalTextColor;
+    private bool lowHealthMusicActive;
+
     private void Awake()
     {
         BuildFallbackHud();
+        normalFillColor = fillImage != null ? fillImage.color : new Color(0.1f, 0.8f, 0.25f);
+        normalTextColor = healthText != null ? healthText.color : Color.white;
+        BuildLowHealthVignette();
+    }
+
+    private void Update()
+    {
+        UpdateLowHealthEffect();
     }
 
     private void OnEnable()
@@ -22,6 +37,12 @@ public class PlayerHealthHud : MonoBehaviour
     {
         if (playerHealth != null)
             playerHealth.HealthChanged -= HandleHealthChanged;
+
+        if (lowHealthMusicActive)
+        {
+            lowHealthMusicActive = false;
+            GameAudio.SetLowHealthMusicIntensity(0f);
+        }
     }
 
     public void Initialize(Health health)
@@ -60,6 +81,8 @@ public class PlayerHealthHud : MonoBehaviour
         {
             float normalizedHealth = current / max;
             fillImage.fillAmount = normalizedHealth;
+            bool lowHealth = normalizedHealth > 0f && normalizedHealth <= LowHealthThreshold;
+            fillImage.color = lowHealth ? new Color(0.95f, 0.04f, 0.03f, 1f) : normalFillColor;
 
             // The fallback Image has no source sprite, so Unity's Filled mode
             // may continue drawing it as a full rectangle. Scaling its actual
@@ -72,7 +95,13 @@ public class PlayerHealthHud : MonoBehaviour
         }
 
         if (healthText != null)
+        {
             healthText.text = $"Vida {Mathf.CeilToInt(current)} / {Mathf.CeilToInt(max)}";
+            float normalizedHealth = current / max;
+            healthText.color = normalizedHealth > 0f && normalizedHealth <= LowHealthThreshold
+                ? new Color(1f, 0.18f, 0.12f, 1f)
+                : normalTextColor;
+        }
     }
 
     private void BuildFallbackHud()
@@ -138,5 +167,90 @@ public class PlayerHealthHud : MonoBehaviour
         healthText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
         if (healthText.font == null)
             healthText.font = Resources.GetBuiltinResource<Font>("Arial.ttf");
+    }
+
+    private void BuildLowHealthVignette()
+    {
+        if (lowHealthVignette != null)
+            return;
+
+        GameObject vignette = new("Low Health Vignette");
+        vignette.transform.SetParent(transform, false);
+        vignette.transform.SetAsFirstSibling();
+
+        RectTransform rect = vignette.AddComponent<RectTransform>();
+        rect.anchorMin = Vector2.zero;
+        rect.anchorMax = Vector2.one;
+        rect.offsetMin = Vector2.zero;
+        rect.offsetMax = Vector2.zero;
+
+        lowHealthVignette = vignette.AddComponent<Image>();
+        lowHealthVignette.sprite = CreateVignetteSprite();
+        lowHealthVignette.color = new Color(1f, 1f, 1f, 0f);
+        lowHealthVignette.raycastTarget = false;
+    }
+
+    private void UpdateLowHealthEffect()
+    {
+        if (lowHealthVignette == null || playerHealth == null)
+            return;
+
+        float normalized = playerHealth.MaxHealth > 0f
+            ? playerHealth.CurrentHealth / playerHealth.MaxHealth
+            : 0f;
+        if (normalized <= 0f || normalized > LowHealthThreshold)
+        {
+            lowHealthVignette.color = new Color(1f, 1f, 1f, 0f);
+            SetLowHealthMusic(0f);
+            return;
+        }
+
+        float danger = 1f - Mathf.Clamp01(normalized / LowHealthThreshold);
+        SetLowHealthMusic(danger);
+        float pulse = 0.5f + 0.5f * Mathf.Sin(Time.unscaledTime * Mathf.PI * 2.8f);
+        float alpha = Mathf.Lerp(0.28f, 0.68f, pulse) * Mathf.Lerp(0.65f, 1f, danger);
+        lowHealthVignette.color = new Color(1f, 1f, 1f, alpha);
+    }
+
+    private static Sprite CreateVignetteSprite()
+    {
+        const int width = 256;
+        const int height = 144;
+        Texture2D texture = new(width, height, TextureFormat.RGBA32, false)
+        {
+            name = "Low Health Red Vignette",
+            filterMode = FilterMode.Bilinear,
+            wrapMode = TextureWrapMode.Clamp
+        };
+
+        for (int y = 0; y < height; y++)
+        {
+            float ny = Mathf.Abs((y + 0.5f) / height * 2f - 1f);
+            for (int x = 0; x < width; x++)
+            {
+                float nx = Mathf.Abs((x + 0.5f) / width * 2f - 1f);
+                float edge = Mathf.Max(nx, ny);
+                float corner = Mathf.Sqrt(nx * nx + ny * ny) * 0.72f;
+                float alpha = Mathf.SmoothStep(0.78f, 1f, Mathf.Max(edge, corner));
+                texture.SetPixel(x, y, new Color(0.45f, 0f, 0f, alpha));
+            }
+        }
+
+        texture.Apply(false, true);
+        return Sprite.Create(texture, new Rect(0f, 0f, width, height), new Vector2(0.5f, 0.5f), 100f);
+    }
+
+    private void SetLowHealthMusic(float intensity)
+    {
+        bool active = intensity > 0f;
+        if (lowHealthMusicActive == active)
+        {
+            if (active)
+                GameAudio.SetLowHealthMusicIntensity(intensity);
+            return;
+        }
+
+        lowHealthMusicActive = active;
+        GameAudio.SetLowHealthMusicIntensity(active ? intensity : 0f);
     }
 }

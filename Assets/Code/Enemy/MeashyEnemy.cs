@@ -42,6 +42,10 @@ public class MeashyEnemy : MonoBehaviour
     [SerializeField] private float meatballDamage = 14f;
     [SerializeField] private float meatballExplosionRadius = 1.35f;
     [SerializeField] private float meatballWindup = 0.55f;
+    [SerializeField, Range(0f, 1.5f)] private float meatballPredictionStrength = 0.8f;
+    [SerializeField, Min(0f)] private float meatballMaximumLeadDistance = 3.2f;
+    [SerializeField, Min(0f)] private float meatballImprecisionRadius = 1.15f;
+    [SerializeField, Range(0f, 0.5f)] private float meatballCooldownVariation = 0.18f;
 
     private static Projectile fallbackSpikePrefab;
     private Rigidbody2D rb;
@@ -77,7 +81,7 @@ public class MeashyEnemy : MonoBehaviour
     private void OnEnable()
     {
         nextSpikeAt = Time.time + Random.Range(0.5f, spikeCooldown);
-        nextMeatballAt = Time.time + meatballCooldown;
+        nextMeatballAt = Time.time + meatballCooldown * Random.Range(0.82f, 1.18f);
         attacking = false;
         hopPhase = HopPhase.Resting;
         nextHopAt = Time.time + restBetweenJumps;
@@ -177,7 +181,9 @@ public class MeashyEnemy : MonoBehaviour
         yield return new WaitForSeconds(Mathf.Max(0f, meatballWindup));
         if (target != null)
             ThrowMeatball();
-        nextMeatballAt = Time.time + Mathf.Max(1f, meatballCooldown);
+        float cooldownVariation = meatballCooldown * meatballCooldownVariation;
+        nextMeatballAt = Time.time + Mathf.Max(1f,
+            meatballCooldown + Random.Range(-cooldownVariation, cooldownVariation));
         nextSpikeAt = Mathf.Max(nextSpikeAt, Time.time + 0.75f);
         EndAttack();
     }
@@ -241,8 +247,23 @@ public class MeashyEnemy : MonoBehaviour
             meatball = fallback.AddComponent<MeatballProjectile>();
         }
 
-        meatball.Launch(GetTargetCenter(), meatballFlightDuration, meatballArcHeight, meatballDamage,
+        meatball.Launch(GetPredictedMeatballDestination(), meatballFlightDuration, meatballArcHeight, meatballDamage,
             meatballExplosionRadius, CombatFaction.Enemy);
+    }
+
+    private Vector2 GetPredictedMeatballDestination()
+    {
+        Vector2 currentTargetPosition = GetTargetCenter();
+        Rigidbody2D targetBody = target != null ? target.GetComponentInParent<Rigidbody2D>() : null;
+        Vector2 targetVelocity = targetBody != null ? targetBody.linearVelocity : Vector2.zero;
+
+        Vector2 predictedOffset = targetVelocity * (meatballFlightDuration * meatballPredictionStrength);
+        predictedOffset = Vector2.ClampMagnitude(predictedOffset, meatballMaximumLeadDistance);
+
+        // Each Meashy rolls its own miss direction, producing a useful spread
+        // instead of stacking every meatball on exactly the same destination.
+        Vector2 imprecision = Random.insideUnitCircle * meatballImprecisionRadius;
+        return currentTargetPosition + predictedOffset + imprecision;
     }
 
     private Vector3 GetProjectileOrigin() => projectileOrigin != null ? projectileOrigin.position : (Vector3)GetEnemyCenter();

@@ -74,9 +74,12 @@ public class ProceduralRoomLayout : MonoBehaviour
         if (kitchenSpawnPoint == null)
             return;
 
+        // Kitchen spawn renderers are placement markers only. The actual kitchen
+        // is rendered separately as ProceduralKitchenSprite, so these must never
+        // become visible in game (otherwise the red marker covers the sprite).
         Renderer[] renderers = kitchenSpawnPoint.GetComponentsInChildren<Renderer>(true);
         foreach (Renderer kitchenRenderer in renderers)
-            kitchenRenderer.enabled = visible;
+            kitchenRenderer.enabled = false;
     }
 
     public void AutoWire()
