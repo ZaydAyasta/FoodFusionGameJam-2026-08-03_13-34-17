@@ -11,7 +11,15 @@ using UnityEditor;
 public class FusionKitchenHud : MonoBehaviour
 {
     private const string MaxHealthMilkId = "maxHealthMilk";
+    private const string MilkshakeId = "milkshake";
+    private const string BologneseId = "bolognese";
+    private const string SandwitchId = "sandwitch";
+    private const string WaterId = "water";
     private const float MaxHealthMilkBonus = 50f;
+    private const float MilkshakeSpeedBonus = 1f;
+    private const float BologneseDamageBonus = 1f;
+    private const float SandwitchCooldownMultiplier = 0.8f;
+    private const float WaterHealAmount = 20f;
 
     private static FusionKitchenHud instance;
 
@@ -261,34 +269,28 @@ public class FusionKitchenHud : MonoBehaviour
         if (recipeResult != null)
             return recipeResult;
 
-        List<IngredientData> pool = LoadIngredientPool();
-        if (pool.Count == 0)
-            return first;
-
-        List<IngredientData> candidates = new();
-        foreach (IngredientData candidate in pool)
-        {
-            if (candidate != null && candidate != first && candidate != second)
-                candidates.Add(candidate);
-        }
-
-        if (candidates.Count == 0)
-            candidates = pool;
-
-        string firstId = string.IsNullOrWhiteSpace(first.Id) ? first.name : first.Id;
-        string secondId = string.IsNullOrWhiteSpace(second.Id) ? second.name : second.Id;
-        string key = string.CompareOrdinal(firstId, secondId) <= 0 ? firstId + secondId : secondId + firstId;
-        int hash = 17;
-        for (int i = 0; i < key.Length; i++)
-            hash = hash * 31 + key[i];
-
-        return candidates[Mathf.Abs(hash) % candidates.Count];
+        return LoadIngredientById(WaterId) ?? first;
     }
 
     private IngredientData GetRecipeResult(IngredientData first, IngredientData second)
     {
         if (IsRecipePair(first, second, "drop", "drop_0", "Ingredient_Drop", "dropMilk", "dropMilk_0", "Ingredient_DropMilk"))
             return LoadIngredientById(MaxHealthMilkId) ?? LoadIngredientById("dropMilk") ?? second;
+
+        if (IsRecipePair(first, second, "dropMilk", "dropMilk_0", "Ingredient_DropMilk", "manzana", "MANZANAAA_0", "Ingredient_Manzana"))
+            return LoadIngredientById(MilkshakeId) ?? LoadIngredientById("dropMilk") ?? first;
+
+        if (IsRecipePair(first, second, "meat", "Meat_0", "Ingredient_Meat", "noodle", "noodle_0", "Ingredient_Noodle")
+            || IsRecipePair(first, second, "fishdrop", "fishdrop_0", "Ingredient_Fishdrop", "noodle", "noodle_0", "Ingredient_Noodle"))
+        {
+            return LoadIngredientById(BologneseId) ?? LoadIngredientById("noodle") ?? second;
+        }
+
+        if (IsRecipePair(first, second, "bread", "bread_0", "Ingredient_Bread", "meat", "Meat_0", "Ingredient_Meat")
+            || IsRecipePair(first, second, "bread", "bread_0", "Ingredient_Bread", "fishdrop", "fishdrop_0", "Ingredient_Fishdrop"))
+        {
+            return LoadIngredientById(SandwitchId) ?? LoadIngredientById("meat") ?? second;
+        }
 
         return null;
     }
@@ -360,42 +362,46 @@ public class FusionKitchenHud : MonoBehaviour
 
     private void ApplyFusionResultEffect(IngredientData result)
     {
-        if (!MatchesIngredient(result, MaxHealthMilkId))
+        if (result == null)
             return;
 
-        Health playerHealth = inventory != null ? inventory.GetComponentInParent<Health>() : null;
-        if (playerHealth == null)
+        Health playerHealth = GetPlayerComponent<Health>();
+        if (MatchesIngredient(result, MaxHealthMilkId))
         {
-            CharacterInput playerInput = FindFirstObjectByType<CharacterInput>();
-            if (playerInput != null)
-                playerHealth = playerInput.GetComponentInParent<Health>();
+            playerHealth?.IncreaseMaxHealth(MaxHealthMilkBonus, true);
+            return;
         }
 
-        playerHealth?.IncreaseMaxHealth(MaxHealthMilkBonus, true);
+        if (MatchesIngredient(result, WaterId))
+        {
+            playerHealth?.Heal(WaterHealAmount);
+            return;
+        }
+
+        if (MatchesIngredient(result, MilkshakeId))
+        {
+            GetPlayerComponent<CharacterMovement>()?.AddSpeedBonus(MilkshakeSpeedBonus);
+            return;
+        }
+
+        if (MatchesIngredient(result, BologneseId))
+        {
+            GetPlayerComponent<PlayerAttack>()?.AddDamageBonus(BologneseDamageBonus);
+            return;
+        }
+
+        if (MatchesIngredient(result, SandwitchId))
+            GetPlayerComponent<PlayerAttack>()?.MultiplyCooldown(SandwitchCooldownMultiplier);
     }
 
-    private List<IngredientData> LoadIngredientPool()
+    private T GetPlayerComponent<T>() where T : Component
     {
-        List<IngredientData> pool = new();
-#if UNITY_EDITOR
-        string[] guids = AssetDatabase.FindAssets("t:IngredientData", new[] { "Assets/GameData/Ingredients" });
-        foreach (string guid in guids)
-        {
-            string path = AssetDatabase.GUIDToAssetPath(guid);
-            IngredientData ingredient = AssetDatabase.LoadAssetAtPath<IngredientData>(path);
-            if (ingredient != null && !pool.Contains(ingredient))
-                pool.Add(ingredient);
-        }
-#endif
+        T component = inventory != null ? inventory.GetComponentInParent<T>() : null;
+        if (component != null)
+            return component;
 
-        List<IngredientInventory.IngredientStack> stacks = GetVisibleInventoryStacks();
-        foreach (IngredientInventory.IngredientStack stack in stacks)
-        {
-            if (stack.Ingredient != null && !pool.Contains(stack.Ingredient))
-                pool.Add(stack.Ingredient);
-        }
-
-        return pool;
+        CharacterInput playerInput = FindAnyObjectByType<CharacterInput>();
+        return playerInput != null ? playerInput.GetComponentInParent<T>() : null;
     }
 
     private void RefreshSelectedSlots()
@@ -952,7 +958,7 @@ public class FusionKitchenHud : MonoBehaviour
 
     private static void EnsureEventSystem()
     {
-        if (FindFirstObjectByType<EventSystem>() != null)
+        if (FindAnyObjectByType<EventSystem>() != null)
             return;
 
         GameObject eventSystemObject = new("EventSystem");

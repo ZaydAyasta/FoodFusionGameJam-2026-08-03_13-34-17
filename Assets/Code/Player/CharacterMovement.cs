@@ -13,6 +13,14 @@ public class CharacterMovement : MonoBehaviour
 
     private int lastDirection = 1; // Down por defecto
 
+    public void AddSpeedBonus(float amount)
+    {
+        if (amount <= 0f)
+            return;
+
+        speed += amount;
+    }
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
