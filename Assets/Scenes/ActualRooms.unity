@@ -2564,7 +2564,7 @@ MonoBehaviour:
   kitchenSprite: {fileID: 0}
   kitchenVisualWorldScale: {x: 0.1, y: 0.1, z: 0.1}
   kitchenVisualOffset: {x: 0, y: 0, z: -0.25}
-  kitchenVisualMinimumSortingOrder: 10
+  kitchenVisualMinimumSortingOrder: 3
   shopPrefab: {fileID: 0}
   kitchenRoomShopChance: 0.65
   shopVisualOffset: {x: 0, y: 0, z: -0.25}
