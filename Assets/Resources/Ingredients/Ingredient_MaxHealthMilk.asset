@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9fc16a21d28bc244f889217352f478c5, type: 3}
+  m_Name: Ingredient_MaxHealthMilk
+  m_EditorClassIdentifier: Assembly-CSharp::IngredientData
+  id: maxHealthMilk
+  displayName: Fortified Milk
+  icon: {fileID: -7231736666927521567, guid: e1af086726c6ee7489c44c6f97e88ae7, type: 3}
+  description: Aumenta la vida maxima del jugador en 50 al fusionarla.
+  cuisine: 6
+  linkedEnemyPrefab: {fileID: 100000, guid: 0db977b7f2259824e99f6f5eedda4428, type: 3}

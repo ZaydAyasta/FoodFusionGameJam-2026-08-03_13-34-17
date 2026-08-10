@@ -246,6 +246,9 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
         if (doorSprite == null)
             doorSprite = ResolveDoorSpriteFromScene();
 
+        if (doorSprite == null)
+            doorSprite = LoadSpriteFromResources("Backgrounds/door", "door_0");
+
 #if UNITY_EDITOR
         if (doorSprite == null)
         {
@@ -340,6 +343,9 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
 
     private void ResolveKitchenVisualReferences()
     {
+        if (kitchenSprite == null)
+            kitchenSprite = LoadSpriteFromResources("Backgrounds/COCINA", "COCINA_0");
+
 #if UNITY_EDITOR
         if (kitchenSprite == null)
         {
@@ -369,6 +375,9 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
 
     private void ResolveShopReferences()
     {
+        if (shopPrefab == null)
+            shopPrefab = Resources.Load<ShopVisual>("Shops/Shop");
+
 #if UNITY_EDITOR
         if (shopPrefab == null)
             shopPrefab = AssetDatabase.LoadAssetAtPath<ShopVisual>("Assets/Prefabs/Shops/Shop.prefab");
@@ -1281,6 +1290,10 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
         if (riceEnemyPrefab != null)
             return riceEnemyPrefab;
 
+        riceEnemyPrefab = Resources.Load<EnemyDeathNotifier>("Enemies/RiceEnemy");
+        if (riceEnemyPrefab != null)
+            return riceEnemyPrefab;
+
 #if UNITY_EDITOR
         riceEnemyPrefab = AssetDatabase.LoadAssetAtPath<EnemyDeathNotifier>("Assets/Prefabs/Enemies/RiceEnemy.prefab");
 #endif
@@ -1415,6 +1428,34 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
 
     private IngredientData[] GetRewardPool()
     {
+        IngredientData[] resourceIngredients = Resources.LoadAll<IngredientData>("Ingredients");
+        if (resourceIngredients != null && resourceIngredients.Length > 0)
+        {
+            List<IngredientData> resourceRewards = new();
+            List<IngredientData> resourceRewardsWithIcons = new();
+            foreach (IngredientData ingredient in resourceIngredients)
+            {
+                if (ingredient == null || !ingredient.CanAppearAsRoomReward)
+                    continue;
+
+                resourceRewards.Add(ingredient);
+                if (ingredient.Icon != null)
+                    resourceRewardsWithIcons.Add(ingredient);
+            }
+
+            if (resourceRewardsWithIcons.Count > 0)
+            {
+                rewardPool = resourceRewardsWithIcons.ToArray();
+                return rewardPool;
+            }
+
+            if (resourceRewards.Count > 0)
+            {
+                rewardPool = resourceRewards.ToArray();
+                return rewardPool;
+            }
+        }
+
 #if UNITY_EDITOR
         string[] guids = AssetDatabase.FindAssets("t:IngredientData", new[] { "Assets/GameData/Ingredients" });
         List<IngredientData> ingredients = new();
@@ -1739,6 +1780,10 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
         if (riceEnemySprite != null)
             return riceEnemySprite;
 
+        riceEnemySprite = LoadSpriteFromResources("Images/ricemonster", "ricemonster_0");
+        if (riceEnemySprite != null)
+            return riceEnemySprite;
+
 #if UNITY_EDITOR
         Object[] riceAssets = AssetDatabase.LoadAllAssetsAtPath("Assets/Images/ricemonster.png");
         foreach (Object asset in riceAssets)
@@ -1761,6 +1806,42 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
 #endif
 
         return GetFallbackSprite();
+    }
+
+    private static Sprite LoadSpriteFromResources(string resourcePath, string preferredSpriteName = null)
+    {
+        Sprite directSprite = Resources.Load<Sprite>(resourcePath);
+        if (directSprite != null)
+            return directSprite;
+
+        Sprite[] sprites = Resources.LoadAll<Sprite>(resourcePath);
+        if (sprites != null && sprites.Length > 0)
+        {
+            if (!string.IsNullOrWhiteSpace(preferredSpriteName))
+            {
+                foreach (Sprite sprite in sprites)
+                {
+                    if (sprite != null && sprite.name.Equals(preferredSpriteName, System.StringComparison.OrdinalIgnoreCase))
+                        return sprite;
+                }
+            }
+
+            foreach (Sprite sprite in sprites)
+            {
+                if (sprite != null)
+                    return sprite;
+            }
+        }
+
+        Texture2D texture = Resources.Load<Texture2D>(resourcePath);
+        if (texture == null)
+            return null;
+
+        return Sprite.Create(
+            texture,
+            new Rect(0f, 0f, texture.width, texture.height),
+            new Vector2(0.5f, 0.5f),
+            100f);
     }
 
     private static void Shuffle<T>(IList<T> list)

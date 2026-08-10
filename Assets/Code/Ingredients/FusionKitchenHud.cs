@@ -366,6 +366,13 @@ public class FusionKitchenHud : MonoBehaviour
         }
 #endif
 
+        IngredientData[] resourceIngredients = Resources.LoadAll<IngredientData>("Ingredients");
+        foreach (IngredientData ingredient in resourceIngredients)
+        {
+            if (MatchesIngredient(ingredient, id))
+                return ingredient;
+        }
+
         IngredientInventory bestInventory = ResolveBestInventory(null);
         if (bestInventory == null)
             return null;

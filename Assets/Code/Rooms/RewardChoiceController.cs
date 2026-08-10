@@ -17,6 +17,9 @@ public class RewardChoiceController : MonoBehaviour
 
     private void Awake()
     {
+        if (rewardPrefab == null)
+            rewardPrefab = Resources.Load<IngredientReward>("Rewards/RiceReward");
+
 #if UNITY_EDITOR
         if (rewardPrefab == null)
             rewardPrefab = AssetDatabase.LoadAssetAtPath<IngredientReward>("Assets/Prefabs/Rewards/RiceReward.prefab");
@@ -82,6 +85,33 @@ public class RewardChoiceController : MonoBehaviour
 
     private static Sprite LoadRiceSprite()
     {
+        Sprite resourceSprite = Resources.Load<Sprite>("Images/rice");
+        if (resourceSprite != null)
+            return resourceSprite;
+
+        Sprite[] resourceSprites = Resources.LoadAll<Sprite>("Images/rice");
+        foreach (Sprite sprite in resourceSprites)
+        {
+            if (sprite != null && sprite.name == "rice_0")
+                return sprite;
+        }
+
+        foreach (Sprite sprite in resourceSprites)
+        {
+            if (sprite != null)
+                return sprite;
+        }
+
+        Texture2D texture = Resources.Load<Texture2D>("Images/rice");
+        if (texture != null)
+        {
+            return Sprite.Create(
+                texture,
+                new Rect(0f, 0f, texture.width, texture.height),
+                new Vector2(0.5f, 0.5f),
+                100f);
+        }
+
 #if UNITY_EDITOR
         Object[] assets = AssetDatabase.LoadAllAssetsAtPath("Assets/Images/rice.png");
         foreach (Object asset in assets)
