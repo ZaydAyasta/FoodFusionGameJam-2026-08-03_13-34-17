@@ -37,6 +37,7 @@ public class PlayerDeathHandler : MonoBehaviour
 
         Time.timeScale = 0f;
         GameAudio.StopAllAudio();
+        GameAudio.PlayDeathHit();
         HideEverythingExceptDeathSubjects(finalAttacker);
         TintRenderers(gameObject, new Color(0.62f, 0.055f, 0.045f, 1f));
         if (finalAttacker != null)

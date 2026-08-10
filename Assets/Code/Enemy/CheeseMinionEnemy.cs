@@ -7,6 +7,7 @@ public class CheeseMinionEnemy : MonoBehaviour
     [SerializeField] private Animator animator;
     [SerializeField] private SpriteRenderer visualRenderer;
     [SerializeField] private bool spriteFacesRight = false;
+    [SerializeField] private Transform crumbOrigin;
 
     [Header("Birth")]
     [SerializeField] private float birthDuration = 0.85f;
@@ -35,6 +36,9 @@ public class CheeseMinionEnemy : MonoBehaviour
     private float recoveryEndsAt;
     private Health health;
     private DamageDealer contactDamageDealer;
+    private ParticleSystem runningCrumbParticles;
+    private float crumbEmissionAccumulator;
+    private Vector3 crumbOriginBaseLocalPosition;
 
     private static readonly int IsMovingParameter = Animator.StringToHash("IsMoving");
     private static readonly int IsChasingParameter = Animator.StringToHash("IsChasing");
@@ -54,6 +58,8 @@ public class CheeseMinionEnemy : MonoBehaviour
             visualRenderer = animator.GetComponentInChildren<SpriteRenderer>(true);
         if (visualRenderer == null)
             visualRenderer = GetComponentInChildren<SpriteRenderer>(true);
+        if (crumbOrigin != null)
+            crumbOriginBaseLocalPosition = transform.InverseTransformPoint(crumbOrigin.position);
 
         health = GetComponent<Health>();
         DamageDealer oldRootDealer = GetComponent<DamageDealer>();
@@ -66,6 +72,96 @@ public class CheeseMinionEnemy : MonoBehaviour
         contactDamageDealer = contactZone.AddComponent<DamageDealer>();
         contactDamageDealer.Configure(CombatFaction.Enemy, contactDamage, false);
         contactDamageDealer.DamageApplied += HandleContactDamageApplied;
+
+        CreateRunningCrumbParticles();
+    }
+
+    private void LateUpdate()
+    {
+        if (runningCrumbParticles == null || rb == null || Time.timeScale <= 0f)
+            return;
+
+        Vector2 velocity = rb.linearVelocity;
+        float speed = velocity.magnitude;
+        if (speed < 0.25f || state == State.Born)
+            return;
+
+        crumbEmissionAccumulator += Time.deltaTime * Mathf.Lerp(9f, 24f, Mathf.Clamp01(speed / chaseSpeed));
+        int emitCount = Mathf.FloorToInt(crumbEmissionAccumulator);
+        if (emitCount <= 0)
+            return;
+
+        crumbEmissionAccumulator -= emitCount;
+        Vector2 direction = velocity.normalized;
+        float edgeDistance = visualRenderer != null
+            ? Mathf.Max(0.18f, visualRenderer.bounds.extents.x * 0.78f)
+            : 0.35f;
+        Vector3 trailingTip;
+        if (crumbOrigin != null)
+        {
+            Vector3 mirroredOrigin = crumbOriginBaseLocalPosition;
+            if (visualRenderer != null && visualRenderer.flipX)
+                mirroredOrigin.x = -mirroredOrigin.x;
+            trailingTip = transform.TransformPoint(mirroredOrigin);
+        }
+        else
+        {
+            trailingTip = transform.position - (Vector3)(direction * edgeDistance);
+        }
+
+        for (int i = 0; i < emitCount; i++)
+        {
+            Vector2 sideways = new(-direction.y, direction.x);
+            ParticleSystem.EmitParams particle = new();
+            particle.position = trailingTip + (Vector3)(sideways * Random.Range(-0.1f, 0.1f));
+            particle.velocity = (-direction * Random.Range(0.65f, 1.35f)) +
+                (sideways * Random.Range(-0.42f, 0.42f));
+            particle.startLifetime = Random.Range(0.28f, 0.52f);
+            particle.startSize = Random.Range(0.11f, 0.22f);
+            particle.rotation3D = new Vector3(0f, 0f, Random.Range(0f, 360f));
+            particle.startColor = new Color(1f, Random.Range(0.7f, 0.9f), 0.03f, 0.92f);
+            runningCrumbParticles.Emit(particle, 1);
+        }
+    }
+
+    private void CreateRunningCrumbParticles()
+    {
+        GameObject particlesObject = new("RunningCheeseCrumbs");
+        particlesObject.transform.SetParent(transform, false);
+        runningCrumbParticles = particlesObject.AddComponent<ParticleSystem>();
+
+        ParticleSystem.MainModule main = runningCrumbParticles.main;
+        main.playOnAwake = false;
+        main.loop = false;
+        main.simulationSpace = ParticleSystemSimulationSpace.World;
+        main.maxParticles = 90;
+        main.startSpeed = 0f;
+        main.startLifetime = 0.4f;
+        main.startSize = 0.16f;
+        main.startColor = new Color(1f, 0.82f, 0.04f, 0.92f);
+
+        ParticleSystem.EmissionModule emission = runningCrumbParticles.emission;
+        emission.enabled = false;
+
+        ParticleSystem.SizeOverLifetimeModule sizeOverLifetime = runningCrumbParticles.sizeOverLifetime;
+        sizeOverLifetime.enabled = true;
+        sizeOverLifetime.size = new ParticleSystem.MinMaxCurve(1f,
+            new AnimationCurve(
+                new Keyframe(0f, 0.45f),
+                new Keyframe(0.18f, 1f),
+                new Keyframe(1f, 0f)));
+
+        ParticleSystemRenderer particleRenderer = particlesObject.GetComponent<ParticleSystemRenderer>();
+        particleRenderer.renderMode = ParticleSystemRenderMode.Billboard;
+        if (visualRenderer != null)
+        {
+            particleRenderer.sortingLayerID = visualRenderer.sortingLayerID;
+            particleRenderer.sortingOrder = visualRenderer.sortingOrder + 1;
+        }
+
+        Shader particleShader = Shader.Find("Sprites/Default");
+        if (particleShader != null)
+            particleRenderer.material = new Material(particleShader);
     }
 
     private void ConfigureContactCollider(GameObject contactZone)

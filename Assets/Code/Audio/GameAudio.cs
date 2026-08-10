@@ -28,6 +28,7 @@ public class GameAudio : MonoBehaviour
     private AudioClip shootClip;
     private AudioClip dashClip;
     private AudioClip itemPickupClip;
+    private AudioClip deathHitClip;
     private int nextFootstepIndex;
     private float nextFootstepAt;
     private int nextCombatIndex;
@@ -215,6 +216,44 @@ public class GameAudio : MonoBehaviour
         audio.sfxSource.Stop();
         audio.currentMusicMode = MusicMode.None;
         audio.targetMusicPitch = 1f;
+    }
+
+    public static void PlayDeathHit()
+    {
+        GameAudio audio = Instance;
+        audio.EnsureReady();
+        if (audio.deathHitClip == null)
+            audio.deathHitClip = CreateDeathHitClip();
+
+        audio.sfxSource.pitch = 1f;
+        audio.sfxSource.PlayOneShot(audio.deathHitClip, 1.15f);
+    }
+
+    private static AudioClip CreateDeathHitClip()
+    {
+        const int sampleRate = 44100;
+        const float duration = 0.46f;
+        int sampleCount = Mathf.CeilToInt(sampleRate * duration);
+        float[] samples = new float[sampleCount];
+        float phase = 0f;
+
+        for (int i = 0; i < sampleCount; i++)
+        {
+            float time = i / (float)sampleRate;
+            float normalized = time / duration;
+            float frequency = Mathf.Lerp(105f, 48f, Mathf.Sqrt(normalized));
+            phase += 2f * Mathf.PI * frequency / sampleRate;
+
+            float attack = Mathf.Clamp01(time / 0.008f);
+            float body = Mathf.Exp(-7.2f * normalized);
+            float lowThump = Mathf.Sin(phase) * attack * body;
+            float transient = (Random.value * 2f - 1f) * Mathf.Exp(-70f * time) * 0.32f;
+            samples[i] = Mathf.Clamp((lowThump * 0.92f) + transient, -1f, 1f);
+        }
+
+        AudioClip clip = AudioClip.Create("DeathHit_TUM", sampleCount, 1, sampleRate, false);
+        clip.SetData(samples, 0);
+        return clip;
     }
 
     public static void SetLowHealthMusicIntensity(float intensity)
