@@ -69,6 +69,7 @@ public class IngredientReward : MonoBehaviour
 
         claimed = true;
         inventory.AddIngredient(ingredient);
+        GameAudio.PlayItemPickup();
         if (owner != null)
             owner.Claim(this);
         else

@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -51,13 +52,13 @@ public class ProceduralRoomLayout : MonoBehaviour
         };
     }
 
-    public void ShowOnlyDoors(IEnumerable<RoomDirection> visibleDirections)
+    public void ShowOnlyDoors(IEnumerable<RoomDirection> visibleDirections, float fadeInDuration = 0f)
     {
         HashSet<RoomDirection> visible = new(visibleDirections);
-        SetDoorVisible(RoomDirection.Up, visible.Contains(RoomDirection.Up));
-        SetDoorVisible(RoomDirection.Right, visible.Contains(RoomDirection.Right));
-        SetDoorVisible(RoomDirection.Down, visible.Contains(RoomDirection.Down));
-        SetDoorVisible(RoomDirection.Left, visible.Contains(RoomDirection.Left));
+        SetDoorVisible(RoomDirection.Up, visible.Contains(RoomDirection.Up), fadeInDuration);
+        SetDoorVisible(RoomDirection.Right, visible.Contains(RoomDirection.Right), fadeInDuration);
+        SetDoorVisible(RoomDirection.Down, visible.Contains(RoomDirection.Down), fadeInDuration);
+        SetDoorVisible(RoomDirection.Left, visible.Contains(RoomDirection.Left), fadeInDuration);
     }
 
     public void HideAllDoors()
@@ -202,7 +203,7 @@ public class ProceduralRoomLayout : MonoBehaviour
         return spawnPoints;
     }
 
-    private void SetDoorVisible(RoomDirection direction, bool visible)
+    private void SetDoorVisible(RoomDirection direction, bool visible, float fadeInDuration = 0f)
     {
         Transform door = GetDoor(direction);
         if (door != null)
@@ -212,10 +213,10 @@ public class ProceduralRoomLayout : MonoBehaviour
                 doorRenderer.enabled = visible;
         }
 
-        SetProceduralDoorVisualVisible(direction, visible);
+        SetProceduralDoorVisualVisible(direction, visible, fadeInDuration);
     }
 
-    private void SetProceduralDoorVisualVisible(RoomDirection direction, bool visible)
+    private void SetProceduralDoorVisualVisible(RoomDirection direction, bool visible, float fadeInDuration = 0f)
     {
         string proceduralName = $"ProceduralDoorSprite_{direction}";
         string prototypeName = direction switch
@@ -238,16 +239,60 @@ public class ProceduralRoomLayout : MonoBehaviour
             }
         }
 
+        List<SpriteRenderer> activeRenderers = new();
         foreach (SpriteRenderer spriteRenderer in renderers)
         {
             if (spriteRenderer.name.Equals(proceduralName, StringComparison.OrdinalIgnoreCase))
             {
                 spriteRenderer.enabled = visible;
+                if (visible)
+                    activeRenderers.Add(spriteRenderer);
             }
             else if (spriteRenderer.name.Equals(prototypeName, StringComparison.OrdinalIgnoreCase))
             {
                 spriteRenderer.enabled = visible && !hasProceduralVisual;
+                if (spriteRenderer.enabled)
+                    activeRenderers.Add(spriteRenderer);
             }
+        }
+
+        if (visible && fadeInDuration > 0f && activeRenderers.Count > 0)
+            StartCoroutine(FadeInDoorRenderers(activeRenderers, fadeInDuration));
+    }
+
+    private static IEnumerator FadeInDoorRenderers(List<SpriteRenderer> renderers, float duration)
+    {
+        Color[] targetColors = new Color[renderers.Count];
+        for (int i = 0; i < renderers.Count; i++)
+        {
+            targetColors[i] = renderers[i].color;
+            Color transparent = targetColors[i];
+            transparent.a = 0f;
+            renderers[i].color = transparent;
+        }
+
+        float elapsed = 0f;
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float alpha = Mathf.Clamp01(elapsed / duration);
+            for (int i = 0; i < renderers.Count; i++)
+            {
+                if (renderers[i] == null)
+                    continue;
+
+                Color color = targetColors[i];
+                color.a *= alpha;
+                renderers[i].color = color;
+            }
+
+            yield return null;
+        }
+
+        for (int i = 0; i < renderers.Count; i++)
+        {
+            if (renderers[i] != null)
+                renderers[i].color = targetColors[i];
         }
     }
 }

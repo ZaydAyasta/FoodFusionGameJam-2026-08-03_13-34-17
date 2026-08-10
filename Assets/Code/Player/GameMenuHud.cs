@@ -115,6 +115,7 @@ public class GameMenuHud : MonoBehaviour
         inventoryRoot.SetActive(false);
         gameOverRoot.SetActive(false);
         GameAudio.StopMainTheme();
+        GameAudio.PlayAmericanShopMusic();
     }
 
     private void ShowGameOverInternal()
@@ -126,7 +127,7 @@ public class GameMenuHud : MonoBehaviour
         mainMenuRoot.SetActive(false);
         inventoryRoot.SetActive(false);
         gameOverRoot.SetActive(true);
-        GameAudio.StopMainTheme();
+        GameAudio.PlayAmericanShopMusic();
     }
 
     private void RetryGame()

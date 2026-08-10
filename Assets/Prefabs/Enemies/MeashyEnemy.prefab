@@ -119,7 +119,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 5.0837708, y: 3.1809726}
+  m_Size: {x: 5.0837708, y: 3.180973}
   m_EdgeRadius: 0
 --- !u!50 &500000
 Rigidbody2D:
@@ -160,9 +160,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69c7998c110d22748837cd5a5b531bc1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Health
-  maxHealth: 5
+  maxHealth: 3
   invulnerabilityDuration: 0
   destroyOnDeath: 1
+  damageReduction: 0
 --- !u!114 &600002
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -188,7 +189,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7d1fc15eef246a4bbd934620753d3e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyDeathNotifier
-  populationWeight: -3
+  populationWeight: -5
 --- !u!114 &5630615156355426785
 MonoBehaviour:
   m_ObjectHideFlags: 0

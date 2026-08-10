@@ -19,8 +19,13 @@ public class DoorController : MonoBehaviour
 
     public void SetClosed(bool closed)
     {
+        SetClosed(closed, closed);
+    }
+
+    public void SetClosed(bool closed, bool colliderEnabled)
+    {
         if (blockingCollider != null)
-            blockingCollider.enabled = closed;
+            blockingCollider.enabled = colliderEnabled;
 
         if (visual != null)
             visual.enabled = closed;

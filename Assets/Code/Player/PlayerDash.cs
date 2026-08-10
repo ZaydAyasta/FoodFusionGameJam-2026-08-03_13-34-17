@@ -8,7 +8,6 @@ public class PlayerDash : MonoBehaviour
     [SerializeField] private float dashSpeed = 14f;
     [SerializeField] private float dashDuration = 0.15f;
     [SerializeField] private float dashCooldown = 0.75f;
-    [SerializeField] private float invulnerabilityDuration = 0.18f;
     [SerializeField, Min(1)] private int maxDashCharges = 1;
 
     [Header("Afterimage Trail")]
@@ -20,7 +19,6 @@ public class PlayerDash : MonoBehaviour
 
     private CharacterInput input;
     private Rigidbody2D rb;
-    private Health health;
     private Vector2 lastMoveDirection = Vector2.right;
     private int currentDashCharges;
 
@@ -32,7 +30,6 @@ public class PlayerDash : MonoBehaviour
     {
         input = GetComponent<CharacterInput>();
         rb = GetComponent<Rigidbody2D>();
-        health = GetComponent<Health>();
         maxDashCharges = Mathf.Max(1, maxDashCharges);
         currentDashCharges = maxDashCharges;
         if (visualRenderer == null)
@@ -63,7 +60,6 @@ public class PlayerDash : MonoBehaviour
         IsDashing = true;
         currentDashCharges--;
         StartCoroutine(RechargeDashCharge());
-        health?.MakeInvulnerable(invulnerabilityDuration);
         rb.linearVelocity = lastMoveDirection * dashSpeed;
         GameAudio.PlayDash();
         StartCoroutine(AfterimageTrailRoutine());

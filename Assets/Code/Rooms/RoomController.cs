@@ -80,7 +80,7 @@ public class RoomController : MonoBehaviour
         State = RoomState.Combat;
         activePlayer = playerInput.transform;
         aliveEnemies.Clear();
-        SetDoorsClosed(true);
+        SetDoorsClosed(true, false);
         GameAudio.PlayCombatMusic();
 
         foreach (EnemyDeathNotifier enemy in enemies)
@@ -298,12 +298,12 @@ public class RoomController : MonoBehaviour
         State = RoomState.RewardClaimed;
     }
 
-    private void SetDoorsClosed(bool closed)
+    private void SetDoorsClosed(bool closed, bool collidersEnabled = false)
     {
         foreach (DoorController door in doors)
         {
             if (door != null)
-                door.SetClosed(closed);
+                door.SetClosed(closed, collidersEnabled);
         }
     }
 

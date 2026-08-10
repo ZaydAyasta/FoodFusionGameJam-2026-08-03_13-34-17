@@ -78,6 +78,7 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
     [SerializeField] private Vector3 downDoorVisualOffset = new(0.23f, 0.33f, -1.5f);
     [SerializeField] private Vector3 leftDoorVisualOffset = new(0.5f, -0.06f, -1.21f);
     [SerializeField] private Vector3 doorVisualWorldScale = new(0.73f, 0.72f, 0.73f);
+    [SerializeField, Min(0f)] private float doorFadeInDuration = 0.35f;
 
     [Header("Kitchen Visuals")]
     [SerializeField] private Sprite kitchenSprite;
@@ -408,7 +409,7 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
         }
 
         EnsureDoorVisuals(currentRoom);
-        currentRoom.ShowOnlyDoors(activeExitDirections);
+        currentRoom.ShowOnlyDoors(activeExitDirections, doorFadeInDuration);
         SetKitchenVisible(currentRoom, IsKitchenRoom(currentRoomNumber));
         SetShopVisible(currentRoom, IsKitchenRoom(currentRoomNumber), false, true);
         lastGeneratedExitCount = activeExitDirections.Count;
@@ -549,7 +550,6 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
 
         ProceduralRoomLayout previousRoom = currentRoom;
         currentRoom = selectedCandidate.Layout;
-        SetFrontWallVisible(previousRoom, false);
         blockedExitDirection = selectedCandidate.EntryDirection;
         currentRoomNumber++;
 
@@ -562,7 +562,7 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
         SetCurrentRoom(currentRoom);
 
         if (previousRoom != null && previousRoom != currentRoom)
-            Destroy(previousRoom.gameObject, previousRoomDestroyDelay);
+            StartCoroutine(FadeOutAndDestroyRoom(previousRoom, previousRoomDestroyDelay));
 
         Destroy(selectedCandidate);
         candidates.Clear();
@@ -570,6 +570,44 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
         activeRoomController = currentRoom.GetComponent<RoomController>();
         waitingForRoomCompletion = true;
         nextBatchAt = Time.time + noRoomControllerNextBatchDelay;
+    }
+
+    private static System.Collections.IEnumerator FadeOutAndDestroyRoom(
+        ProceduralRoomLayout room,
+        float duration)
+    {
+        if (room == null)
+            yield break;
+
+        SpriteRenderer[] renderers = room.GetComponentsInChildren<SpriteRenderer>(true);
+        Color[] initialColors = new Color[renderers.Length];
+        for (int i = 0; i < renderers.Length; i++)
+        {
+            if (renderers[i] != null)
+                initialColors[i] = renderers[i].color;
+        }
+
+        float fadeDuration = Mathf.Max(0.01f, duration);
+        float elapsed = 0f;
+        while (room != null && elapsed < fadeDuration)
+        {
+            elapsed += Time.deltaTime;
+            float opacity = 1f - Mathf.Clamp01(elapsed / fadeDuration);
+            for (int i = 0; i < renderers.Length; i++)
+            {
+                if (renderers[i] == null)
+                    continue;
+
+                Color color = initialColors[i];
+                color.a *= opacity;
+                renderers[i].color = color;
+            }
+
+            yield return null;
+        }
+
+        if (room != null)
+            Destroy(room.gameObject);
     }
 
     private void MovePlayerInsideCommittedRoom(ProceduralRoomCandidate selectedCandidate, Transform player)
@@ -824,6 +862,10 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
             visual = visualObject.AddComponent<SpriteRenderer>();
         }
 
+        Transform hideRoot = FindVisualsHideRoot(room);
+        Transform visualTransform = visual.transform;
+        visualTransform.SetParent(hideRoot != null ? hideRoot : room.transform, true);
+
         visual.enabled = visible && kitchenSprite != null && marker != null;
         if (!visual.enabled)
             return;
@@ -835,8 +877,6 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
         visual.sortingLayerName = kitchenVisualSortingLayer;
         visual.sortingOrder = Mathf.Max(kitchenVisualSortingOrder + 1, kitchenVisualMinimumSortingOrder);
 
-        Transform visualTransform = visual.transform;
-        visualTransform.SetParent(room.transform, true);
         visualTransform.position = marker.bounds.center + room.transform.TransformVector(kitchenVisualOffset);
         SetKitchenVisualRotation(visualTransform, markerDirection);
         SetWorldScale(visualTransform, kitchenVisualWorldScale);
@@ -1858,7 +1898,7 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
         if (room == null)
             return;
 
-        Transform frontWall = FindChildExact(room.transform, "pared_frente");
+        Transform frontWall = FindVisualsHideRoot(room);
 
         if (frontWall == null)
             return;
@@ -1870,6 +1910,25 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
             if (renderer != null)
                 renderer.enabled = visible;
         }
+    }
+
+    private static Transform FindVisualsHideRoot(ProceduralRoomLayout room)
+    {
+        if (room == null)
+            return null;
+
+        Transform[] children = room.GetComponentsInChildren<Transform>(true);
+        foreach (Transform child in children)
+        {
+            if (!child.name.Equals("Hide", System.StringComparison.OrdinalIgnoreCase))
+                continue;
+
+            Transform parent = child.parent;
+            if (parent != null && parent.name.Equals("Visuals", System.StringComparison.OrdinalIgnoreCase))
+                return child;
+        }
+
+        return null;
     }
 
     private static Transform FindChildExact(Transform root, string childName)

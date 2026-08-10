@@ -32,7 +32,7 @@ public class WaterTrailEmitter : MonoBehaviour
 
         SpriteRenderer sourceRenderer = GetComponentInChildren<SpriteRenderer>(true);
         sortingLayer = sourceRenderer != null ? sourceRenderer.sortingLayerName : "Default";
-        sortingOrder = sourceRenderer != null ? sourceRenderer.sortingOrder - 1 : 0;
+        sortingOrder = sourceRenderer != null ? sourceRenderer.sortingOrder : 1;
         configured = true;
         CreatePatch(lastPatchPosition);
     }

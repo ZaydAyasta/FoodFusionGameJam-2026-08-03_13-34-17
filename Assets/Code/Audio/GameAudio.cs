@@ -18,11 +18,13 @@ public class GameAudio : MonoBehaviour
     private AudioSource shopMusicSource;
     private AudioSource sfxSource;
     private AudioClip mainTheme;
+    private AudioClip americanShopTheme;
     private AudioClip shopTheme;
     private AudioClip[] combatClips;
     private AudioClip[] woodwalkClips;
     private AudioClip shootClip;
     private AudioClip dashClip;
+    private AudioClip itemPickupClip;
     private int nextFootstepIndex;
     private float nextFootstepAt;
     private int nextCombatIndex;
@@ -33,6 +35,7 @@ public class GameAudio : MonoBehaviour
     {
         None,
         MainMenu,
+        AmericanShop,
         Combat,
         Shop
     }
@@ -146,7 +149,7 @@ public class GameAudio : MonoBehaviour
         AudioClip clip = audio.woodwalkClips[audio.nextFootstepIndex % audio.woodwalkClips.Length];
         audio.nextFootstepIndex++;
         audio.nextFootstepAt = Time.time + FootstepInterval;
-        audio.PlaySfx(clip, 0.75f);
+        audio.PlaySfx(clip, 0.9f);
     }
 
     public static void PlayShoot()
@@ -167,6 +170,33 @@ public class GameAudio : MonoBehaviour
         GameAudio audio = Instance;
         audio.EnsureReady();
         audio.PlaySfx(audio.dashClip, 0.9f);
+    }
+
+    public static void PlayAmericanShopMusic()
+    {
+        GameAudio audio = Instance;
+        audio.EnsureReady();
+        if (audio.americanShopTheme == null)
+            return;
+
+        audio.StopMusicTransition();
+        audio.StopShopMusic();
+        audio.musicSource.Stop();
+        audio.musicSource.clip = audio.americanShopTheme;
+        audio.musicSource.loop = true;
+        audio.musicSource.volume = ShopMusicVolume;
+        audio.musicSource.Play();
+        audio.currentMusicMode = MusicMode.AmericanShop;
+    }
+
+    public static void PlayItemPickup()
+    {
+        if (Time.timeScale <= 0f)
+            return;
+
+        GameAudio audio = Instance;
+        audio.EnsureReady();
+        audio.PlaySfx(audio.itemPickupClip, 1f);
     }
 
     private void EnsureReady()
@@ -208,6 +238,7 @@ public class GameAudio : MonoBehaviour
     private void LoadClips()
     {
         mainTheme = LoadAudioClip("TAKERNAL_MainTHEME");
+        americanShopTheme = LoadAudioClip("TAKERNAL_AmericanShop");
         shopTheme = LoadAudioClip("TAKERNAL_JapaneseSHOPFinality");
         combatClips = new[]
         {
@@ -217,6 +248,7 @@ public class GameAudio : MonoBehaviour
         };
         shootClip = LoadAudioClip("snd_squashyattackshort");
         dashClip = LoadAudioClip("snd_dash");
+        itemPickupClip = LoadAudioClip("snd_itempickup") ?? CreatePickupClip();
         woodwalkClips = new[]
         {
             LoadAudioClip("snd_woodwalk1"),
@@ -224,6 +256,27 @@ public class GameAudio : MonoBehaviour
             LoadAudioClip("snd_woodwalk3"),
             LoadAudioClip("snd_woodwalk4")
         };
+    }
+
+    private static AudioClip CreatePickupClip()
+    {
+        const int sampleRate = 44100;
+        const float duration = 0.18f;
+        int sampleCount = Mathf.CeilToInt(sampleRate * duration);
+        float[] samples = new float[sampleCount];
+
+        for (int i = 0; i < sampleCount; i++)
+        {
+            float time = i / (float)sampleRate;
+            float progress = time / duration;
+            float frequency = Mathf.Lerp(660f, 990f, progress);
+            float envelope = Mathf.Pow(1f - progress, 2f);
+            samples[i] = Mathf.Sin(2f * Mathf.PI * frequency * time) * envelope * 0.65f;
+        }
+
+        AudioClip clip = AudioClip.Create("Generated Item Pickup", sampleCount, 1, sampleRate, false);
+        clip.SetData(samples, 0);
+        return clip;
     }
 
     private void PlaySfx(AudioClip clip, float volume)

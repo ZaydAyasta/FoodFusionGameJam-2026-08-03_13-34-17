@@ -9,6 +9,7 @@ public class Health : MonoBehaviour, IDamageable
     [SerializeField, Range(0f, 0.5f)] private float damageReduction;
 
     private DamageFlash damageFlash;
+    private PlayerDash playerDash;
     private float invulnerableUntil;
     private bool dead;
 
@@ -23,6 +24,7 @@ public class Health : MonoBehaviour, IDamageable
     private void Awake()
     {
         damageFlash = GetComponent<DamageFlash>();
+        playerDash = GetComponent<PlayerDash>();
         if (damageFlash == null)
             damageFlash = gameObject.AddComponent<DamageFlash>();
 
@@ -32,7 +34,8 @@ public class Health : MonoBehaviour, IDamageable
 
     public void TakeDamage(float amount)
     {
-        if (dead || amount <= 0f || Time.time < invulnerableUntil)
+        if (dead || amount <= 0f || Time.time < invulnerableUntil ||
+            (playerDash != null && playerDash.IsDashing))
             return;
 
         float receivedDamage = amount * (1f - damageReduction);
