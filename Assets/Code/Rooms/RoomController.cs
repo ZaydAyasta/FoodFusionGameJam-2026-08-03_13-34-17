@@ -216,6 +216,10 @@ public class RoomController : MonoBehaviour
             if (bread != null)
                 bread.SetTarget(player);
 
+            PotatoEnemy potato = enemy.GetComponent<PotatoEnemy>();
+            if (potato != null)
+                potato.SetTarget(player);
+
             CheeseMinionEnemy cheese = enemy.GetComponent<CheeseMinionEnemy>();
             if (cheese != null)
                 cheese.SetTarget(player);

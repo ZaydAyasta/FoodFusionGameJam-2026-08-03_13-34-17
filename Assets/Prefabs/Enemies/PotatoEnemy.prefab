@@ -157,27 +157,31 @@ MonoBehaviour:
   m_GameObject: {fileID: 100000}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ae125da2f6d7aab4e89a2ccd701c9549, type: 3}
+  m_Script: {fileID: 11500000, guid: b7e4a12f9c624e10a3514f9b3d5c8801, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::RiceEnemy
+  m_EditorClassIdentifier: Assembly-CSharp::PotatoEnemy
+  animator: {fileID: 0}
+  visualRenderer: {fileID: 0}
+  spriteFacesRight: 0
+  preJumpDuration: 0.08
+  movementBurstDuration: 0.48
+  postJumpDuration: 0.08
+  restBetweenJumps: 0.08
+  moveSpeed: 3.8
+  preferredAttackDistance: 3.6
+  positionTolerance: 0.45
   target: {fileID: 0}
-  approachDistance: 3.2
-  retreatDistance: 2.2
-  moveSpeed: 1.45
-  strafeSpeed: 1.55
-  minStrafeSwitchInterval: 0.45
-  maxStrafeSwitchInterval: 0.85
-  preShotApproachDuration: 0.25
-  preShotApproachSpeed: 2.1
-  minShootCooldown: 1
-  maxShootCooldown: 2.3
-  projectilePrefab: {fileID: 600000, guid: 237aad828ba1434b80d24c2038c340b2, type: 3}
+  projectilePrefab: {fileID: 600000, guid: dacdf17234cd42645a49b89692a1aa6f, type: 3}
+  projectileOrigin: {fileID: 0}
+  attackRange: 6.5
+  preAttackDuration: 0.35
+  attackRecoveryDuration: 0.2
+  minAttackCooldown: 1.5
+  maxAttackCooldown: 2.2
   projectileSpeed: 7
   projectileDamage: 8
-  projectileLifetime: 2.1
-  followUpDelay: 0.2
-  predictTargetMovement: 0
-  predictionStrength: 0.65
+  projectileLifetime: 2.2
+  burstAngleOffset: 0
 --- !u!114 &600001
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -218,6 +222,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7d1fc15eef246a4bbd934620753d3e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyDeathNotifier
+  populationWeight: 0
 --- !u!1 &4414882099815170411
 GameObject:
   m_ObjectHideFlags: 0
@@ -261,7 +266,7 @@ Animator:
   m_GameObject: {fileID: 4414882099815170411}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 8c994c378186d72479cfff42813ec674, type: 2}
+  m_Controller: {fileID: 9100000, guid: 6fff50b24ee3dca47b159c18ea4f39e2, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -322,7 +327,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 8
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 6431102928072173966, guid: a48da51fa8d580c4787c3a6165563e8b, type: 3}
+  m_Sprite: {fileID: -6220952289602342042, guid: 17741b1c8d4dfa04598e79bd490c57f2, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

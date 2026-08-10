@@ -1,0 +1,841 @@
+fileFormatVersion: 2
+guid: 17741b1c8d4dfa04598e79bd490c57f2
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -6220952289602342042
+    second: papa_0
+  - first:
+      213: -6093384918288504207
+    second: papa_1
+  - first:
+      213: 3472549834391863506
+    second: papa_2
+  - first:
+      213: 6925814961928684895
+    second: papa_3
+  - first:
+      213: 5953412532338305959
+    second: papa_4
+  - first:
+      213: -6993122135498399248
+    second: papa_5
+  - first:
+      213: 2406076484758765410
+    second: papa_6
+  - first:
+      213: 3921155229191652469
+    second: papa_7
+  - first:
+      213: 1812752505457371618
+    second: papa_8
+  - first:
+      213: 8038165646027650436
+    second: papa_9
+  - first:
+      213: 8577459860846070134
+    second: papa_10
+  - first:
+      213: -4828951852036784860
+    second: papa_11
+  - first:
+      213: -2059403221881059831
+    second: papa_12
+  - first:
+      213: 3396067989999562723
+    second: papa_13
+  - first:
+      213: 7233213445052162186
+    second: papa_14
+  - first:
+      213: 8814392903129152670
+    second: papa_15
+  - first:
+      213: -3996331698510834194
+    second: papa_16
+  - first:
+      213: 8856500967860109580
+    second: papa_17
+  - first:
+      213: -2029723493092071999
+    second: papa_18
+  - first:
+      213: 1852937533968147011
+    second: papa_19
+  - first:
+      213: -1881814732470081848
+    second: papa_20
+  - first:
+      213: -1189464412239345462
+    second: papa_21
+  - first:
+      213: -818368723831705618
+    second: papa_22
+  - first:
+      213: 4582918851724712703
+    second: papa_23
+  - first:
+      213: -6591853141619442636
+    second: papa_24
+  - first:
+      213: -6845499319251869670
+    second: papa_25
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 4096
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 2
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: papa_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1681
+        width: 467
+        height: 367
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 66379954adcbaa9a0800000000000000
+      internalID: -6220952289602342042
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: papa_1
+      rect:
+        serializedVersion: 2
+        x: 467
+        y: 1681
+        width: 467
+        height: 367
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 17ae0b173b2ff6ba0800000000000000
+      internalID: -6093384918288504207
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: papa_2
+      rect:
+        serializedVersion: 2
+        x: 934
+        y: 1681
+        width: 467
+        height: 367
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2d0c4cf0da9f03030800000000000000
+      internalID: 3472549834391863506
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: papa_3
+      rect:
+        serializedVersion: 2
+        x: 1401
+        y: 1681
+        width: 467
+        height: 367
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f5548d963007d1060800000000000000
+      internalID: 6925814961928684895
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: papa_4
+      rect:
+        serializedVersion: 2
+        x: 1868
+        y: 1681
+        width: 467
+        height: 367
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7ab2267d725ce9250800000000000000
+      internalID: 5953412532338305959
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: papa_5
+      rect:
+        serializedVersion: 2
+        x: 2335
+        y: 1681
+        width: 467
+        height: 367
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0f162ba087073fe90800000000000000
+      internalID: -6993122135498399248
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: papa_6
+      rect:
+        serializedVersion: 2
+        x: 2802
+        y: 1681
+        width: 467
+        height: 367
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 26f7770a0d9146120800000000000000
+      internalID: 2406076484758765410
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: papa_7
+      rect:
+        serializedVersion: 2
+        x: 3269
+        y: 1681
+        width: 467
+        height: 367
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5744221e7edba6630800000000000000
+      internalID: 3921155229191652469
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: papa_8
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1314
+        width: 467
+        height: 367
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2e96c71acc0382910800000000000000
+      internalID: 1812752505457371618
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: papa_9
+      rect:
+        serializedVersion: 2
+        x: 467
+        y: 1314
+        width: 467
+        height: 367
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 485f939211d4d8f60800000000000000
+      internalID: 8038165646027650436
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: papa_10
+      rect:
+        serializedVersion: 2
+        x: 934
+        y: 1314
+        width: 467
+        height: 367
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 679c6e05c42490770800000000000000
+      internalID: 8577459860846070134
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: papa_11
+      rect:
+        serializedVersion: 2
+        x: 1401
+        y: 1314
+        width: 467
+        height: 367
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 42df1ed10ed1cfcb0800000000000000
+      internalID: -4828951852036784860
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: papa_12
+      rect:
+        serializedVersion: 2
+        x: 1868
+        y: 1314
+        width: 467
+        height: 367
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9060c7e4ea78b63e0800000000000000
+      internalID: -2059403221881059831
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: papa_13
+      rect:
+        serializedVersion: 2
+        x: 2335
+        y: 1314
+        width: 467
+        height: 367
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3efaff008d1412f20800000000000000
+      internalID: 3396067989999562723
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: papa_14
+      rect:
+        serializedVersion: 2
+        x: 2802
+        y: 1314
+        width: 467
+        height: 367
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a80e9e81e49816460800000000000000
+      internalID: 7233213445052162186
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: papa_15
+      rect:
+        serializedVersion: 2
+        x: 3269
+        y: 1314
+        width: 467
+        height: 367
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e9cbcbd05a3035a70800000000000000
+      internalID: 8814392903129152670
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: papa_16
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 947
+        width: 467
+        height: 367
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ee5d0a16e7d2a88c0800000000000000
+      internalID: -3996331698510834194
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: papa_17
+      rect:
+        serializedVersion: 2
+        x: 467
+        y: 947
+        width: 467
+        height: 367
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c01843ed4bc98ea70800000000000000
+      internalID: 8856500967860109580
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: papa_18
+      rect:
+        serializedVersion: 2
+        x: 934
+        y: 947
+        width: 467
+        height: 367
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1c56bf9ac39f4d3e0800000000000000
+      internalID: -2029723493092071999
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: papa_19
+      rect:
+        serializedVersion: 2
+        x: 1401
+        y: 947
+        width: 467
+        height: 367
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 342e82faed4f6b910800000000000000
+      internalID: 1852937533968147011
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: papa_20
+      rect:
+        serializedVersion: 2
+        x: 1868
+        y: 947
+        width: 467
+        height: 367
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8c6260a987372e5e0800000000000000
+      internalID: -1881814732470081848
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: papa_21
+      rect:
+        serializedVersion: 2
+        x: 2335
+        y: 947
+        width: 467
+        height: 367
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ac8418b4b6c2e7fe0800000000000000
+      internalID: -1189464412239345462
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: papa_22
+      rect:
+        serializedVersion: 2
+        x: 2802
+        y: 947
+        width: 467
+        height: 367
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eefa8b84bf194a4f0800000000000000
+      internalID: -818368723831705618
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: papa_23
+      rect:
+        serializedVersion: 2
+        x: 3269
+        y: 947
+        width: 467
+        height: 367
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ffa1e7f0a6cc99f30800000000000000
+      internalID: 4582918851724712703
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: papa_24
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 580
+        width: 467
+        height: 367
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 43cfa3a2e780584a0800000000000000
+      internalID: -6591853141619442636
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: papa_25
+      rect:
+        serializedVersion: 2
+        x: 467
+        y: 580
+        width: 467
+        height: 367
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a1060dd53a6eff0a0800000000000000
+      internalID: -6845499319251869670
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: papa_26
+      rect:
+        serializedVersion: 2
+        x: 934
+        y: 580
+        width: 467
+        height: 367
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 13788ab577ce5bb419abc2fe0d35c24f
+      internalID: 976277031
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: papa_27
+      rect:
+        serializedVersion: 2
+        x: 934
+        y: 213
+        width: 467
+        height: 367
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cf10675cc6fa08247b2df4b936e07f93
+      internalID: -1709488568
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5ea6520a25a26074db874112d92563b4
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":467.0,"y":367.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      papa_0: -6220952289602342042
+      papa_1: -6093384918288504207
+      papa_10: 8577459860846070134
+      papa_11: -4828951852036784860
+      papa_12: -2059403221881059831
+      papa_13: 3396067989999562723
+      papa_14: 7233213445052162186
+      papa_15: 8814392903129152670
+      papa_16: -3996331698510834194
+      papa_17: 8856500967860109580
+      papa_18: -2029723493092071999
+      papa_19: 1852937533968147011
+      papa_2: 3472549834391863506
+      papa_20: -1881814732470081848
+      papa_21: -1189464412239345462
+      papa_22: -818368723831705618
+      papa_23: 4582918851724712703
+      papa_24: -6591853141619442636
+      papa_25: -6845499319251869670
+      papa_26: 976277031
+      papa_27: -1709488568
+      papa_3: 6925814961928684895
+      papa_4: 5953412532338305959
+      papa_5: -6993122135498399248
+      papa_6: 2406076484758765410
+      papa_7: 3921155229191652469
+      papa_8: 1812752505457371618
+      papa_9: 8038165646027650436
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
