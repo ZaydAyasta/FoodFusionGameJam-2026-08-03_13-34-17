@@ -546,7 +546,19 @@ public class GameMenuHud : MonoBehaviour
         }
 #endif
 
-        return Resources.Load<Sprite>(spriteName);
+        Sprite resourceSprite = Resources.Load<Sprite>("UI/" + spriteName) ?? Resources.Load<Sprite>(spriteName);
+        if (resourceSprite != null)
+            return resourceSprite;
+
+        Texture2D texture = Resources.Load<Texture2D>("UI/" + spriteName) ?? Resources.Load<Texture2D>(spriteName);
+        if (texture == null)
+            return null;
+
+        return Sprite.Create(
+            texture,
+            new Rect(0f, 0f, texture.width, texture.height),
+            new Vector2(0.5f, 0.5f),
+            100f);
     }
 
     private Text CreateText(string objectName, Transform parent, string text, int fontSize, TextAnchor alignment)

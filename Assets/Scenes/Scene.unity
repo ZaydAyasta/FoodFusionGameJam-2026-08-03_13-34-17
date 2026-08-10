@@ -613,6 +613,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CharacterMovement
   speed: 5
+  animator: {fileID: 0}
 --- !u!50 &336991038
 Rigidbody2D:
   serializedVersion: 5
@@ -801,6 +802,7 @@ MonoBehaviour:
   maxHealth: 5
   invulnerabilityDuration: 0.6
   destroyOnDeath: 0
+  damageReduction: 0
 --- !u!114 &336991045
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -813,7 +815,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5bd8c110e2544c146805d63b61151352, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAim
-  targetCamera: {fileID: 0}
+  defaultDirection: {x: 0, y: -1}
+  directionDeadZone: 0.1
 --- !u!114 &336991046
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -831,7 +834,7 @@ MonoBehaviour:
   cooldown: 0.25
   projectileSpeed: 12
   projectileDamage: 1
-  projectileLifetime: 1.5
+  projectileRange: 4.5
 --- !u!114 &336991047
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -848,6 +851,12 @@ MonoBehaviour:
   dashDuration: 0.15
   dashCooldown: 0.75
   invulnerabilityDuration: 0.18
+  maxDashCharges: 1
+  visualRenderer: {fileID: 0}
+  afterimageInterval: 0.035
+  afterimageLifetime: 0.22
+  afterimageAlpha: 0.42
+  afterimageSortingOffset: -1
 --- !u!114 &336991048
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -860,7 +869,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15f75531cca32bf4d84bf34d29ea69e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerDeathHandler
-  restartDelay: 1
 --- !u!114 &336991049
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -936,11 +944,10 @@ MonoBehaviour:
   - {fileID: 906681473}
   - {fileID: 1088761385}
   activateEnemiesOnEntry: 1
+  kitchenRoom: 0
   rewardSpawnPoint: {fileID: 1878888801}
   rewardChoicePrefab: {fileID: 0}
-  possibleRewards:
-  - {fileID: 11400000, guid: d5e6aa167b591b94094f8bb30ee2e86b, type: 2}
-  - {fileID: 11400000, guid: 82d95301970fef745aecf1da7f49d735, type: 2}
+  promisedReward: {fileID: 0}
 --- !u!61 &498977103
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -2006,6 +2013,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7d1fc15eef246a4bbd934620753d3e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyDeathNotifier
+  populationWeight: 0
 --- !u!114 &906681474
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2051,6 +2059,7 @@ MonoBehaviour:
   maxHealth: 3
   invulnerabilityDuration: 0
   destroyOnDeath: 1
+  damageReduction: 0
 --- !u!114 &906681477
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2701,6 +2710,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7d1fc15eef246a4bbd934620753d3e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyDeathNotifier
+  populationWeight: 0
 --- !u!114 &1088761386
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2746,6 +2756,7 @@ MonoBehaviour:
   maxHealth: 3
   invulnerabilityDuration: 0
   destroyOnDeath: 1
+  damageReduction: 0
 --- !u!114 &1088761389
 MonoBehaviour:
   m_ObjectHideFlags: 0

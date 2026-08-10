@@ -360,6 +360,6 @@ public class GameAudio : MonoBehaviour
             return fallbackClip;
 #endif
 
-        return Resources.Load<AudioClip>(clipName);
+        return Resources.Load<AudioClip>("Audio/" + clipName) ?? Resources.Load<AudioClip>(clipName);
     }
 }
