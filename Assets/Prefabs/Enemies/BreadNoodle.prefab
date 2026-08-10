@@ -202,14 +202,14 @@ MonoBehaviour:
   target: {fileID: 0}
   ringPrefab: {fileID: 211320256566257580, guid: a091681b41c7be64882011cfbe63ff86, type: 3}
   projectileOrigin: {fileID: 0}
-  attackRange: 8.88
+  attackRange: 10
   stationaryChargeDuration: 1.25
   minRingsPerAttack: 1
   maxRingsPerAttack: 2
   delayBetweenRings: 0.65
   attackCooldown: 3.2
   ringSpeed: 5
-  ringDamage: 10
+  ringDamage: 6
   ringLifetime: 20
   ringWallBounces: 3
 --- !u!1 &4414882099815170411

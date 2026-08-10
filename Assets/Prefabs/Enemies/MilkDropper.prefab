@@ -160,7 +160,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69c7998c110d22748837cd5a5b531bc1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Health
-  maxHealth: 4
+  maxHealth: 10
   invulnerabilityDuration: 0
   destroyOnDeath: 1
 --- !u!114 &600003
@@ -190,6 +190,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MilkDropperEnemy
   damageHitbox: {fileID: 0}
   animator: {fileID: 0}
+  visualRenderer: {fileID: 0}
   cheeseMinionPrefab: {fileID: 100000, guid: 7bc43bf62b20b9c429d62e0c4cb8449c, type: 3}
   minInitialDroppers: 1
   maxInitialDroppers: 2

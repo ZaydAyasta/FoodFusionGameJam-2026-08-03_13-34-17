@@ -57,7 +57,19 @@ public class PlayerHealthHud : MonoBehaviour
         float current = Mathf.Clamp(playerHealth.CurrentHealth, 0f, max);
 
         if (fillImage != null)
-            fillImage.fillAmount = current / max;
+        {
+            float normalizedHealth = current / max;
+            fillImage.fillAmount = normalizedHealth;
+
+            // The fallback Image has no source sprite, so Unity's Filled mode
+            // may continue drawing it as a full rectangle. Scaling its actual
+            // rect from a left-side pivot makes the green bar reliable.
+            RectTransform fillRect = fillImage.rectTransform;
+            fillRect.pivot = new Vector2(0f, 0.5f);
+            Vector3 scale = fillRect.localScale;
+            scale.x = normalizedHealth;
+            fillRect.localScale = scale;
+        }
 
         if (healthText != null)
             healthText.text = $"Vida {Mathf.CeilToInt(current)} / {Mathf.CeilToInt(max)}";
@@ -103,14 +115,13 @@ public class PlayerHealthHud : MonoBehaviour
         RectTransform fillRect = fill.AddComponent<RectTransform>();
         fillRect.anchorMin = new Vector2(0f, 0f);
         fillRect.anchorMax = new Vector2(1f, 1f);
+        fillRect.pivot = new Vector2(0f, 0.5f);
         fillRect.offsetMin = new Vector2(4f, 4f);
         fillRect.offsetMax = new Vector2(-4f, -4f);
 
         fillImage = fill.AddComponent<Image>();
         fillImage.color = new Color(0.1f, 0.8f, 0.25f);
-        fillImage.type = Image.Type.Filled;
-        fillImage.fillMethod = Image.FillMethod.Horizontal;
-        fillImage.fillOrigin = 0;
+        fillImage.type = Image.Type.Simple;
 
         GameObject label = new("HealthText");
         label.transform.SetParent(panel.transform, false);

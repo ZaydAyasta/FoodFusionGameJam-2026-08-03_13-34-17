@@ -160,7 +160,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69c7998c110d22748837cd5a5b531bc1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Health
-  maxHealth: 7
+  maxHealth: 3
   invulnerabilityDuration: 0
   destroyOnDeath: 1
 --- !u!114 &600002
@@ -188,7 +188,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7d1fc15eef246a4bbd934620753d3e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyDeathNotifier
-  populationWeight: -1
+  populationWeight: 0
 --- !u!114 &5914046269308927882
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -213,6 +213,7 @@ MonoBehaviour:
   loseTargetDistance: 8
   contactDamage: 8
   contactRadius: 0.45
+  postHitRecoveryDuration: 0.3
 --- !u!1 &4414882099815170411
 GameObject:
   m_ObjectHideFlags: 0
