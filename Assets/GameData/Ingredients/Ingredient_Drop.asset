@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: Ingredient_Drop
   m_EditorClassIdentifier: Assembly-CSharp::IngredientData
   id: drop
-  displayName: Drop
+  displayName: Potato
   icon: {fileID: 6407625475132294341, guid: 165b135c8d07a864eb5a833ce7ac27a7, type: 3}
   description: Ingredient reward.
   cuisine: 0
+  linkedEnemyPrefab: {fileID: 100000, guid: f55559e92d65f4c4dba7152a169345a5, type: 3}

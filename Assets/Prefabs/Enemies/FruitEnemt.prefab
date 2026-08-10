@@ -157,27 +157,38 @@ MonoBehaviour:
   m_GameObject: {fileID: 100000}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ae125da2f6d7aab4e89a2ccd701c9549, type: 3}
+  m_Script: {fileID: 11500000, guid: 2f8c714a61dc47a7a91f3aa81bf50263, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::RiceEnemy
+  m_EditorClassIdentifier: Assembly-CSharp::AppleEnemy
+  animator: {fileID: 0}
+  visualRenderer: {fileID: 0}
+  spriteFacesRight: 0
+  preJumpDuration: 0.15
+  movementBurstDuration: 0.5
+  postJumpDuration: 0.15
+  restBetweenJumps: 0.25
+  moveSpeed: 2
+  preferredDistance: 4.5
+  retreatDistance: 2.8
+  strafeSpeed: 1.6
+  strafeSwitchInterval: 0.85
   target: {fileID: 0}
-  approachDistance: 3.2
-  retreatDistance: 2.2
-  moveSpeed: 1.45
-  strafeSpeed: 1.55
-  minStrafeSwitchInterval: 0.45
-  maxStrafeSwitchInterval: 0.85
-  preShotApproachDuration: 0.25
-  preShotApproachSpeed: 2.1
-  minShootCooldown: 1
-  maxShootCooldown: 2.3
   projectilePrefab: {fileID: 600000, guid: 237aad828ba1434b80d24c2038c340b2, type: 3}
-  projectileSpeed: 7
-  projectileDamage: 8
-  projectileLifetime: 2.1
-  followUpDelay: 0.2
-  predictTargetMovement: 0
-  predictionStrength: 0.65
+  projectileSprites:
+  - {fileID: 8022654326623280251, guid: 443ea4986c0bc0f4d909719a8414a53e, type: 3}
+  - {fileID: -2787562148532877533, guid: 077bc35db8605724d8875f7ed9b55977, type: 3}
+  - {fileID: -6977633149038316325, guid: 306d933eca323b5419347a0986cfb602, type: 3}
+  projectileOrigin: {fileID: 0}
+  attackRange: 7
+  chargeDuration: 0.55
+  attackRecoveryDuration: 0.3
+  minAttackCooldown: 2.8
+  maxAttackCooldown: 3.5
+  projectileSpeed: 6.5
+  projectileDamage: 6
+  projectileLifetime: 2.8
+  projectileVisualWorldSize: 0.45
+  patternAngleOffset: 0
 --- !u!114 &600001
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -218,6 +229,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7d1fc15eef246a4bbd934620753d3e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyDeathNotifier
+  populationWeight: -4
 --- !u!1 &4414882099815170411
 GameObject:
   m_ObjectHideFlags: 0
@@ -245,8 +257,8 @@ Transform:
   m_GameObject: {fileID: 4414882099815170411}
   serializedVersion: 2
   m_LocalRotation: {x: -0.3420201, y: 0, z: 0, w: 0.9396927}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: -0.49742162, y: -0.3467773, z: 0.2909807}
+  m_LocalScale: {x: 0.787, y: 0.787, z: 0.787}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 400000}
@@ -261,7 +273,7 @@ Animator:
   m_GameObject: {fileID: 4414882099815170411}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 8c994c378186d72479cfff42813ec674, type: 2}
+  m_Controller: {fileID: 9100000, guid: c745e9da2c6b0e042bf24e8145f241d0, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -322,7 +334,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 8
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 6431102928072173966, guid: a48da51fa8d580c4787c3a6165563e8b, type: 3}
+  m_Sprite: {fileID: 3852616958161195494, guid: 6e7d1bbde43edab4d9a83d29f64861fe, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

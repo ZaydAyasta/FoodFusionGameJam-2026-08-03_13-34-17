@@ -125,11 +125,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 773
+        y: 1623
         width: 467
-        height: 1275
+        height: 425
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -146,12 +146,12 @@ TextureImporter:
       name: MANZANA_1
       rect:
         serializedVersion: 2
-        x: 466
-        y: 773
-        width: 468
-        height: 1275
+        x: 467
+        y: 1623
+        width: 467
+        height: 425
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -168,12 +168,12 @@ TextureImporter:
       name: MANZANA_2
       rect:
         serializedVersion: 2
-        x: 933
-        y: 773
-        width: 468
-        height: 1275
+        x: 934
+        y: 1623
+        width: 467
+        height: 425
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -190,12 +190,12 @@ TextureImporter:
       name: MANZANA_3
       rect:
         serializedVersion: 2
-        x: 1400
-        y: 773
-        width: 468
-        height: 1275
+        x: 1401
+        y: 1623
+        width: 467
+        height: 425
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -212,12 +212,12 @@ TextureImporter:
       name: MANZANA_4
       rect:
         serializedVersion: 2
-        x: 1867
-        y: 773
-        width: 468
-        height: 1275
+        x: 1868
+        y: 1623
+        width: 467
+        height: 425
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -234,12 +234,12 @@ TextureImporter:
       name: MANZANA_5
       rect:
         serializedVersion: 2
-        x: 2334
-        y: 773
-        width: 468
-        height: 1275
+        x: 2335
+        y: 1623
+        width: 467
+        height: 425
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -256,12 +256,12 @@ TextureImporter:
       name: MANZANA_6
       rect:
         serializedVersion: 2
-        x: 2801
-        y: 773
-        width: 468
-        height: 1275
+        x: 2802
+        y: 1623
+        width: 467
+        height: 425
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -278,12 +278,12 @@ TextureImporter:
       name: MANZANA_7
       rect:
         serializedVersion: 2
-        x: 3268
-        y: 1198
-        width: 468
-        height: 850
+        x: 3269
+        y: 1623
+        width: 467
+        height: 425
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -296,11 +296,341 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: MANZANA_8
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1198
+        width: 467
+        height: 425
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e4a2f5d411915cc4db0e149f6a7cffb7
+      internalID: 307109736
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MANZANA_9
+      rect:
+        serializedVersion: 2
+        x: 467
+        y: 1198
+        width: 467
+        height: 425
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d883a77f9e69a6243bba50124976389c
+      internalID: -2006580413
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MANZANA_10
+      rect:
+        serializedVersion: 2
+        x: 934
+        y: 1198
+        width: 467
+        height: 425
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3412d23163265164492e532adf19b54f
+      internalID: -21240440
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MANZANA_11
+      rect:
+        serializedVersion: 2
+        x: 1401
+        y: 1198
+        width: 467
+        height: 425
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: df75af2406d687c4a8200893604ed13b
+      internalID: -777815387
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MANZANA_12
+      rect:
+        serializedVersion: 2
+        x: 1868
+        y: 1198
+        width: 467
+        height: 425
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a160d89cef631484590c66898912ca75
+      internalID: -89956339
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MANZANA_13
+      rect:
+        serializedVersion: 2
+        x: 2335
+        y: 1198
+        width: 467
+        height: 425
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bbb7859d3124634408d444bab5c3f0c6
+      internalID: 240885271
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MANZANA_14
+      rect:
+        serializedVersion: 2
+        x: 2802
+        y: 1198
+        width: 467
+        height: 425
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7d0d9de80277e194686621e9650da2b4
+      internalID: 1815623651
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MANZANA_15
+      rect:
+        serializedVersion: 2
+        x: 3269
+        y: 1198
+        width: 467
+        height: 425
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 99576288d82c25549996944dce12bfd2
+      internalID: 1119240337
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MANZANA_16
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 773
+        width: 467
+        height: 425
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b538f9767b684ad4baa716ee27ac74ca
+      internalID: -257929163
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MANZANA_17
+      rect:
+        serializedVersion: 2
+        x: 467
+        y: 773
+        width: 467
+        height: 425
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fb62cba970bf8da429fcb81628c616cf
+      internalID: -1356391108
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MANZANA_18
+      rect:
+        serializedVersion: 2
+        x: 934
+        y: 773
+        width: 467
+        height: 425
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cb307e28092d0584c9e96191d023b8bd
+      internalID: 1025244989
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MANZANA_19
+      rect:
+        serializedVersion: 2
+        x: 1401
+        y: 773
+        width: 467
+        height: 425
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 46b9634839dc6a242915de730877eb6c
+      internalID: 1620170549
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MANZANA_20
+      rect:
+        serializedVersion: 2
+        x: 1868
+        y: 773
+        width: 467
+        height: 425
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1f0cf37c5cd876c4d93ea9fdb9bf6282
+      internalID: 1620930778
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MANZANA_21
+      rect:
+        serializedVersion: 2
+        x: 2335
+        y: 773
+        width: 467
+        height: 425
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8be67d8179c8d2240937d5a3f4a0fbf1
+      internalID: -1964952392
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MANZANA_22
+      rect:
+        serializedVersion: 2
+        x: 2802
+        y: 773
+        width: 467
+        height: 425
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 42805ade9fbbd0943acef3df0273ab81
+      internalID: -842161598
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 5033d3551cf15004f8d8c1644cb1b0a0
     internalID: 0
     vertices: []
     indices: 
@@ -308,16 +638,33 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":467.0,"y":425.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
       MANZANA_0: 3852616958161195494
       MANZANA_1: -8677412954890892573
+      MANZANA_10: -21240440
+      MANZANA_11: -777815387
+      MANZANA_12: -89956339
+      MANZANA_13: 240885271
+      MANZANA_14: 1815623651
+      MANZANA_15: 1119240337
+      MANZANA_16: -257929163
+      MANZANA_17: -1356391108
+      MANZANA_18: 1025244989
+      MANZANA_19: 1620170549
       MANZANA_2: 3108347580101396325
+      MANZANA_20: 1620930778
+      MANZANA_21: -1964952392
+      MANZANA_22: -842161598
       MANZANA_3: -8565686702357005312
       MANZANA_4: -8238702876181025853
       MANZANA_5: 2148824008252546788
       MANZANA_6: 6471159584493793498
       MANZANA_7: -7644445732457560570
+      MANZANA_8: 307109736
+      MANZANA_9: -2006580413
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
