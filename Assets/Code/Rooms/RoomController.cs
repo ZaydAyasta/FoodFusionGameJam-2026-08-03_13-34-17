@@ -8,6 +8,7 @@ public class RoomController : MonoBehaviour
     [SerializeField] private DoorController[] doors;
     [SerializeField] private EnemyDeathNotifier[] enemies;
     [SerializeField] private bool activateEnemiesOnEntry = true;
+    [SerializeField] private bool kitchenRoom;
     [Header("Rewards")]
     [SerializeField] private Transform rewardSpawnPoint;
     [SerializeField] private RewardChoiceController rewardChoicePrefab;
@@ -80,6 +81,7 @@ public class RoomController : MonoBehaviour
         activePlayer = playerInput.transform;
         aliveEnemies.Clear();
         SetDoorsClosed(true);
+        GameAudio.PlayCombatMusic();
 
         foreach (EnemyDeathNotifier enemy in enemies)
         {
@@ -114,12 +116,14 @@ public class RoomController : MonoBehaviour
         DoorController[] roomDoors,
         EnemyDeathNotifier[] roomEnemies,
         Transform roomRewardSpawnPoint,
-        IngredientData roomPromisedReward)
+        IngredientData roomPromisedReward,
+        bool roomIsKitchen = false)
     {
         doors = roomDoors ?? System.Array.Empty<DoorController>();
         enemies = roomEnemies ?? System.Array.Empty<EnemyDeathNotifier>();
         rewardSpawnPoint = roomRewardSpawnPoint;
         promisedReward = roomPromisedReward;
+        kitchenRoom = roomIsKitchen;
         entered = false;
         rewardSpawned = false;
         rewardClaimed = false;
@@ -270,6 +274,9 @@ public class RoomController : MonoBehaviour
         }
 
         SetDoorsClosed(false);
+
+        if (kitchenRoom)
+            GameAudio.PlayKitchenShopMusic();
 
         if (ShouldSpawnReward())
         {

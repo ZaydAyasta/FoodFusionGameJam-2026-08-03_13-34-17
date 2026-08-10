@@ -636,7 +636,7 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
         if (controller == null)
             controller = room.gameObject.AddComponent<RoomController>();
 
-        controller.ConfigureProcedural(roomDoors, roomEnemies, room.RewardSpawnPoint, promisedReward);
+        controller.ConfigureProcedural(roomDoors, roomEnemies, room.RewardSpawnPoint, promisedReward, IsKitchenRoom(currentRoomNumber));
         activeRoomController = controller;
     }
 
