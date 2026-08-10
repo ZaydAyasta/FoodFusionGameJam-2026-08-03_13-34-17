@@ -13,30 +13,26 @@ public class ShopVisual : MonoBehaviour
     [SerializeField] private Sprite closedSprite;
     [SerializeField] private Sprite type1Sprite;
     [SerializeField] private Sprite type2Sprite;
-    [SerializeField] private bool randomizeOnAwake = true;
-
-    public ShopType CurrentType { get; private set; } = ShopType.Type1;
+    public ShopType CurrentType { get; private set; } = ShopType.Closed;
 
     private void Awake()
     {
         if (spriteRenderer == null)
             spriteRenderer = GetComponent<SpriteRenderer>();
 
-        if (randomizeOnAwake)
-            RandomizeOpenShop();
-        else
-            ApplySprite();
+        CurrentType = ShopType.Closed;
+        ApplySprite();
     }
 
     public void RandomizeOpenShop()
     {
-        CurrentType = Random.value < 0.5f ? ShopType.Type1 : ShopType.Type2;
+        CurrentType = ShopType.Closed;
         ApplySprite();
     }
 
     public void SetShopType(ShopType shopType)
     {
-        CurrentType = shopType;
+        CurrentType = ShopType.Closed;
         ApplySprite();
     }
 

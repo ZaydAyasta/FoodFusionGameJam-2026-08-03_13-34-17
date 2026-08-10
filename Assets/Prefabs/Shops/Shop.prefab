@@ -49,7 +49,6 @@ MonoBehaviour:
   closedSprite: {fileID: -8196480923977132995, guid: d25420c7e1eb4ea499994ebfe4607d71, type: 3}
   type1Sprite: {fileID: -437210260584534731, guid: d25420c7e1eb4ea499994ebfe4607d71, type: 3}
   type2Sprite: {fileID: 2041468999678052541, guid: d25420c7e1eb4ea499994ebfe4607d71, type: 3}
-  randomizeOnAwake: 1
 --- !u!1 &8096409867113562576
 GameObject:
   m_ObjectHideFlags: 0
@@ -131,7 +130,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 3
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -437210260584534731, guid: d25420c7e1eb4ea499994ebfe4607d71, type: 3}
+  m_Sprite: {fileID: -8196480923977132995, guid: d25420c7e1eb4ea499994ebfe4607d71, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
