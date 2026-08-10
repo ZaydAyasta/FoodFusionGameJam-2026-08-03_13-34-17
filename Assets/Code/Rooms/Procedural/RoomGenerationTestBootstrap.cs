@@ -83,6 +83,7 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
     [SerializeField] private Sprite kitchenSprite;
     [SerializeField] private Vector3 kitchenVisualWorldScale = new(0.1f, 0.1f, 0.1f);
     [SerializeField] private Vector3 kitchenVisualOffset = new(0f, 0f, -0.25f);
+    [SerializeField] private int kitchenVisualMinimumSortingOrder = 3;
 
     [Header("Shop Visuals")]
     [SerializeField] private ShopVisual shopPrefab;
@@ -823,7 +824,7 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
             visual.sharedMaterial = kitchenVisualMaterial;
 
         visual.sortingLayerName = kitchenVisualSortingLayer;
-        visual.sortingOrder = kitchenVisualSortingOrder + 1;
+        visual.sortingOrder = Mathf.Max(kitchenVisualSortingOrder + 1, kitchenVisualMinimumSortingOrder);
 
         Transform visualTransform = visual.transform;
         visualTransform.SetParent(room.transform, true);
@@ -917,7 +918,7 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
     private static void SetKitchenVisualRotation(Transform visualTransform, RoomDirection? direction)
     {
         Vector3 angles = visualTransform.eulerAngles;
-        angles.x = 0f;
+        angles.x = -40f;
         angles.y = 0f;
         angles.z = direction switch
         {

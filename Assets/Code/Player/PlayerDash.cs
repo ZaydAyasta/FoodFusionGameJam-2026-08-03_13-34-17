@@ -9,6 +9,7 @@ public class PlayerDash : MonoBehaviour
     [SerializeField] private float dashDuration = 0.15f;
     [SerializeField] private float dashCooldown = 0.75f;
     [SerializeField] private float invulnerabilityDuration = 0.18f;
+    [SerializeField, Min(1)] private int maxDashCharges = 1;
 
     [Header("Afterimage Trail")]
     [SerializeField] private SpriteRenderer visualRenderer;
@@ -21,15 +22,19 @@ public class PlayerDash : MonoBehaviour
     private Rigidbody2D rb;
     private Health health;
     private Vector2 lastMoveDirection = Vector2.right;
-    private float nextDashTime;
+    private int currentDashCharges;
 
     public bool IsDashing { get; private set; }
+    public int CurrentDashCharges => currentDashCharges;
+    public int MaxDashCharges => maxDashCharges;
 
     private void Awake()
     {
         input = GetComponent<CharacterInput>();
         rb = GetComponent<Rigidbody2D>();
         health = GetComponent<Health>();
+        maxDashCharges = Mathf.Max(1, maxDashCharges);
+        currentDashCharges = maxDashCharges;
         if (visualRenderer == null)
             visualRenderer = GetComponentInChildren<SpriteRenderer>(true);
     }
@@ -40,14 +45,24 @@ public class PlayerDash : MonoBehaviour
         if (move.sqrMagnitude > 0.001f)
             lastMoveDirection = move.normalized;
 
-        if (input.DashPressed && Time.time >= nextDashTime && !IsDashing)
+        if (input.DashPressed && currentDashCharges > 0 && !IsDashing)
             StartCoroutine(DashRoutine());
+    }
+
+    public void AddDashCharge(int amount = 1)
+    {
+        if (amount <= 0)
+            return;
+
+        maxDashCharges += amount;
+        currentDashCharges += amount;
     }
 
     private IEnumerator DashRoutine()
     {
         IsDashing = true;
-        nextDashTime = Time.time + dashCooldown;
+        currentDashCharges--;
+        StartCoroutine(RechargeDashCharge());
         health?.MakeInvulnerable(invulnerabilityDuration);
         rb.linearVelocity = lastMoveDirection * dashSpeed;
         GameAudio.PlayDash();
@@ -56,6 +71,12 @@ public class PlayerDash : MonoBehaviour
         yield return new WaitForSeconds(dashDuration);
 
         IsDashing = false;
+    }
+
+    private IEnumerator RechargeDashCharge()
+    {
+        yield return new WaitForSeconds(dashCooldown);
+        currentDashCharges = Mathf.Min(maxDashCharges, currentDashCharges + 1);
     }
 
     private IEnumerator AfterimageTrailRoutine()

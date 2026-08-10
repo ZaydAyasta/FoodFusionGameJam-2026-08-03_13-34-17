@@ -6,6 +6,7 @@ public class Health : MonoBehaviour, IDamageable
     [SerializeField] private float maxHealth = 3f;
     [SerializeField] private float invulnerabilityDuration;
     [SerializeField] private bool destroyOnDeath;
+    [SerializeField, Range(0f, 0.5f)] private float damageReduction;
 
     private DamageFlash damageFlash;
     private float invulnerableUntil;
@@ -14,6 +15,7 @@ public class Health : MonoBehaviour, IDamageable
     public float MaxHealth => maxHealth;
     public float CurrentHealth { get; private set; }
     public bool IsDead => dead;
+    public float DamageReduction => damageReduction;
 
     public event Action<float, float> HealthChanged;
     public event Action Died;
@@ -33,7 +35,8 @@ public class Health : MonoBehaviour, IDamageable
         if (dead || amount <= 0f || Time.time < invulnerableUntil)
             return;
 
-        CurrentHealth = Mathf.Max(0f, CurrentHealth - amount);
+        float receivedDamage = amount * (1f - damageReduction);
+        CurrentHealth = Mathf.Max(0f, CurrentHealth - receivedDamage);
         damageFlash?.Flash();
 
         if (invulnerabilityDuration > 0f)
@@ -66,6 +69,31 @@ public class Health : MonoBehaviour, IDamageable
             CurrentHealth = Mathf.Clamp(CurrentHealth, 0f, maxHealth);
 
         HealthChanged?.Invoke(CurrentHealth, maxHealth);
+    }
+
+    public void IncreaseMaxHealthUpTo(float amount, float maximum, bool healByIncrease)
+    {
+        if (dead || amount <= 0f || maximum <= maxHealth)
+            return;
+
+        float previousMaxHealth = maxHealth;
+        maxHealth = Mathf.Min(maximum, maxHealth + amount);
+        float appliedIncrease = maxHealth - previousMaxHealth;
+
+        if (healByIncrease)
+            CurrentHealth = Mathf.Min(maxHealth, CurrentHealth + appliedIncrease);
+        else
+            CurrentHealth = Mathf.Clamp(CurrentHealth, 0f, maxHealth);
+
+        HealthChanged?.Invoke(CurrentHealth, maxHealth);
+    }
+
+    public void AddDamageReduction(float amount, float maximum = 0.5f)
+    {
+        if (amount <= 0f)
+            return;
+
+        damageReduction = Mathf.Clamp(damageReduction + amount, 0f, Mathf.Clamp01(maximum));
     }
 
     public void ResetHealth()

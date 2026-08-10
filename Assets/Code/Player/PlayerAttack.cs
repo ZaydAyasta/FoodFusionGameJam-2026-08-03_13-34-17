@@ -14,6 +14,10 @@ public class PlayerAttack : MonoBehaviour
     private CharacterInput input;
     private PlayerAim aim;
     private float nextFireTime;
+    private bool autoAimEnabled;
+
+    public float ProjectileRange => projectileRange;
+    public bool AutoAimEnabled => autoAimEnabled;
 
     public void AddDamageBonus(float amount)
     {
@@ -29,6 +33,17 @@ public class PlayerAttack : MonoBehaviour
             return;
 
         cooldown = Mathf.Max(0.05f, cooldown * multiplier);
+    }
+
+    public void AddRangeBonus(float amount)
+    {
+        if (amount > 0f)
+            projectileRange += amount;
+    }
+
+    public void EnableAutoAim()
+    {
+        autoAimEnabled = true;
     }
 
     private void Awake()
@@ -48,7 +63,7 @@ public class PlayerAttack : MonoBehaviour
 
     private void Fire()
     {
-        Vector2 direction = aim.AimDirection;
+        Vector2 direction = GetFireDirection();
         Vector3 origin = firePoint != null ? firePoint.position : transform.position + (Vector3)(direction * 0.55f);
         float projectileLifetime = projectileSpeed > 0.01f
             ? projectileRange / projectileSpeed
@@ -59,6 +74,48 @@ public class PlayerAttack : MonoBehaviour
         projectile.gameObject.SetActive(true);
         projectile.Launch(direction, projectileSpeed, projectileDamage, CombatFaction.Player, projectileLifetime);
         GameAudio.PlayShoot();
+    }
+
+    private Vector2 GetFireDirection()
+    {
+        Vector2 fallbackDirection = aim.AimDirection;
+        if (!autoAimEnabled)
+            return fallbackDirection;
+
+        Vector2 origin = firePoint != null ? firePoint.position : transform.position;
+        EnemyDeathNotifier[] enemies = FindObjectsByType<EnemyDeathNotifier>(FindObjectsInactive.Exclude);
+        Transform closestEnemy = null;
+        float closestDistanceSquared = float.PositiveInfinity;
+
+        foreach (EnemyDeathNotifier enemy in enemies)
+        {
+            if (enemy == null || !enemy.gameObject.activeInHierarchy)
+                continue;
+
+            Health enemyHealth = enemy.GetComponent<Health>();
+            if (enemyHealth == null || enemyHealth.IsDead)
+                continue;
+
+            Vector2 targetPosition = GetTargetPosition(enemy.transform);
+            float distanceSquared = (targetPosition - origin).sqrMagnitude;
+            if (distanceSquared >= closestDistanceSquared)
+                continue;
+
+            closestDistanceSquared = distanceSquared;
+            closestEnemy = enemy.transform;
+        }
+
+        if (closestEnemy == null)
+            return fallbackDirection;
+
+        Vector2 direction = GetTargetPosition(closestEnemy) - origin;
+        return direction.sqrMagnitude > 0.0001f ? direction.normalized : fallbackDirection;
+    }
+
+    private static Vector2 GetTargetPosition(Transform target)
+    {
+        Collider2D targetCollider = target.GetComponentInChildren<Collider2D>();
+        return targetCollider != null ? targetCollider.bounds.center : target.position;
     }
 
     private Projectile GetProjectilePrefab()

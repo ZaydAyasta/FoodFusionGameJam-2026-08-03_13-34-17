@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9fc16a21d28bc244f889217352f478c5, type: 3}
-  m_Name: Ingredient_Water
+  m_Name: Ingredient_EnergyBites
   m_EditorClassIdentifier: Assembly-CSharp::IngredientData
-  id: water
-  displayName: Sopa
-  icon: {fileID: -8623618863599700181, guid: 0961f7df550dfc7429be7349fdf3acf7, type: 3}
-  description: Cura 20 de vida al jugador.
+  id: energyBites
+  displayName: Energy Bites
+  icon: {fileID: 6407625475132294341, guid: 165b135c8d07a864eb5a833ce7ac27a7, type: 3}
+  description: Agrega una carga recargable de dash.
   cuisine: 6
   linkedEnemyPrefab: {fileID: 0}

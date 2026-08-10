@@ -15,11 +15,19 @@ public class FusionKitchenHud : MonoBehaviour
     private const string BologneseId = "bolognese";
     private const string SandwitchId = "sandwitch";
     private const string WaterId = "water";
+    private const string EnergyBitesId = "energyBites";
+    private const string FruitRiceId = "fruitRice";
+    private const string CheeseSteakId = "cheeseSteak";
+    private const string RisottoId = "risotto";
     private const float MaxHealthMilkBonus = 50f;
+    private const float MaxHealthCap = 250f;
     private const float MilkshakeSpeedBonus = 1f;
     private const float BologneseDamageBonus = 1f;
     private const float SandwitchCooldownMultiplier = 0.8f;
     private const float WaterHealAmount = 20f;
+    private const float ProjectileRangeBonus = 1.5f;
+    private const float DamageReductionBonus = 0.1f;
+    private const float DamageReductionCap = 0.5f;
 
     private static FusionKitchenHud instance;
 
@@ -292,6 +300,18 @@ public class FusionKitchenHud : MonoBehaviour
             return LoadIngredientById(SandwitchId) ?? LoadIngredientById("meat") ?? second;
         }
 
+        if (IsRecipePair(first, second, "drop", "drop_0", "Ingredient_Drop", "manzana", "MANZANAAA_0", "Ingredient_Manzana"))
+            return LoadIngredientById(EnergyBitesId) ?? first;
+
+        if (IsRecipePair(first, second, "rice", "rice_0", "Ingredient_Rice", "manzana", "MANZANAAA_0", "Ingredient_Manzana"))
+            return LoadIngredientById(FruitRiceId) ?? first;
+
+        if (IsRecipePair(first, second, "cheese", "cheese_0", "Ingredient_Cheese", "meat", "Meat_0", "Ingredient_Meat"))
+            return LoadIngredientById(CheeseSteakId) ?? first;
+
+        if (IsRecipePair(first, second, "rice", "rice_0", "Ingredient_Rice", "cheese", "cheese_0", "Ingredient_Cheese"))
+            return LoadIngredientById(RisottoId) ?? first;
+
         return null;
     }
 
@@ -368,7 +388,7 @@ public class FusionKitchenHud : MonoBehaviour
         Health playerHealth = GetPlayerComponent<Health>();
         if (MatchesIngredient(result, MaxHealthMilkId))
         {
-            playerHealth?.IncreaseMaxHealth(MaxHealthMilkBonus, true);
+            playerHealth?.IncreaseMaxHealthUpTo(MaxHealthMilkBonus, MaxHealthCap, true);
             return;
         }
 
@@ -391,7 +411,31 @@ public class FusionKitchenHud : MonoBehaviour
         }
 
         if (MatchesIngredient(result, SandwitchId))
+        {
             GetPlayerComponent<PlayerAttack>()?.MultiplyCooldown(SandwitchCooldownMultiplier);
+            return;
+        }
+
+        if (MatchesIngredient(result, EnergyBitesId))
+        {
+            GetPlayerComponent<PlayerDash>()?.AddDashCharge();
+            return;
+        }
+
+        if (MatchesIngredient(result, FruitRiceId))
+        {
+            GetPlayerComponent<PlayerAttack>()?.AddRangeBonus(ProjectileRangeBonus);
+            return;
+        }
+
+        if (MatchesIngredient(result, CheeseSteakId))
+        {
+            playerHealth?.AddDamageReduction(DamageReductionBonus, DamageReductionCap);
+            return;
+        }
+
+        if (MatchesIngredient(result, RisottoId))
+            GetPlayerComponent<PlayerAttack>()?.EnableAutoAim();
     }
 
     private T GetPlayerComponent<T>() where T : Component
