@@ -15,6 +15,22 @@ public class PlayerAttack : MonoBehaviour
     private PlayerAim aim;
     private float nextFireTime;
 
+    public void AddDamageBonus(float amount)
+    {
+        if (amount <= 0f)
+            return;
+
+        projectileDamage += amount;
+    }
+
+    public void MultiplyCooldown(float multiplier)
+    {
+        if (multiplier <= 0f)
+            return;
+
+        cooldown = Mathf.Max(0.05f, cooldown * multiplier);
+    }
+
     private void Awake()
     {
         input = GetComponent<CharacterInput>();
