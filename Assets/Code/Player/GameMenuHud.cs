@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.UI;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 #if UNITY_EDITOR
 using UnityEditor;
@@ -12,18 +13,29 @@ public class GameMenuHud : MonoBehaviour
 {
     [SerializeField] private IngredientInventory inventory;
 
+    private static GameMenuHud instance;
+
     private Canvas canvas;
     private GameObject mainMenuRoot;
     private GameObject inventoryRoot;
+    private GameObject gameOverRoot;
     private Transform inventoryListRoot;
     private bool initialized;
     private bool mainMenuOpen;
     private bool inventoryOpen;
+    private bool gameOverOpen;
 
     private void Awake()
     {
+        instance = this;
         BuildUi();
         EnsureEventSystem();
+    }
+
+    private void OnDestroy()
+    {
+        if (instance == this)
+            instance = null;
     }
 
     private void Update()
@@ -31,13 +43,21 @@ public class GameMenuHud : MonoBehaviour
         if (Keyboard.current == null || !Keyboard.current.escapeKey.wasPressedThisFrame)
             return;
 
-        if (mainMenuOpen)
+        if (mainMenuOpen || gameOverOpen)
             return;
 
         if (inventoryOpen)
             CloseInventory();
         else
             OpenInventory();
+    }
+
+    public static void ShowGameOver()
+    {
+        if (instance == null)
+            instance = new GameObject("GameMenuHUD").AddComponent<GameMenuHud>();
+
+        instance.ShowGameOverInternal();
     }
 
     public void Initialize(IngredientInventory playerInventory)
@@ -78,17 +98,41 @@ public class GameMenuHud : MonoBehaviour
     {
         mainMenuOpen = true;
         inventoryOpen = false;
+        gameOverOpen = false;
         Time.timeScale = 0f;
         mainMenuRoot.SetActive(true);
         inventoryRoot.SetActive(false);
+        gameOverRoot.SetActive(false);
+        GameAudio.PlayMainTheme();
     }
 
     private void StartGame()
     {
         mainMenuOpen = false;
+        gameOverOpen = false;
         Time.timeScale = 1f;
         mainMenuRoot.SetActive(false);
         inventoryRoot.SetActive(false);
+        gameOverRoot.SetActive(false);
+        GameAudio.StopMainTheme();
+    }
+
+    private void ShowGameOverInternal()
+    {
+        mainMenuOpen = false;
+        inventoryOpen = false;
+        gameOverOpen = true;
+        Time.timeScale = 0f;
+        mainMenuRoot.SetActive(false);
+        inventoryRoot.SetActive(false);
+        gameOverRoot.SetActive(true);
+        GameAudio.StopMainTheme();
+    }
+
+    private void RetryGame()
+    {
+        Time.timeScale = 1f;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     private void ExitGame()
@@ -104,8 +148,10 @@ public class GameMenuHud : MonoBehaviour
     {
         ResolveBestInventoryReference();
         inventoryOpen = true;
+        gameOverOpen = false;
         Time.timeScale = 0f;
         inventoryRoot.SetActive(true);
+        gameOverRoot.SetActive(false);
         RefreshInventoryList();
     }
 
@@ -143,44 +189,60 @@ public class GameMenuHud : MonoBehaviour
 
         mainMenuRoot = BuildMainMenu();
         inventoryRoot = BuildInventoryMenu();
+        gameOverRoot = BuildGameOverMenu();
 
         mainMenuRoot.SetActive(false);
         inventoryRoot.SetActive(false);
+        gameOverRoot.SetActive(false);
     }
 
     private GameObject BuildMainMenu()
     {
         GameObject root = CreateRoot("MainMenu");
         Image backdrop = root.AddComponent<Image>();
-        backdrop.color = new Color(0f, 0f, 0f, 0.72f);
+        backdrop.sprite = LoadSpriteByName("1FOOD");
+        backdrop.color = Color.white;
 
-        GameObject panel = CreatePanel("MainMenuPanel", root.transform, new Vector2(420f, 320f));
-        RectTransform panelRect = panel.GetComponent<RectTransform>();
-        panelRect.anchorMin = new Vector2(0.5f, 0.5f);
-        panelRect.anchorMax = new Vector2(0.5f, 0.5f);
-        panelRect.pivot = new Vector2(0.5f, 0.5f);
-        panelRect.anchoredPosition = Vector2.zero;
-
-        Text title = CreateText("Title", panel.transform, "FOOD FUSION", 42, TextAnchor.MiddleCenter);
-        RectTransform titleRect = title.GetComponent<RectTransform>();
-        titleRect.anchorMin = new Vector2(0f, 1f);
-        titleRect.anchorMax = new Vector2(1f, 1f);
-        titleRect.pivot = new Vector2(0.5f, 1f);
-        titleRect.anchoredPosition = new Vector2(0f, -28f);
-        titleRect.sizeDelta = new Vector2(-36f, 70f);
-
-        Button playButton = CreateButton("PlayButton", panel.transform, "Jugar", new Vector2(250f, 58f));
+        Button playButton = CreateMenuButton("PlayButton", root.transform, "JUGAR", new Vector2(330f, 86f), new Color(0.15f, 1f, 0.18f, 1f));
         RectTransform playRect = playButton.GetComponent<RectTransform>();
-        playRect.anchorMin = new Vector2(0.5f, 0.5f);
-        playRect.anchorMax = new Vector2(0.5f, 0.5f);
-        playRect.anchoredPosition = new Vector2(0f, -20f);
+        playRect.anchorMin = new Vector2(0.5f, 0f);
+        playRect.anchorMax = new Vector2(0.5f, 0f);
+        playRect.pivot = new Vector2(0.5f, 0f);
+        playRect.anchoredPosition = new Vector2(310f, 54f);
         playButton.onClick.AddListener(StartGame);
 
-        Button exitButton = CreateButton("ExitButton", panel.transform, "Salir", new Vector2(250f, 58f));
+        Button exitButton = CreateMenuButton("ExitButton", root.transform, "SALIR", new Vector2(260f, 76f), new Color(1f, 0.08f, 0.06f, 1f));
         RectTransform exitRect = exitButton.GetComponent<RectTransform>();
-        exitRect.anchorMin = new Vector2(0.5f, 0.5f);
-        exitRect.anchorMax = new Vector2(0.5f, 0.5f);
-        exitRect.anchoredPosition = new Vector2(0f, -98f);
+        exitRect.anchorMin = new Vector2(1f, 0f);
+        exitRect.anchorMax = new Vector2(1f, 0f);
+        exitRect.pivot = new Vector2(1f, 0f);
+        exitRect.anchoredPosition = new Vector2(-48f, 52f);
+        exitButton.onClick.AddListener(ExitGame);
+
+        return root;
+    }
+
+    private GameObject BuildGameOverMenu()
+    {
+        GameObject root = CreateRoot("GameOverMenu");
+        Image backdrop = root.AddComponent<Image>();
+        backdrop.sprite = LoadSpriteByName("END");
+        backdrop.color = Color.white;
+
+        Button retryButton = CreateMenuButton("RetryButton", root.transform, "REINTENTAR", new Vector2(340f, 82f), new Color(0.15f, 1f, 0.18f, 1f));
+        RectTransform retryRect = retryButton.GetComponent<RectTransform>();
+        retryRect.anchorMin = new Vector2(0.5f, 0f);
+        retryRect.anchorMax = new Vector2(0.5f, 0f);
+        retryRect.pivot = new Vector2(0.5f, 0f);
+        retryRect.anchoredPosition = new Vector2(0f, 52f);
+        retryButton.onClick.AddListener(RetryGame);
+
+        Button exitButton = CreateMenuButton("GameOverExitButton", root.transform, "SALIR", new Vector2(260f, 76f), new Color(1f, 0.08f, 0.06f, 1f));
+        RectTransform exitRect = exitButton.GetComponent<RectTransform>();
+        exitRect.anchorMin = new Vector2(1f, 0f);
+        exitRect.anchorMax = new Vector2(1f, 0f);
+        exitRect.pivot = new Vector2(1f, 0f);
+        exitRect.anchoredPosition = new Vector2(-48f, 52f);
         exitButton.onClick.AddListener(ExitGame);
 
         return root;
@@ -305,7 +367,7 @@ public class GameMenuHud : MonoBehaviour
 
         IngredientInventory bestInventory = inventory;
         int bestCount = bestInventory != null ? bestInventory.GetStacks().Count : -1;
-        IngredientInventory[] inventories = FindObjectsByType<IngredientInventory>(FindObjectsSortMode.None);
+        IngredientInventory[] inventories = FindObjectsByType<IngredientInventory>(FindObjectsInactive.Exclude);
         foreach (IngredientInventory candidate in inventories)
         {
             if (candidate == null)
@@ -443,6 +505,50 @@ public class GameMenuHud : MonoBehaviour
         return button;
     }
 
+    private Button CreateMenuButton(string objectName, Transform parent, string label, Vector2 size, Color outlineColor)
+    {
+        Button button = CreateButton(objectName, parent, label, size);
+
+        Image image = button.GetComponent<Image>();
+        image.color = new Color(0f, 0f, 0f, 0.08f);
+
+        Outline outline = button.gameObject.AddComponent<Outline>();
+        outline.effectColor = outlineColor;
+        outline.effectDistance = new Vector2(4f, -4f);
+
+        Text text = button.GetComponentInChildren<Text>();
+        text.fontSize = 42;
+        text.color = outlineColor;
+        text.resizeTextForBestFit = true;
+        text.resizeTextMinSize = 24;
+        text.resizeTextMaxSize = 44;
+
+        return button;
+    }
+
+    private static Sprite LoadSpriteByName(string spriteName)
+    {
+#if UNITY_EDITOR
+        string[] guids = AssetDatabase.FindAssets(spriteName, new[] { "Assets" });
+        foreach (string guid in guids)
+        {
+            string path = AssetDatabase.GUIDToAssetPath(guid);
+            UnityEngine.Object[] assets = AssetDatabase.LoadAllAssetsAtPath(path);
+            foreach (UnityEngine.Object asset in assets)
+            {
+                if (asset is Sprite sprite
+                    && (string.Equals(sprite.name, spriteName, System.StringComparison.OrdinalIgnoreCase)
+                        || sprite.name.StartsWith(spriteName + "_", System.StringComparison.OrdinalIgnoreCase)))
+                {
+                    return sprite;
+                }
+            }
+        }
+#endif
+
+        return Resources.Load<Sprite>(spriteName);
+    }
+
     private Text CreateText(string objectName, Transform parent, string text, int fontSize, TextAnchor alignment)
     {
         GameObject textObject = new(objectName);
@@ -466,7 +572,7 @@ public class GameMenuHud : MonoBehaviour
 
     private static void EnsureEventSystem()
     {
-        if (FindFirstObjectByType<EventSystem>() != null)
+        if (FindAnyObjectByType<EventSystem>() != null)
             return;
 
         GameObject eventSystemObject = new("EventSystem");

@@ -73,6 +73,7 @@ public class PlayerAttack : MonoBehaviour
         Projectile projectile = Instantiate(prefab, origin, prefab.transform.rotation);
         projectile.gameObject.SetActive(true);
         projectile.Launch(direction, projectileSpeed, projectileDamage, CombatFaction.Player, projectileLifetime);
+        GameAudio.PlayShoot();
     }
 
     private Vector2 GetFireDirection()

@@ -39,7 +39,11 @@ public class CharacterMovement : MonoBehaviour
         bool isMoving = move.sqrMagnitude > 0.01f;
 
         if (isMoving)
+        {
             lastDirection = GetDirection(move);
+            if (dash == null || !dash.IsDashing)
+                GameAudio.PlayFootstep();
+        }
 
         if (animator != null)
         {

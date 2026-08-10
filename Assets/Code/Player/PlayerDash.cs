@@ -65,6 +65,7 @@ public class PlayerDash : MonoBehaviour
         StartCoroutine(RechargeDashCharge());
         health?.MakeInvulnerable(invulnerabilityDuration);
         rb.linearVelocity = lastMoveDirection * dashSpeed;
+        GameAudio.PlayDash();
         StartCoroutine(AfterimageTrailRoutine());
 
         yield return new WaitForSeconds(dashDuration);
