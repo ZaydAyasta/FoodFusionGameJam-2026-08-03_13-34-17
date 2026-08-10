@@ -1,12 +1,8 @@
-using System.Collections;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(Health))]
 public class PlayerDeathHandler : MonoBehaviour
 {
-    [SerializeField] private float restartDelay = 1f;
-
     private Health health;
 
     private void Awake()
@@ -26,12 +22,6 @@ public class PlayerDeathHandler : MonoBehaviour
 
     private void HandleDied()
     {
-        StartCoroutine(RestartScene());
-    }
-
-    private IEnumerator RestartScene()
-    {
-        yield return new WaitForSeconds(restartDelay);
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        GameMenuHud.ShowGameOver();
     }
 }
