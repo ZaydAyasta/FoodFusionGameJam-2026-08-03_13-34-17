@@ -224,6 +224,10 @@ public class RoomController : MonoBehaviour
             if (apple != null)
                 apple.SetTarget(player);
 
+            WaterBucketEnemy waterBucket = enemy.GetComponent<WaterBucketEnemy>();
+            if (waterBucket != null)
+                waterBucket.SetTarget(player);
+
             CheeseMinionEnemy cheese = enemy.GetComponent<CheeseMinionEnemy>();
             if (cheese != null)
                 cheese.SetTarget(player);
