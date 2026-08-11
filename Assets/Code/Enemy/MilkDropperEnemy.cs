@@ -30,6 +30,7 @@ public class MilkDropperEnemy : MonoBehaviour
     private Coroutine dropRoutine;
     private int livingSummons;
     private float summonHealthMultiplier = 1f;
+    private int lateGameAttackTier;
 
     private static readonly int DropParameter = Animator.StringToHash("Drop");
 
@@ -103,6 +104,18 @@ public class MilkDropperEnemy : MonoBehaviour
         summonHealthMultiplier = Mathf.Max(1f, multiplier);
     }
 
+    public void ApplyLateGameAttackScaling(int tier)
+    {
+        if (tier <= 0)
+            return;
+
+        lateGameAttackTier = tier;
+        float intervalMultiplier = 1f - Mathf.Min(0.5f, tier * 0.065f);
+        minDropInterval = Mathf.Max(3f, minDropInterval * intervalMultiplier);
+        maxDropInterval = Mathf.Max(minDropInterval + 0.5f, maxDropInterval * intervalMultiplier);
+        maxLivingSummons = Mathf.Clamp(maxLivingSummons + tier / 4, 1, 6);
+    }
+
     private IEnumerator DropLoop()
     {
         while (target != null && room != null && room.State == RoomState.Combat)
@@ -131,6 +144,7 @@ public class MilkDropperEnemy : MonoBehaviour
         }
 
         SetAnimatorTrigger(DropParameter);
+        GameAudio.PlayCheeseGenerate();
         Vector2 offset = Random.insideUnitCircle * Mathf.Max(0f, spawnRadius);
         Vector3 origin = dropOrigin != null ? dropOrigin.position : transform.position;
         origin += (Vector3)offset;
@@ -154,6 +168,7 @@ public class MilkDropperEnemy : MonoBehaviour
         if (cheese == null)
             cheese = instance.AddComponent<CheeseMinionEnemy>();
         cheese.SetTarget(target);
+        cheese.ApplyLateGameAttackScaling(lateGameAttackTier);
         cheese.BeginDroppedBirth();
 
         if (!room.RegisterSpawnedEnemy(notifier))

@@ -37,6 +37,7 @@ public class PotatoEnemy : MonoBehaviour
     [SerializeField] private float projectileLifetime = 2.2f;
     [Tooltip("Rotates the whole four-way pattern without aiming it at the player.")]
     [SerializeField] private float burstAngleOffset;
+    [SerializeField, Min(1)] private int burstPatternRepeats = 1;
 
     private static Projectile fallbackProjectilePrefab;
     private Rigidbody2D rb;
@@ -110,6 +111,19 @@ public class PotatoEnemy : MonoBehaviour
         target = newTarget;
         ChooseClosestAttackLane();
         ResetHop();
+    }
+
+    public void ApplyLateGameAttackScaling(int tier)
+    {
+        if (tier <= 0)
+            return;
+
+        float cooldownMultiplier = 1f - Mathf.Min(0.48f, tier * 0.07f);
+        minAttackCooldown = Mathf.Max(0.75f, minAttackCooldown * cooldownMultiplier);
+        maxAttackCooldown = Mathf.Max(minAttackCooldown + 0.15f, maxAttackCooldown * cooldownMultiplier);
+        projectileSpeed *= 1f + Mathf.Min(0.4f, tier * 0.04f);
+        projectileDamage *= 1f + Mathf.Min(0.55f, tier * 0.055f);
+        burstPatternRepeats = Mathf.Clamp(1 + tier / 3, 1, 3);
     }
 
     private void UpdateHopCycle()
@@ -207,13 +221,18 @@ public class PotatoEnemy : MonoBehaviour
         Projectile prefab = projectilePrefab != null ? projectilePrefab : CreateFallbackProjectilePrefab();
         Vector3 origin = projectileOrigin != null ? projectileOrigin.position : (Vector3)GetEnemyCenter();
 
-        foreach (Vector2 cardinalDirection in directions)
+        int patternCount = Mathf.Max(1, burstPatternRepeats);
+        for (int pattern = 0; pattern < patternCount; pattern++)
         {
-            Vector2 direction = patternRotation * cardinalDirection;
-            Projectile projectile = Instantiate(prefab, origin, prefab.transform.rotation);
-            projectile.gameObject.SetActive(true);
-            projectile.Launch(direction, projectileSpeed, projectileDamage,
-                CombatFaction.Enemy, projectileLifetime);
+            Quaternion repeatRotation = Quaternion.Euler(0f, 0f, pattern * (45f / patternCount));
+            foreach (Vector2 cardinalDirection in directions)
+            {
+                Vector2 direction = repeatRotation * patternRotation * cardinalDirection;
+                Projectile projectile = Instantiate(prefab, origin, prefab.transform.rotation);
+                projectile.gameObject.SetActive(true);
+                projectile.Launch(direction, projectileSpeed, projectileDamage,
+                    CombatFaction.Enemy, projectileLifetime);
+            }
         }
     }
 

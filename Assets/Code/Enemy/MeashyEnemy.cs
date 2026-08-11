@@ -18,6 +18,10 @@ public class MeashyEnemy : MonoBehaviour
     [SerializeField] private float preferredDistance = 4f;
     [SerializeField] private float retreatDistance = 2.2f;
 
+    [Header("Audio")]
+    [SerializeField] private float splashStepInterval = 0.38f;
+    [SerializeField] private float splashMovementThreshold = 0.08f;
+
     [Header("Target")]
     [SerializeField] private Transform target;
 
@@ -56,6 +60,7 @@ public class MeashyEnemy : MonoBehaviour
     private HopPhase hopPhase;
     private float hopPhaseEndsAt;
     private float nextHopAt;
+    private float nextSplashAt;
 
     private static readonly int IsMovingParameter = Animator.StringToHash("IsMoving");
     private static readonly int IsAttackingParameter = Animator.StringToHash("IsAttacking");
@@ -113,6 +118,7 @@ public class MeashyEnemy : MonoBehaviour
         else
             rb.linearVelocity = Vector2.zero;
 
+        PlaySplashStepIfMoving();
     }
 
     private void Update()
@@ -163,6 +169,24 @@ public class MeashyEnemy : MonoBehaviour
     {
         target = newTarget;
         ResetHop();
+    }
+
+    public void ApplyLateGameAttackScaling(int tier)
+    {
+        if (tier <= 0)
+            return;
+
+        spikeCount = Mathf.Clamp(spikeCount + tier / 3, 1, 7);
+        spikeSpreadDegrees = Mathf.Min(34f, spikeSpreadDegrees + tier * 1.4f);
+        spikeCooldown = Mathf.Max(0.95f, spikeCooldown * (1f - Mathf.Min(0.48f, tier * 0.07f)));
+        spikeSpeed *= 1f + Mathf.Min(0.35f, tier * 0.035f);
+        spikeDamage *= 1f + Mathf.Min(0.5f, tier * 0.05f);
+
+        meatballCooldown = Mathf.Max(3.2f, meatballCooldown * (1f - Mathf.Min(0.5f, tier * 0.065f)));
+        meatballDamage *= 1f + Mathf.Min(0.55f, tier * 0.055f);
+        meatballExplosionRadius *= 1f + Mathf.Min(0.3f, tier * 0.03f);
+        meatballPredictionStrength = Mathf.Min(1.25f, meatballPredictionStrength + tier * 0.035f);
+        meatballImprecisionRadius = Mathf.Max(0.35f, meatballImprecisionRadius - tier * 0.06f);
     }
 
     private IEnumerator SpikeAttackRoutine()
@@ -287,6 +311,16 @@ public class MeashyEnemy : MonoBehaviour
     {
         if (rb != null)
             rb.linearVelocity = Vector2.zero;
+    }
+
+    private void PlaySplashStepIfMoving()
+    {
+        if (rb == null || Time.time < nextSplashAt ||
+            rb.linearVelocity.sqrMagnitude < splashMovementThreshold * splashMovementThreshold)
+            return;
+
+        GameAudio.PlayTinySplash();
+        nextSplashAt = Time.time + Mathf.Max(0.08f, splashStepInterval);
     }
 
     private void ResolveAnimator()

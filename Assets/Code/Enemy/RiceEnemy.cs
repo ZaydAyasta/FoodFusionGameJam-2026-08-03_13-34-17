@@ -36,6 +36,7 @@ public class RiceEnemy : MonoBehaviour
 
     private Rigidbody2D rb;
     private Collider2D ownHitbox;
+    private Health health;
     private float nextShotAt;
     private float nextStrafeSwitchAt;
     private float burstChance;
@@ -45,6 +46,7 @@ public class RiceEnemy : MonoBehaviour
     private HopPhase hopPhase;
     private float hopPhaseEndsAt;
     private float nextHopAt;
+    private bool deathSoundPlayed;
 
     private static readonly int IsMovingParameter = Animator.StringToHash("IsMoving");
     private static readonly int JumpParameter = Animator.StringToHash("Jump");
@@ -64,6 +66,7 @@ public class RiceEnemy : MonoBehaviour
         KeepPhysicsRootFlat();
         FitHitboxToSpriteSquare();
         EnsureRigidbody();
+        health = GetComponent<Health>();
         ResolveAnimator();
     }
 
@@ -74,9 +77,21 @@ public class RiceEnemy : MonoBehaviour
         strafeDirection = Random.value < 0.5f ? -1 : 1;
         nextStrafeSwitchAt = Time.time + Random.Range(minStrafeSwitchInterval, maxStrafeSwitchInterval);
         attacking = false;
+        deathSoundPlayed = false;
+        if (health != null)
+        {
+            health.Died -= HandleDied;
+            health.Died += HandleDied;
+        }
         hopPhase = HopPhase.Resting;
         nextHopAt = Time.time + restBetweenJumps;
         SetAnimatorBool(IsMovingParameter, false);
+    }
+
+    private void OnDisable()
+    {
+        if (health != null)
+            health.Died -= HandleDied;
     }
 
     private void ResolveAnimator()
@@ -394,6 +409,15 @@ public class RiceEnemy : MonoBehaviour
     private Vector3 GetProjectileSpawnPosition()
     {
         return GetEnemyCenter();
+    }
+
+    private void HandleDied()
+    {
+        if (deathSoundPlayed)
+            return;
+
+        deathSoundPlayed = true;
+        GameAudio.PlayRiceDead();
     }
 
     private Vector2 GetEnemyCenter()

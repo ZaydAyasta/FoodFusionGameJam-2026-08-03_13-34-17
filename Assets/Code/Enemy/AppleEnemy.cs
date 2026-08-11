@@ -37,10 +37,12 @@ public class AppleEnemy : MonoBehaviour
     [SerializeField] private float projectileLifetime = 2.8f;
     [SerializeField] private float projectileVisualWorldSize = 0.45f;
     [SerializeField] private float patternAngleOffset;
+    [SerializeField, Min(1)] private int burstPatternRepeats = 1;
 
     private static Projectile fallbackProjectilePrefab;
     private Rigidbody2D rb;
     private Collider2D ownHitbox;
+    private Health health;
     private bool attacking;
     private int strafeDirection = 1;
     private float nextStrafeSwitchAt;
@@ -48,6 +50,7 @@ public class AppleEnemy : MonoBehaviour
     private float nextHopAt;
     private float hopPhaseEndsAt;
     private HopPhase hopPhase;
+    private bool deathSoundPlayed;
 
     private static readonly int IsMovingParameter = Animator.StringToHash("IsMoving");
     private static readonly int PreJumpParameter = Animator.StringToHash("PreJump");
@@ -62,6 +65,7 @@ public class AppleEnemy : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         ownHitbox = GetComponent<Collider2D>();
+        health = GetComponent<Health>();
         ResolveVisuals();
         rb.gravityScale = 0f;
         rb.freezeRotation = true;
@@ -71,10 +75,22 @@ public class AppleEnemy : MonoBehaviour
     private void OnEnable()
     {
         attacking = false;
+        deathSoundPlayed = false;
+        if (health != null)
+        {
+            health.Died -= HandleDied;
+            health.Died += HandleDied;
+        }
         strafeDirection = Random.value < 0.5f ? -1 : 1;
         nextStrafeSwitchAt = Time.time + Mathf.Max(0.1f, strafeSwitchInterval);
         nextAttackAt = Time.time + Random.Range(1f, 1.8f);
         ResetHop();
+    }
+
+    private void OnDisable()
+    {
+        if (health != null)
+            health.Died -= HandleDied;
     }
 
     private void Update()
@@ -132,6 +148,19 @@ public class AppleEnemy : MonoBehaviour
     {
         target = newTarget;
         ResetHop();
+    }
+
+    public void ApplyLateGameAttackScaling(int tier)
+    {
+        if (tier <= 0)
+            return;
+
+        float cooldownMultiplier = 1f - Mathf.Min(0.45f, tier * 0.06f);
+        minAttackCooldown = Mathf.Max(1.25f, minAttackCooldown * cooldownMultiplier);
+        maxAttackCooldown = Mathf.Max(minAttackCooldown + 0.2f, maxAttackCooldown * cooldownMultiplier);
+        projectileSpeed *= 1f + Mathf.Min(0.35f, tier * 0.035f);
+        projectileDamage *= 1f + Mathf.Min(0.45f, tier * 0.045f);
+        burstPatternRepeats = Mathf.Clamp(1 + tier / 4, 1, 3);
     }
 
     private void UpdateHopCycle()
@@ -192,15 +221,20 @@ public class AppleEnemy : MonoBehaviour
         Projectile prefab = projectilePrefab != null ? projectilePrefab : CreateFallbackProjectilePrefab();
         Vector3 origin = projectileOrigin != null ? projectileOrigin.position : (Vector3)GetEnemyCenter();
 
-        for (int i = 0; i < 8; i++)
+        int patternCount = Mathf.Max(1, burstPatternRepeats);
+        for (int pattern = 0; pattern < patternCount; pattern++)
         {
-            float angle = patternAngleOffset + i * 45f;
-            Vector2 direction = Quaternion.Euler(0f, 0f, angle) * Vector2.right;
-            Projectile projectile = Instantiate(prefab, origin, prefab.transform.rotation);
-            projectile.gameObject.SetActive(true);
-            ApplyRandomProjectileSprite(projectile);
-            projectile.Launch(direction, projectileSpeed, projectileDamage,
-                CombatFaction.Enemy, projectileLifetime);
+            float repeatOffset = pattern * (45f / patternCount);
+            for (int i = 0; i < 8; i++)
+            {
+                float angle = patternAngleOffset + repeatOffset + i * 45f;
+                Vector2 direction = Quaternion.Euler(0f, 0f, angle) * Vector2.right;
+                Projectile projectile = Instantiate(prefab, origin, prefab.transform.rotation);
+                projectile.gameObject.SetActive(true);
+                ApplyRandomProjectileSprite(projectile);
+                projectile.Launch(direction, projectileSpeed, projectileDamage,
+                    CombatFaction.Enemy, projectileLifetime);
+            }
         }
     }
 
@@ -245,6 +279,15 @@ public class AppleEnemy : MonoBehaviour
     {
         if (rb != null)
             rb.linearVelocity = Vector2.zero;
+    }
+
+    private void HandleDied()
+    {
+        if (deathSoundPlayed)
+            return;
+
+        deathSoundPlayed = true;
+        GameAudio.PlayAppleDead();
     }
 
     private Vector2 GetEnemyCenter()

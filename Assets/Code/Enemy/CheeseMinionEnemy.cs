@@ -27,6 +27,10 @@ public class CheeseMinionEnemy : MonoBehaviour
     [SerializeField, Min(0.05f)] private float contactRadius = 0.45f;
     [SerializeField, Min(0f)] private float postHitRecoveryDuration = 0.3f;
 
+    [Header("Audio")]
+    [SerializeField] private float runSoundInterval = 0.36f;
+    [SerializeField] private float runSoundSpeedThreshold = 0.45f;
+
     private Rigidbody2D rb;
     private Transform target;
     private Vector2 wanderDirection;
@@ -39,6 +43,7 @@ public class CheeseMinionEnemy : MonoBehaviour
     private ParticleSystem runningCrumbParticles;
     private float crumbEmissionAccumulator;
     private Vector3 crumbOriginBaseLocalPosition;
+    private float nextRunSoundAt;
 
     private static readonly int IsMovingParameter = Animator.StringToHash("IsMoving");
     private static readonly int IsChasingParameter = Animator.StringToHash("IsChasing");
@@ -200,6 +205,20 @@ public class CheeseMinionEnemy : MonoBehaviour
         target = newTarget;
     }
 
+    public void ApplyLateGameAttackScaling(int tier)
+    {
+        if (tier <= 0)
+            return;
+
+        chaseSpeed *= 1f + Mathf.Min(0.45f, tier * 0.045f);
+        wanderSpeed *= 1f + Mathf.Min(0.25f, tier * 0.025f);
+        contactDamage *= 1f + Mathf.Min(0.6f, tier * 0.06f);
+        postHitRecoveryDuration = Mathf.Max(0.12f, postHitRecoveryDuration * (1f - Mathf.Min(0.45f, tier * 0.055f)));
+
+        if (contactDamageDealer != null)
+            contactDamageDealer.Configure(CombatFaction.Enemy, contactDamage, false);
+    }
+
     private void FixedUpdate()
     {
         if (target != null)
@@ -258,6 +277,7 @@ public class CheeseMinionEnemy : MonoBehaviour
         }
 
         SetAnimatorBool(IsMovingParameter, rb.linearVelocity.sqrMagnitude > 0.01f);
+        PlayRunSoundIfMoving();
     }
 
     public void BeginDroppedBirth()
@@ -298,6 +318,7 @@ public class CheeseMinionEnemy : MonoBehaviour
             contactDamageDealer.enabled = false;
         SetState(State.Recovering);
         SetAnimatorBool(IsMovingParameter, true);
+        GameAudio.PlayCheeseImpact();
     }
 
     private void Wander()
@@ -329,6 +350,16 @@ public class CheeseMinionEnemy : MonoBehaviour
     {
         if (state == State.Searching)
             ChooseWanderDirection();
+    }
+
+    private void PlayRunSoundIfMoving()
+    {
+        if (Time.time < nextRunSoundAt || state == State.Born || rb == null ||
+            rb.linearVelocity.sqrMagnitude < runSoundSpeedThreshold * runSoundSpeedThreshold)
+            return;
+
+        GameAudio.PlayCheeseRun();
+        nextRunSoundAt = Time.time + Mathf.Max(0.08f, runSoundInterval);
     }
 
     private void SetAnimatorBool(int hash, bool value)

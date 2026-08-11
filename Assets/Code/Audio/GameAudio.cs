@@ -28,6 +28,18 @@ public class GameAudio : MonoBehaviour
     private AudioClip shootClip;
     private AudioClip dashClip;
     private AudioClip itemPickupClip;
+    private AudioClip waterSplatClip;
+    private AudioClip crunchClip;
+    private AudioClip doorSlamClip;
+    private AudioClip tinySplashClip;
+    private AudioClip breadDeadClip;
+    private AudioClip tinyRopeClip;
+    private AudioClip riceDeadClip;
+    private AudioClip cheeseRunClip;
+    private AudioClip cheeseImpactClip;
+    private AudioClip cheeseGenerateClip;
+    private AudioClip meatballFallClip;
+    private AudioClip appleDeadClip;
     private AudioClip deathHitClip;
     private int nextFootstepIndex;
     private float nextFootstepAt;
@@ -206,6 +218,123 @@ public class GameAudio : MonoBehaviour
         audio.PlaySfx(audio.itemPickupClip, 1f);
     }
 
+    public static void PlayWaterSplat()
+    {
+        if (Time.timeScale <= 0f)
+            return;
+
+        GameAudio audio = Instance;
+        audio.EnsureReady();
+        audio.PlaySfx(audio.waterSplatClip, 1f);
+    }
+
+    public static void PlayCrunch()
+    {
+        GameAudio audio = Instance;
+        audio.EnsureReady();
+        audio.PlaySfx(audio.crunchClip, 1f);
+    }
+
+    public static void PlayDoorSlam()
+    {
+        if (Time.timeScale <= 0f)
+            return;
+
+        GameAudio audio = Instance;
+        audio.EnsureReady();
+        audio.PlaySfx(audio.doorSlamClip, 1.25f);
+    }
+
+    public static void PlayTinySplash()
+    {
+        if (Time.timeScale <= 0f)
+            return;
+
+        GameAudio audio = Instance;
+        audio.EnsureReady();
+        audio.PlaySfx(audio.tinySplashClip, 0.85f);
+    }
+
+    public static void PlayBreadDead()
+    {
+        if (Time.timeScale <= 0f)
+            return;
+
+        GameAudio audio = Instance;
+        audio.EnsureReady();
+        audio.PlaySfx(audio.breadDeadClip, 1f);
+    }
+
+    public static void PlayTinyRope()
+    {
+        if (Time.timeScale <= 0f)
+            return;
+
+        GameAudio audio = Instance;
+        audio.EnsureReady();
+        audio.PlaySfx(audio.tinyRopeClip, 0.95f);
+    }
+
+    public static void PlayRiceDead()
+    {
+        if (Time.timeScale <= 0f)
+            return;
+
+        GameAudio audio = Instance;
+        audio.EnsureReady();
+        audio.PlaySfx(audio.riceDeadClip, 1f);
+    }
+
+    public static void PlayCheeseRun()
+    {
+        if (Time.timeScale <= 0f)
+            return;
+
+        GameAudio audio = Instance;
+        audio.EnsureReady();
+        audio.PlaySfxRandomPitch(audio.cheeseRunClip, 0.72f, 0.9f, 1.14f);
+    }
+
+    public static void PlayCheeseImpact()
+    {
+        if (Time.timeScale <= 0f)
+            return;
+
+        GameAudio audio = Instance;
+        audio.EnsureReady();
+        audio.PlaySfxRandomPitch(audio.cheeseImpactClip, 0.85f, 0.92f, 1.08f);
+    }
+
+    public static void PlayCheeseGenerate()
+    {
+        if (Time.timeScale <= 0f)
+            return;
+
+        GameAudio audio = Instance;
+        audio.EnsureReady();
+        audio.PlaySfxRandomPitch(audio.cheeseGenerateClip, 0.9f, 0.94f, 1.08f);
+    }
+
+    public static void PlayMeatballFall()
+    {
+        if (Time.timeScale <= 0f)
+            return;
+
+        GameAudio audio = Instance;
+        audio.EnsureReady();
+        audio.PlaySfx(audio.meatballFallClip, 1f);
+    }
+
+    public static void PlayAppleDead()
+    {
+        if (Time.timeScale <= 0f)
+            return;
+
+        GameAudio audio = Instance;
+        audio.EnsureReady();
+        audio.PlaySfx(audio.appleDeadClip, 1f);
+    }
+
     public static void StopAllAudio()
     {
         GameAudio audio = Instance;
@@ -326,6 +455,18 @@ public class GameAudio : MonoBehaviour
         shootClip = LoadAudioClip("snd_squashyattackshort");
         dashClip = LoadAudioClip("snd_dash");
         itemPickupClip = LoadAudioClip("snd_itempickup") ?? CreatePickupClip();
+        waterSplatClip = LoadAudioClip("water_splat");
+        crunchClip = LoadAudioClip("crunch");
+        doorSlamClip = LoadAudioClip("door_slam");
+        tinySplashClip = LoadAudioClip("tiny_splash");
+        breadDeadClip = LoadAudioClip("bread_dead");
+        tinyRopeClip = LoadAudioClip("tiny_rope");
+        riceDeadClip = LoadAudioClip("rice_dead");
+        cheeseRunClip = LoadAudioClip("chessy_focus_run");
+        cheeseImpactClip = LoadAudioClip("universfield-character-fall-impact-352287");
+        cheeseGenerateClip = LoadAudioClip("genearar_quesito");
+        meatballFallClip = LoadAudioClip("meatball_fall");
+        appleDeadClip = LoadAudioClip("apple_dead");
         woodwalkClips = new[]
         {
             LoadAudioClip("snd_woodwalk1"),
@@ -362,6 +503,17 @@ public class GameAudio : MonoBehaviour
             return;
 
         sfxSource.PlayOneShot(clip, volume);
+    }
+
+    private void PlaySfxRandomPitch(AudioClip clip, float volume, float minPitch, float maxPitch)
+    {
+        if (clip == null || sfxSource == null)
+            return;
+
+        float previousPitch = sfxSource.pitch;
+        sfxSource.pitch = Random.Range(minPitch, Mathf.Max(minPitch, maxPitch));
+        sfxSource.PlayOneShot(clip, volume);
+        sfxSource.pitch = previousPitch;
     }
 
     private void PlayNextCombatClip(float volume = CombatMusicVolume)

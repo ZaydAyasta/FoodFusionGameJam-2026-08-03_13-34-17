@@ -81,6 +81,7 @@ public class RoomController : MonoBehaviour
         activePlayer = playerInput.transform;
         aliveEnemies.Clear();
         SetDoorsClosed(true, false);
+        GameAudio.PlayDoorSlam();
         GameAudio.PlayCombatMusic();
 
         foreach (EnemyDeathNotifier enemy in enemies)

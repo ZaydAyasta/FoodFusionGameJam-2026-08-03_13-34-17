@@ -56,6 +56,7 @@ public class MeatballProjectile : MonoBehaviour
     private void Impact()
     {
         launched = false;
+        GameAudio.PlayMeatballFall();
         Collider2D[] hits = Physics2D.OverlapCircleAll(destination, explosionRadius);
         HashSet<Health> damagedTargets = new();
         foreach (Collider2D hit in hits)

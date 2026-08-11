@@ -37,8 +37,12 @@ public class BreadEnemy : MonoBehaviour
     [SerializeField] private float ringLifetime = 8f;
     [SerializeField] private int ringWallBounces = 3;
 
+    [Header("Audio")]
+    [SerializeField] private float ropeSoundSpacing = 0.08f;
+
     private Rigidbody2D rb;
     private Collider2D ownHitbox;
+    private Health health;
     private float nextAttackAt;
     private float nextStrafeSwitchAt;
     private int strafeDirection = 1;
@@ -46,6 +50,7 @@ public class BreadEnemy : MonoBehaviour
     private HopPhase hopPhase;
     private float hopPhaseEndsAt;
     private float nextHopAt;
+    private bool deathSoundPlayed;
 
     private static readonly int IsMovingParameter = Animator.StringToHash("IsMoving");
     private static readonly int IsAttackingParameter = Animator.StringToHash("IsAttacking");
@@ -59,6 +64,7 @@ public class BreadEnemy : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         ownHitbox = GetComponent<Collider2D>();
+        health = GetComponent<Health>();
         ResolveAnimator();
         if (rb != null)
         {
@@ -74,8 +80,20 @@ public class BreadEnemy : MonoBehaviour
         nextStrafeSwitchAt = Time.time + strafeSwitchInterval;
         strafeDirection = Random.value < 0.5f ? -1 : 1;
         attacking = false;
+        deathSoundPlayed = false;
+        if (health != null)
+        {
+            health.Died -= HandleDied;
+            health.Died += HandleDied;
+        }
         ResetHop();
         SetAnimatorBool(IsAttackingParameter, false);
+    }
+
+    private void OnDisable()
+    {
+        if (health != null)
+            health.Died -= HandleDied;
     }
 
     private void FixedUpdate()
@@ -132,6 +150,19 @@ public class BreadEnemy : MonoBehaviour
         ResetHop();
     }
 
+    public void ApplyLateGameAttackScaling(int tier)
+    {
+        if (tier <= 0)
+            return;
+
+        attackCooldown = Mathf.Max(1.4f, attackCooldown * (1f - Mathf.Min(0.5f, tier * 0.07f)));
+        stationaryChargeDuration = Mathf.Max(0.65f, stationaryChargeDuration * (1f - Mathf.Min(0.35f, tier * 0.04f)));
+        delayBetweenRings = Mathf.Max(0.28f, delayBetweenRings * (1f - Mathf.Min(0.4f, tier * 0.05f)));
+        maxRingsPerAttack = Mathf.Clamp(maxRingsPerAttack + tier / 3, minRingsPerAttack, 5);
+        ringSpeed *= 1f + Mathf.Min(0.35f, tier * 0.035f);
+        ringDamage *= 1f + Mathf.Min(0.5f, tier * 0.05f);
+    }
+
     private void UpdateHopCycle()
     {
         if (target == null || attacking)
@@ -181,6 +212,7 @@ public class BreadEnemy : MonoBehaviour
                 break;
 
             SetAnimatorTrigger(AttackParameter);
+            StartCoroutine(PlayRopeAttackSounds());
             FireRing();
             if (i < ringCount - 1)
                 yield return new WaitForSeconds(Mathf.Max(0.05f, delayBetweenRings));
@@ -216,6 +248,25 @@ public class BreadEnemy : MonoBehaviour
 
         ring.Launch(direction, ringSpeed, ringDamage, ringLifetime, ringWallBounces,
             CombatFaction.Enemy, gameObject);
+    }
+
+    private IEnumerator PlayRopeAttackSounds()
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            GameAudio.PlayTinyRope();
+            if (i < 2)
+                yield return new WaitForSeconds(Mathf.Max(0.01f, ropeSoundSpacing));
+        }
+    }
+
+    private void HandleDied()
+    {
+        if (deathSoundPlayed)
+            return;
+
+        deathSoundPlayed = true;
+        GameAudio.PlayBreadDead();
     }
 
     private Vector2 GetEnemyCenter()

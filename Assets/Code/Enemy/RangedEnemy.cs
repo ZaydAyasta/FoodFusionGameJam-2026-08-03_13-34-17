@@ -67,6 +67,17 @@ public class RangedEnemy : MonoBehaviour
         projectileDamage = Mathf.Max(0f, shotDamage);
     }
 
+    public void ApplyLateGameAttackScaling(int tier)
+    {
+        if (tier <= 0)
+            return;
+
+        float cooldownMultiplier = 1f - Mathf.Min(0.45f, tier * 0.07f);
+        shootCooldown = Mathf.Max(0.45f, shootCooldown * cooldownMultiplier);
+        projectileSpeed *= 1f + Mathf.Min(0.45f, tier * 0.04f);
+        projectileDamage *= 1f + Mathf.Min(0.6f, tier * 0.06f);
+    }
+
     private void Shoot()
     {
         Vector2 direction = target.position - transform.position;

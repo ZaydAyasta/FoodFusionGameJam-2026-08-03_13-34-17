@@ -48,7 +48,10 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
     [Header("Late Game Difficulty")]
     [SerializeField, Min(1)] private int lateGameStartsAfterRoom = 10;
     [SerializeField, Min(0f)] private float enemyHealthGrowthPerRoom = 0.15f;
-    [SerializeField, Min(1f)] private float maximumEnemyHealthMultiplier = 3f;
+    [SerializeField, Min(1f)] private float maximumEnemyHealthMultiplier = 10f;
+    [SerializeField, Min(1)] private int attackScalingStartsAtRoom = 20;
+    [SerializeField, Min(1)] private int attackScalingRoomsPerTier = 4;
+    [SerializeField, Min(1)] private int soupHealingReductionStartsAtRoom = 30;
     [SerializeField, Min(1)] private int lateKitchenIntervalRooms = 6;
     [SerializeField, Min(1)] private int deepLateGameStartsAtRoom = 20;
     [SerializeField, Min(1)] private int deepLateKitchenIntervalRooms = 8;
@@ -1320,6 +1323,8 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
             ConfigureRiceEnemyForCurrentRoom(riceEnemy, index);
         }
 
+        ApplyLateGameAttackScaling(enemyObject);
+
         EnemyDeathNotifier notifier = enemyObject.GetComponent<EnemyDeathNotifier>();
         if (notifier == null)
             notifier = enemyObject.AddComponent<EnemyDeathNotifier>();
@@ -1401,7 +1406,7 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
         if (riceEnemy == null)
             return;
 
-        int upgradeTier = Mathf.Max(0, (currentRoomNumber - 1) / 4);
+        int upgradeTier = GetEnemyAttackUpgradeTier(currentRoomNumber);
         float burstChance = Mathf.Clamp01(upgradeTier <= 0 ? 0f : 0.5f + (upgradeTier - 1) * 0.2f);
         int burstLimit = Mathf.Clamp(1 + upgradeTier, 1, 4);
         float speed = 1.45f + upgradeTier * 0.12f;
@@ -1422,6 +1427,25 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
             burstChance,
             burstLimit,
             usesPrediction);
+    }
+
+    private void ApplyLateGameAttackScaling(GameObject enemyObject)
+    {
+        if (enemyObject == null)
+            return;
+
+        int tier = GetEnemyAttackUpgradeTier(currentRoomNumber);
+        if (tier <= 0)
+            return;
+
+        enemyObject.GetComponent<RangedEnemy>()?.ApplyLateGameAttackScaling(tier);
+        enemyObject.GetComponent<AppleEnemy>()?.ApplyLateGameAttackScaling(tier);
+        enemyObject.GetComponent<PotatoEnemy>()?.ApplyLateGameAttackScaling(tier);
+        enemyObject.GetComponent<WaterBucketEnemy>()?.ApplyLateGameAttackScaling(tier);
+        enemyObject.GetComponent<BreadEnemy>()?.ApplyLateGameAttackScaling(tier);
+        enemyObject.GetComponent<MeashyEnemy>()?.ApplyLateGameAttackScaling(tier);
+        enemyObject.GetComponent<CheeseMinionEnemy>()?.ApplyLateGameAttackScaling(tier);
+        enemyObject.GetComponent<MilkDropperEnemy>()?.ApplyLateGameAttackScaling(tier);
     }
 
     private GameObject CreateEnemyBase(string enemyName, Transform parent, Vector3 position, Color color)
@@ -1665,7 +1689,31 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
     {
         int lateRoomCount = Mathf.Max(0, roomNumber - lateGameStartsAfterRoom);
         float multiplier = 1f + lateRoomCount * Mathf.Max(0f, enemyHealthGrowthPerRoom);
-        return Mathf.Min(Mathf.Max(1f, maximumEnemyHealthMultiplier), multiplier);
+        return Mathf.Min(Mathf.Max(10f, maximumEnemyHealthMultiplier), multiplier);
+    }
+
+    public int GetSoupHealingPenaltyCount()
+    {
+        if (currentRoomNumber < soupHealingReductionStartsAtRoom)
+            return 0;
+
+        int count = 0;
+        for (int room = soupHealingReductionStartsAtRoom; room <= currentRoomNumber; room++)
+        {
+            if (IsKitchenRoom(room))
+                count++;
+        }
+
+        return count;
+    }
+
+    private int GetEnemyAttackUpgradeTier(int roomNumber)
+    {
+        if (roomNumber < attackScalingStartsAtRoom)
+            return 0;
+
+        int roomsSinceStart = roomNumber - attackScalingStartsAtRoom;
+        return roomsSinceStart / Mathf.Max(1, attackScalingRoomsPerTier) + 1;
     }
 
     private ProceduralRoomCommitTrigger CreateCommitTrigger(Transform sourceDoor, RoomDirection exitDirection)

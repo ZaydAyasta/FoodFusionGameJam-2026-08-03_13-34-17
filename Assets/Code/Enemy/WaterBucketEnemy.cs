@@ -144,6 +144,20 @@ public class WaterBucketEnemy : MonoBehaviour
         ResetHop();
     }
 
+    public void ApplyLateGameAttackScaling(int tier)
+    {
+        if (tier <= 0)
+            return;
+
+        float cooldownMultiplier = 1f - Mathf.Min(0.45f, tier * 0.06f);
+        minAttackCycle = Mathf.Max(2.4f, minAttackCycle * cooldownMultiplier);
+        maxAttackCycle = Mathf.Max(minAttackCycle + 0.25f, maxAttackCycle * cooldownMultiplier);
+        streamProjectileCount = Mathf.Clamp(streamProjectileCount + tier * 2, 1, 30);
+        delayBetweenProjectiles = Mathf.Max(0.045f, delayBetweenProjectiles * (1f - Mathf.Min(0.35f, tier * 0.04f)));
+        projectileSpeed *= 1f + Mathf.Min(0.3f, tier * 0.03f);
+        projectileDamage *= 1f + Mathf.Min(0.45f, tier * 0.045f);
+    }
+
     private void UpdateHopCycle()
     {
         if (target == null || attacking)
@@ -212,6 +226,9 @@ public class WaterBucketEnemy : MonoBehaviour
 
     private void FireWaterProjectile(bool emitsWetTrail)
     {
+        if (emitsWetTrail)
+            GameAudio.PlayWaterSplat();
+
         Projectile prefab = projectilePrefab != null ? projectilePrefab : CreateFallbackProjectilePrefab();
         Vector3 origin = projectileOrigin != null ? projectileOrigin.position : (Vector3)GetEnemyCenter();
         Projectile projectile = Instantiate(prefab, origin, prefab.transform.rotation);

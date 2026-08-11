@@ -263,6 +263,7 @@ public class FusionKitchenHud : MonoBehaviour
         selectedIngredients[1] = null;
         selectedSlotIndex = 0;
         ApplyFusionResultEffect(result);
+        GameAudio.PlayCrunch();
         RefreshAll();
     }
 
@@ -401,7 +402,7 @@ public class FusionKitchenHud : MonoBehaviour
 
         if (MatchesIngredient(result, WaterId))
         {
-            playerHealth?.Heal(WaterHealAmount);
+            playerHealth?.Heal(GetCurrentWaterHealAmount());
             return;
         }
 
@@ -443,6 +444,13 @@ public class FusionKitchenHud : MonoBehaviour
 
         if (MatchesIngredient(result, RisottoId))
             GetPlayerComponent<PlayerAttack>()?.EnableAutoAim();
+    }
+
+    private static float GetCurrentWaterHealAmount()
+    {
+        RoomGenerationTestBootstrap roomGeneration = FindAnyObjectByType<RoomGenerationTestBootstrap>();
+        int penaltyCount = roomGeneration != null ? roomGeneration.GetSoupHealingPenaltyCount() : 0;
+        return Mathf.Max(5f, WaterHealAmount - penaltyCount * 5f);
     }
 
     private T GetPlayerComponent<T>() where T : Component
