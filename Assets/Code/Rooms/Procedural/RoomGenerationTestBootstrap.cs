@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Unity.Cinemachine;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -1911,6 +1912,19 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
             if (renderer != null)
                 renderer.enabled = visible;
         }
+
+        Light2D[] lights = frontWall.GetComponentsInChildren<Light2D>(true);
+        foreach (Light2D light in lights)
+        {
+            if (light == null)
+                continue;
+
+            if (light.GetComponent<Light2DCullingGuard>() == null)
+                light.gameObject.AddComponent<Light2DCullingGuard>();
+
+            light.enabled = visible;
+        }
+
     }
 
     private static Transform FindVisualsHideRoot(ProceduralRoomLayout room)
