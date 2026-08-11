@@ -45,6 +45,14 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
     [SerializeField] private int firstKitchenRoomNumber = 4;
     [SerializeField] private int kitchenIntervalRooms = 4;
 
+    [Header("Late Game Difficulty")]
+    [SerializeField, Min(1)] private int lateGameStartsAfterRoom = 10;
+    [SerializeField, Min(0f)] private float enemyHealthGrowthPerRoom = 0.15f;
+    [SerializeField, Min(1f)] private float maximumEnemyHealthMultiplier = 3f;
+    [SerializeField, Min(1)] private int lateKitchenIntervalRooms = 6;
+    [SerializeField, Min(1)] private int deepLateGameStartsAtRoom = 20;
+    [SerializeField, Min(1)] private int deepLateKitchenIntervalRooms = 8;
+
     [Header("Combat")]
     [SerializeField] private bool generateCombatInFirstRoom;
     [SerializeField] private float playerMaxHealth = 100f;
@@ -1290,8 +1298,13 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
             health = enemyObject.AddComponent<Health>();
 
         bool usesRiceFallback = linkedPrefab == null;
-        float configuredHealth = usesRiceFallback ? riceEnemyHitsToKill : health.MaxHealth;
+        float healthMultiplier = GetEnemyHealthMultiplier(currentRoomNumber);
+        float configuredHealth = (usesRiceFallback ? riceEnemyHitsToKill : health.MaxHealth) * healthMultiplier;
         health.Configure(configuredHealth, true, true);
+
+        MilkDropperEnemy milkDropper = enemyObject.GetComponent<MilkDropperEnemy>();
+        if (milkDropper != null)
+            milkDropper.SetSummonHealthMultiplier(healthMultiplier);
 
         FactionMember faction = enemyObject.GetComponent<FactionMember>();
         if (faction == null)
@@ -1628,7 +1641,31 @@ public class RoomGenerationTestBootstrap : MonoBehaviour
         if (kitchenIntervalRooms <= 0 || roomNumber < firstKitchenRoomNumber)
             return false;
 
-        return (roomNumber - firstKitchenRoomNumber) % kitchenIntervalRooms == 0;
+        if (roomNumber <= lateGameStartsAfterRoom)
+            return (roomNumber - firstKitchenRoomNumber) % kitchenIntervalRooms == 0;
+
+        int lastRegularKitchen = firstKitchenRoomNumber;
+        if (lateGameStartsAfterRoom >= firstKitchenRoomNumber)
+        {
+            int regularSteps = (lateGameStartsAfterRoom - firstKitchenRoomNumber) / kitchenIntervalRooms;
+            lastRegularKitchen += regularSteps * kitchenIntervalRooms;
+        }
+
+        int lateInterval = Mathf.Max(1, lateKitchenIntervalRooms);
+        int deepStart = Mathf.Max(lateGameStartsAfterRoom + 1, deepLateGameStartsAtRoom);
+        if (roomNumber <= deepStart)
+            return (roomNumber - lastRegularKitchen) % lateInterval == 0;
+
+        int lateStepsToDeepGame = Mathf.Max(0, (deepStart - lastRegularKitchen) / lateInterval);
+        int deepGameAnchor = lastRegularKitchen + lateStepsToDeepGame * lateInterval;
+        return (roomNumber - deepGameAnchor) % Mathf.Max(1, deepLateKitchenIntervalRooms) == 0;
+    }
+
+    private float GetEnemyHealthMultiplier(int roomNumber)
+    {
+        int lateRoomCount = Mathf.Max(0, roomNumber - lateGameStartsAfterRoom);
+        float multiplier = 1f + lateRoomCount * Mathf.Max(0f, enemyHealthGrowthPerRoom);
+        return Mathf.Min(Mathf.Max(1f, maximumEnemyHealthMultiplier), multiplier);
     }
 
     private ProceduralRoomCommitTrigger CreateCommitTrigger(Transform sourceDoor, RoomDirection exitDirection)

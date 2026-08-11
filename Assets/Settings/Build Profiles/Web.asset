@@ -49,6 +49,6 @@ MonoBehaviour:
           m_BuildProfileEngineDiagnosticsState: 2
         m_AdaptivePerformanceEnabled: 0
         m_CodeOptimization: 0
-        m_WebGLClientBrowserPath: 
+        m_WebGLClientBrowserPath: C:\Users\aleja\AppData\Local\Vivaldi\Application\vivaldi.exe
         m_WebGLClientBrowserType: 5
         m_WebGLTextureSubtarget: 0

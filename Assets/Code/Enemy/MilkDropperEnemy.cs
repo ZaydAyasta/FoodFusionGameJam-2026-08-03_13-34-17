@@ -29,6 +29,7 @@ public class MilkDropperEnemy : MonoBehaviour
     private RoomController room;
     private Coroutine dropRoutine;
     private int livingSummons;
+    private float summonHealthMultiplier = 1f;
 
     private static readonly int DropParameter = Animator.StringToHash("Drop");
 
@@ -97,6 +98,11 @@ public class MilkDropperEnemy : MonoBehaviour
         dropRoutine = StartCoroutine(DropLoop());
     }
 
+    public void SetSummonHealthMultiplier(float multiplier)
+    {
+        summonHealthMultiplier = Mathf.Max(1f, multiplier);
+    }
+
     private IEnumerator DropLoop()
     {
         while (target != null && room != null && room.State == RoomState.Combat)
@@ -133,7 +139,7 @@ public class MilkDropperEnemy : MonoBehaviour
         Health health = instance.GetComponent<Health>();
         if (health == null)
             health = instance.AddComponent<Health>();
-        health.Configure(health.MaxHealth, true, true);
+        health.Configure(health.MaxHealth * summonHealthMultiplier, true, true);
 
         FactionMember faction = instance.GetComponent<FactionMember>();
         if (faction == null)

@@ -86,7 +86,8 @@ public class PlayerDeathHandler : MonoBehaviour
     {
         foreach (SpriteRenderer renderer in target.GetComponentsInChildren<SpriteRenderer>(true))
         {
-            Shader solidShader = Shader.Find("FoodFusion/SolidSprite");
+            Shader solidShader = Resources.Load<Shader>("Shaders/SolidSprite") ??
+                Shader.Find("FoodFusion/SolidSprite");
             if (solidShader != null)
                 renderer.material = new Material(solidShader);
             renderer.color = color;
